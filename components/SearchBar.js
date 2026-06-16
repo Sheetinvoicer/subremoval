@@ -31,6 +31,7 @@ export default function SearchBar() {
       <button
         onClick={() => setOpen(true)}
         className="flex items-center gap-2 px-4 py-2 text-sm text-gray-500 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+        aria-label="Open search"
       >
         <Search size={16} />
         <span className="hidden md:inline">Search...</span>
@@ -45,14 +46,17 @@ export default function SearchBar() {
         <div className="flex items-center border-b border-gray-200 dark:border-gray-700">
           <Search size={18} className="ml-4 text-gray-400" />
           <input
+            id="search-input"
+            name="search-input"
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search invoices, clients, expenses..."
             className="flex-1 px-4 py-3 text-gray-900 dark:text-gray-100 bg-transparent outline-none"
             autoFocus
+            autoComplete="off"
           />
-          <button onClick={() => setOpen(false)} className="mr-4 text-gray-400">
+          <button onClick={() => setOpen(false)} className="mr-4 text-gray-400" aria-label="Close search">
             <X size={18} />
           </button>
         </div>

@@ -1,0 +1,12 @@
+
+> sheetinvoicer@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.100.173:3000
+- Environments: .env.local
+✓ Ready in 316ms
+
+⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ GET /dashboard 200 in 396ms (next.js: 114ms, application-code: 282ms)

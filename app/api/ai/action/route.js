@@ -1,87 +1,156 @@
-import { createClient } from '@/lib/supabase/server';
+import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
+import { Anthropic } from '@anthropic-ai/sdk';
+
+// Initialize both
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
 
 export async function POST(request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { action, data } = await request.json();
     
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    let result;
+    
+    switch (action) {
+      case 'generate-invoice':
+        result = await generateInvoice(data);
+        break;
+      case 'analyze-finances':
+        result = await analyzeFinances(data);
+        break;
+      case 'predict-payment':
+        result = await predictPayment(data);
+        break;
+      case 'suggest-amount':
+        result = await suggestAmount(data);
+        break;
+      case 'summarize':
+        result = await summarizeData(data);
+        break;
+      default:
+        return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
     }
     
-    const { message } = await request.json();
-    const lower = message.toLowerCase();
-    
-    // Fetch ALL data directly
-    const { data: invoices } = await supabase
-      .from('invoices')
-      .select('*')
-      .eq('user_id', user.id);
-    
-    const { data: clients } = await supabase
-      .from('clients')
-      .select('*')
-      .eq('user_id', user.id);
-    
-    const { data: expenses } = await supabase
-      .from('expenses')
-      .select('*')
-      .eq('user_id', user.id);
-    
-    console.log('Invoices found:', invoices?.length);
-    console.log('First invoice:', invoices?.[0]);
-    
-    // Calculate metrics safely
-    const paidInvoices = invoices?.filter(i => i.status === 'paid') || [];
-    const pendingInvoices = invoices?.filter(i => i.status !== 'paid') || [];
-    const overdueInvoices = invoices?.filter(i => {
-      return i.status !== 'paid' && i.due_date && new Date(i.due_date) < new Date();
-    }) || [];
-    
-    const totalRevenue = paidInvoices.reduce((sum, i) => sum + (Number(i.total) || 0), 0);
-    const totalPending = pendingInvoices.reduce((sum, i) => sum + (Number(i.total) || 0), 0);
-    const totalExpenses = expenses?.reduce((sum, e) => sum + (Number(e.amount) || 0), 0) || 0;
-    
-    let responseText = '';
-    
-    if (lower.includes('report') || lower.includes('how am i')) {
-      responseText = `📊 YOUR BUSINESS REPORT\n\n` +
-        `💰 Revenue: $${totalRevenue.toLocaleString()}\n` +
-        `⏳ Pending: $${totalPending.toLocaleString()}\n` +
-        `📉 Expenses: $${totalExpenses.toLocaleString()}\n` +
-        `📈 Profit: $${(totalRevenue - totalExpenses).toLocaleString()}\n` +
-        `📄 Invoices: ${invoices?.length || 0}\n` +
-        `✅ Paid: ${paidInvoices.length}\n` +
-        `⚠️ Overdue: ${overdueInvoices.length}\n` +
-        `👥 Clients: ${clients?.length || 0}\n\n` +
-        `${(totalRevenue - totalExpenses) > 0 ? '✅ Your business is profitable!' : '⚠️ Review your expenses.'}`;
-    } 
-    else if (lower.includes('invoices') || lower.includes('list invoices')) {
-      if (!invoices || invoices.length === 0) {
-        responseText = "📄 No invoices found. Create your first invoice from the Invoices page!";
-      } else {
-        responseText = `📄 YOUR INVOICES (${invoices.length})\n\n` +
-          invoices.slice(0, 5).map(inv => 
-            `• ${inv.invoice_number}: ${inv.currency || 'USD'} ${Number(inv.total).toFixed(2)} (${inv.status || 'draft'})`
-          ).join('\n');
-        if (invoices.length > 5) {
-          responseText += `\n\n... and ${invoices.length - 5} more`;
-        }
-      }
-    }
-    else {
-      responseText = `🤖 AI COMMANDS\n\n` +
-        `📊 "Show me my report" - Business summary\n` +
-        `📄 "List my invoices" - See all invoices\n` +
-        `📈 "Predict cash flow" - Future outlook\n` +
-        `📧 "Send reminders" - Payment follow-ups\n` +
-        `👥 "List my clients" - See all clients`;
-    }
-    
-    return Response.json({ success: true, message: responseText });
-    
+    return NextResponse.json({ success: true, result });
   } catch (error) {
     console.error('AI Error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message 
+    }, { status: 500 });
   }
+}
+
+// Use Claude with correct model names
+async function generateInvoice(data) {
+  const { clientName, items, description } = data;
+  
+  const prompt = `Generate a professional invoice for:
+Client: ${clientName}
+Services: ${items || 'Consulting services'}
+Description: ${description || 'Professional services rendered'}
+
+Return as JSON with fields: description, suggestedItems (array of {item, quantity, rate}), totalAmount, paymentTerms, invoiceNumber`;
+
+  const response = await anthropic.messages.create({
+    model: 'claude-sonnet-4-6',  // ✅ CORRECT model name
+    max_tokens: 1000,
+    messages: [{ role: 'user', content: prompt }],
+  });
+  
+  try {
+    return JSON.parse(response.content[0].text);
+  } catch {
+    return { result: response.content[0].text };
+  }
+}
+
+async function analyzeFinances(data) {
+  const { invoices, expenses, period } = data;
+  
+  const prompt = `Analyze this financial data:
+Invoices: ${JSON.stringify(invoices)}
+Expenses: ${JSON.stringify(expenses)}
+Period: ${period}
+
+Return as JSON with fields: revenue, expenses, profit, insights, recommendations (array)`;
+
+  const response = await anthropic.messages.create({
+    model: 'claude-haiku-4-5',  // ✅ CORRECT - fastest for analysis
+    max_tokens: 800,
+    messages: [{ role: 'user', content: prompt }],
+  });
+  
+  try {
+    return JSON.parse(response.content[0].text);
+  } catch {
+    return { result: response.content[0].text };
+  }
+}
+
+async function predictPayment(data) {
+  const { clientHistory, invoiceAmount, dueDate } = data;
+  
+  const prompt = `Predict payment behavior for:
+Client History: ${JSON.stringify(clientHistory)}
+Invoice Amount: $${invoiceAmount}
+Due Date: ${dueDate}
+
+Return as JSON with fields: probability (number 0-100), expectedDate, riskLevel (low/medium/high), followUpSchedule`;
+
+  const response = await anthropic.messages.create({
+    model: 'claude-haiku-4-5',  // ✅ CORRECT
+    max_tokens: 500,
+    messages: [{ role: 'user', content: prompt }],
+  });
+  
+  try {
+    return JSON.parse(response.content[0].text);
+  } catch {
+    return { result: response.content[0].text };
+  }
+}
+
+async function suggestAmount(data) {
+  const { serviceType, marketRate, clientBudget } = data;
+  
+  const prompt = `Suggest optimal pricing for:
+Service: ${serviceType}
+Market Rate: $${marketRate}/hour
+Client Budget: $${clientBudget}
+
+Return as JSON with fields: recommendedRate, projectTotal, strategy, competitivePosition`;
+
+  const response = await anthropic.messages.create({
+    model: 'claude-sonnet-4-6',  // ✅ CORRECT
+    max_tokens: 800,
+    messages: [{ role: 'user', content: prompt }],
+  });
+  
+  try {
+    return JSON.parse(response.content[0].text);
+  } catch {
+    return { result: response.content[0].text };
+  }
+}
+
+async function summarizeData(data) {
+  const { type, content } = data;
+  
+  const prompt = `Summarize this ${type} data in 2-3 sentences:
+${JSON.stringify(content)}`;
+
+  const response = await anthropic.messages.create({
+    model: 'claude-haiku-4-5',  // ✅ CORRECT - fastest
+    max_tokens: 200,
+    messages: [{ role: 'user', content: prompt }],
+  });
+  
+  return { summary: response.content[0].text };
 }
