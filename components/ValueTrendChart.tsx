@@ -45,7 +45,7 @@ export default function ValueTrendChart({ data }) {
     ]
   }
 
-  const options = {
+  const options: any = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {

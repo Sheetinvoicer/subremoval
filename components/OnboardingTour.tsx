@@ -1,8 +1,10 @@
 'use client';
 import React from 'react';
 
-import Joyride from 'react-joyride';
+import { Joyride } from 'react-joyride';
 import { useState, useEffect } from 'react';
+
+const JoyrideAny = Joyride as any;
 
 const steps = [
   {
@@ -56,7 +58,7 @@ export default function OnboardingTour() {
   }
 
   return (
-    <Joyride
+    <JoyrideAny
       steps={steps}
       run={run}
       continuous={true}
@@ -71,7 +73,7 @@ export default function OnboardingTour() {
           arrowColor: '#ffffff',
           zIndex: 1000,
         },
-      }}
+      } as any}
       locale={{
         back: '← Back',
         close: 'Close',

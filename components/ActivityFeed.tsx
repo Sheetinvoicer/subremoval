@@ -4,12 +4,24 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
+type Activity = {
+  id: string;
+  type: string;
+  description: string;
+  created_at: string;
+};
+
 export default function ActivityFeed() {
-  const [activities, setActivities] = useState([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     loadActivities();
     
     // Subscribe to real-time changes
@@ -30,6 +42,10 @@ export default function ActivityFeed() {
   }, []);
 
   async function loadActivities() {
+    if (!supabase) {
+      return;
+    }
+
     const { data, error } = await supabase
       .from('activity_logs')
       .select('*')
@@ -42,7 +58,7 @@ export default function ActivityFeed() {
     setLoading(false);
   }
 
-  const getActivityIcon = (type) => {
+  const getActivityIcon = (type: string) => {
     switch(type) {
       case 'invoice_created': return '📄';
       case 'invoice_paid': return '✅';
@@ -53,7 +69,7 @@ export default function ActivityFeed() {
     }
   };
 
-  const getActivityColor = (type) => {
+  const getActivityColor = (type: string) => {
     switch(type) {
       case 'invoice_paid': return 'text-green-500';
       case 'invoice_created': return 'text-blue-500';

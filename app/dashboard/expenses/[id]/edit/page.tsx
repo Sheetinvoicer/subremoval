@@ -1,155 +1,234 @@
 'use client';
-import { useState, useEffect, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
-import { ArrowLeft } from 'lucide-react';
 
-interface Expense {
+import { FormEvent, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
+
+interface ExpenseFormData {
   id: string;
   category: string;
-  amount: number;
+  amount: string;
   currency: string;
-  description?: string;
+  description: string;
   date: string;
 }
 
-interface PageProps {
-  params: { id: string };
+const categories = [
+  'Office Supplies',
+  'Software',
+  'Travel',
+  'Food',
+  'Utilities',
+  'Rent',
+  'Marketing',
+  'Other',
+];
+
+function validateExpense(form: ExpenseFormData) {
+  if (!form.category.trim()) return 'Category is required.';
+  const amount = Number(form.amount);
+  if (!Number.isFinite(amount) || amount <= 0) return 'Amount must be greater than 0.';
+  if (!form.currency.trim() || form.currency.trim().length !== 3) return 'Currency must be a 3-letter code.';
+  if (!form.date) return 'Date is required.';
+  return null;
 }
 
-export default function EditExpensePage({ params }: PageProps) {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [expense, setExpense] = useState<Expense | null>(null);
-  const [saving, setSaving] = useState(false);
+export default function EditExpensePage() {
+  const params = useParams<{ id: string }>();
   const router = useRouter();
+  const id = params?.id;
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState<ExpenseFormData | null>(null);
 
   useEffect(() => {
-    async function loadExpense() {
-      try {
-        const supabase = createClient();
-        if (!supabase) {
-          setError("Failed to initialize Supabase client");
-          setLoading(false);
-          return;
-        }
-
-        const { data, error: queryError } = await supabase
-          .from('expenses')
-          .select('*')
-          .eq('id', params.id)
-          .single();
-
-        if (queryError) {
-          setError(queryError.message);
-          setLoading(false);
-          return;
-        }
-
-        setExpense(data);
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Failed to load data";
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadExpense();
-  }, [params]);
-
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    if (!expense) return;
-
-    try {
-      setSaving(true);
-      setError(null);
-
+    const loadExpense = async () => {
       const supabase = createClient();
       if (!supabase) {
-        setError("Failed to initialize Supabase client");
+        setError('Failed to initialize Supabase client.');
+        setLoading(false);
         return;
       }
 
-      const { error: queryError } = await supabase
+      const { data: userData } = await supabase.auth.getUser();
+      const user = userData?.user;
+      if (!user) {
+        setError('Please log in to edit this expense.');
+        setLoading(false);
+        return;
+      }
+
+      const { data, error: queryError } = await supabase
         .from('expenses')
-        .update({
-          category: expense.category,
-          amount: expense.amount,
-          currency: expense.currency,
-          description: expense.description,
-          date: expense.date,
-        })
-        .eq('id', expense.id);
+        .select('id, category, amount, currency, description, date')
+        .eq('user_id', user.id)
+        .eq('id', id)
+        .single();
 
       if (queryError) {
         setError(queryError.message);
+        setLoading(false);
         return;
       }
 
-      router.push('/dashboard/expenses');
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update expense';
-      setError(errorMessage);
-    } finally {
-      setSaving(false);
+      setForm({
+        id: data.id,
+        category: data.category,
+        amount: String(data.amount),
+        currency: data.currency,
+        description: data.description || '',
+        date: data.date,
+      });
+      setLoading(false);
+    };
+
+    if (id) {
+      loadExpense();
     }
-  }
+  }, [id]);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!form) return;
+
+    setError(null);
+    const validationError = validateExpense(form);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    const supabase = createClient();
+    if (!supabase) {
+      setError('Failed to initialize Supabase client.');
+      return;
+    }
+
+    const { data: userData } = await supabase.auth.getUser();
+    const user = userData?.user;
+    if (!user) {
+      setError('You must be logged in to update expenses.');
+      return;
+    }
+
+    setSaving(true);
+    const { error: updateError } = await supabase
+      .from('expenses')
+      .update({
+        category: form.category.trim(),
+        amount: Number(form.amount),
+        currency: form.currency.trim().toUpperCase(),
+        description: form.description.trim() || null,
+        date: form.date,
+      })
+      .eq('id', form.id)
+      .eq('user_id', user.id);
+    setSaving(false);
+
+    if (updateError) {
+      setError(updateError.message);
+      return;
+    }
+
+    router.push(`/dashboard/expenses/${form.id}`);
+  };
 
   if (loading) {
+    return <div className="p-6">Loading...</div>;
+  }
+
+  if (error && !form) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="max-w-2xl mx-auto p-6">
+        <div className="rounded-md bg-red-50 text-red-700 px-4 py-3 text-sm">{error}</div>
       </div>
     );
   }
 
-  if (error) {
-    return (
-      <div className="container mx-auto p-4">
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
-          <button
-            onClick={() => router.back()}
-            className="mt-2 text-sm text-blue-600 hover:underline"
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!expense) {
-    return (
-      <div className="container mx-auto p-4">
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-          <p className="text-yellow-600 dark:text-yellow-400">Expense not found</p>
-          <Link href="/dashboard/expenses">
-            <a className="mt-2 inline-block text-sm text-blue-600 hover:underline">
-              Back to Expenses
-            </a>
-          </Link>
-        </div>
-      </div>
-    );
+  if (!form) {
+    return null;
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-2xl">
-      <div className="flex items-center gap-4 mb-6">
-        <Link href="/dashboard/expenses">
-          <a className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-            <ArrowLeft className="w-5 h-5" />
-          </a>
-        </Link>
+    <div className="max-w-2xl mx-auto p-6">
+      <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit Expense</h1>
+        <Link href={`/dashboard/expenses/${form.id}`} className="text-sm text-blue-600 hover:underline">
+          Back to expense
+        </Link>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 space-y-4">
-        {/* ...rest of the form */}
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-4">
+        {error && <div className="rounded-md bg-red-50 text-red-700 px-4 py-3 text-sm">{error}</div>}
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Category</label>
+          <select
+            value={form.category}
+            onChange={(e) => setForm((prev) => (prev ? { ...prev, category: e.target.value } : prev))}
+            className="w-full border rounded px-3 py-2"
+          >
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Amount</label>
+            <input
+              type="number"
+              min="0.01"
+              step="0.01"
+              value={form.amount}
+              onChange={(e) => setForm((prev) => (prev ? { ...prev, amount: e.target.value } : prev))}
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Currency</label>
+            <input
+              type="text"
+              maxLength={3}
+              value={form.currency}
+              onChange={(e) => setForm((prev) => (prev ? { ...prev, currency: e.target.value.toUpperCase() } : prev))}
+              className="w-full border rounded px-3 py-2"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Date</label>
+          <input
+            type="date"
+            value={form.date}
+            onChange={(e) => setForm((prev) => (prev ? { ...prev, date: e.target.value } : prev))}
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Description (optional)</label>
+          <textarea
+            value={form.description}
+            onChange={(e) => setForm((prev) => (prev ? { ...prev, description: e.target.value } : prev))}
+            className="w-full border rounded px-3 py-2 min-h-24"
+          />
+        </div>
+
+        <div className="flex justify-end gap-3">
+          <button type="button" onClick={() => router.back()} className="px-4 py-2 border rounded">
+            Cancel
+          </button>
+          <button type="submit" disabled={saving} className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-60">
+            {saving ? 'Saving...' : 'Save Changes'}
+          </button>
+        </div>
       </form>
     </div>
   );

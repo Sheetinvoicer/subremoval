@@ -2,6 +2,19 @@
 
 import { useEffect } from 'react'
 
+type ConfirmModalType = 'danger' | 'primary'
+
+type Props = {
+  isOpen: boolean
+  onClose: () => void
+  onConfirm: () => void
+  title: string
+  message: string
+  confirmText?: string
+  cancelText?: string
+  type?: ConfirmModalType
+}
+
 export default function ConfirmModal({ 
   isOpen, 
   onClose, 
@@ -11,7 +24,7 @@ export default function ConfirmModal({
   confirmText = "Delete", 
   cancelText = "Cancel",
   type = "danger" 
-}) {
+}: Props) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'

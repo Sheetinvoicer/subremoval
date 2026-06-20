@@ -91,11 +91,33 @@ export default function DashboardPage() {
         return;
       }
 
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError) {
+        setError(authError.message || 'Failed to get authenticated user');
+        return;
+      }
+
+      const userId = authData.user?.id;
+      if (!userId) {
+        setError('You must be logged in to view dashboard data');
+        return;
+      }
+
       const [invoicesRes, clientsRes, expensesRes] = await Promise.all([
-        supabase.from('invoices').select('*').order('created_at', { ascending: false }),
-        supabase.from('clients').select('id'),
-        supabase.from('expenses').select('amount')
+        supabase
+          .from('invoices')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false }),
+        supabase.from('clients').select('id').eq('user_id', userId),
+        supabase.from('expenses').select('amount').eq('user_id', userId)
       ]);
+
+      if (invoicesRes.error || clientsRes.error || expensesRes.error) {
+        const message = invoicesRes.error?.message || clientsRes.error?.message || expensesRes.error?.message || 'Error loading dashboard data';
+        setError(message);
+        return;
+      }
       
       const invoices = invoicesRes.data || [];
       const clients = clientsRes.data || [];

@@ -1,7 +1,25 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
+
+type CurrencyCode =
+  | 'USD'
+  | 'EUR'
+  | 'GBP'
+  | 'CAD'
+  | 'AUD'
+  | 'JPY'
+  | 'CNY'
+  | 'INR'
+  | 'BRL'
+  | 'AED'
+
+type Props = {
+  value?: CurrencyCode
+  onChange: (value: CurrencyCode) => void
+  amount?: number
+  showConverted?: boolean
+}
 
 const CURRENCIES = [
   { code: 'USD', symbol: '$', name: 'US Dollar', rate: 1 },
@@ -16,8 +34,8 @@ const CURRENCIES = [
   { code: 'AED', symbol: 'د.إ', name: 'Dirham', rate: 3.67 },
 ]
 
-export default function CurrencySelector({ value, onChange, amount, showConverted = true }) {
-  const [convertedAmount, setConvertedAmount] = useState(null)
+export default function CurrencySelector({ value, onChange, amount, showConverted = true }: Props) {
+  const [convertedAmount, setConvertedAmount] = useState<number | null>(null)
   const selectedCurrency = CURRENCIES.find(c => c.code === value) || CURRENCIES[0]
 
   useEffect(() => {
@@ -36,7 +54,7 @@ export default function CurrencySelector({ value, onChange, amount, showConverte
       </label>
       <select
         value={value || 'USD'}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value as CurrencyCode)}
         className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
           text-gray-900 dark:text-white bg-white dark:bg-gray-700"
       >

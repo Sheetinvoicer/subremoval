@@ -30,7 +30,7 @@ export default function ModernTable({ headers, data, onRowClick, actions }) {
               >
                 {Object.values(row).map((cell, cellIdx) => (
                   <td key={cellIdx} className="px-6 py-4 text-gray-600 dark:text-white/80">
-                    {cell}
+                    {String(cell ?? '')}
                   </td>
                 ))}
                 {actions && (

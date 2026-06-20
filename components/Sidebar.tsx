@@ -5,15 +5,19 @@ import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import { hasRequiredRole, normalizeRole, ROLES } from '@/lib/auth/roles';
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: '📊' },
   { name: 'Invoices', href: '/dashboard/invoices', icon: '📄' },
   { name: 'Clients', href: '/dashboard/clients', icon: '👥' },
+  { name: 'Projects', href: '/dashboard/projects', icon: '🗂️' },
   { name: 'Expenses', href: '/dashboard/expenses', icon: '💰' },
   { name: 'Recurring', href: '/dashboard/recurring', icon: '🔄' },
   { name: 'Estimates', href: '/dashboard/estimates', icon: '📋' },
+  { name: 'Time Tracking', href: '/dashboard/time', icon: '⏱️' },
   { name: 'Reports', href: '/dashboard/reports', icon: '📈' },
+  { name: 'Admin', href: '/dashboard/admin', icon: '🛡️' },
   { name: 'Settings', href: '/dashboard/settings', icon: '⚙️' },
 ];
 
@@ -23,6 +27,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
+  const [role, setRole] = useState(ROLES.VIEWER);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -34,6 +39,32 @@ export default function Sidebar() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    const loadRole = async () => {
+      if (!supabase) return;
+      const { data: authData } = await supabase.auth.getUser();
+      const user = authData?.user;
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      setRole(normalizeRole(data?.role));
+    };
+
+    loadRole();
+  }, [supabase]);
+
+  const visibleNavItems = navItems.filter((item) => {
+    if (item.href === '/dashboard/admin') {
+      return hasRequiredRole(role, ROLES.ADMIN);
+    }
+    return true;
+  });
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -69,7 +100,7 @@ export default function Sidebar() {
           </div>
           
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}

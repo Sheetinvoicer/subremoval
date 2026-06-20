@@ -6,11 +6,13 @@ import { createClient } from '@/lib/supabase/client';
 
 interface Client {
   id: string;
+  user_id: string;
   name: string;
   email: string;
   phone?: string;
   address?: string;
   company?: string;
+  country?: string;
   created_at: string;
 }
 
@@ -21,6 +23,7 @@ export default function ClientDetailPage() {
 
   const [client, setClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,10 +42,18 @@ export default function ClientDetailPage() {
         return;
       }
 
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError || !authData?.user) {
+        setError(authError?.message || 'Please log in to view this client');
+        setLoading(false);
+        return;
+      }
+
       const { data, error: queryError } = await supabase
         .from('clients')
         .select('*')
         .eq('id', id)
+        .eq('user_id', authData.user.id)
         .single();
 
       if (queryError) {
@@ -57,6 +68,42 @@ export default function ClientDetailPage() {
       setError(errorMessage);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!client || deleting || !window.confirm('Delete this client? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      setDeleting(true);
+      const supabase = createClient();
+      if (!supabase) {
+        setError('Failed to initialize Supabase client');
+        return;
+      }
+
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError || !authData?.user) {
+        setError(authError?.message || 'Please log in to delete this client');
+        return;
+      }
+
+      const { error: deleteError } = await supabase
+        .from('clients')
+        .delete()
+        .eq('id', client.id)
+        .eq('user_id', authData.user.id);
+
+      if (deleteError) {
+        setError(deleteError.message);
+        return;
+      }
+
+      router.push('/dashboard/clients');
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -107,12 +154,21 @@ export default function ClientDetailPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             {client.name}
           </h1>
-          <button
-            onClick={() => router.push(`/dashboard/clients/${id}/edit`)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Edit Client
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => router.push(`/dashboard/clients/${id}/edit`)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Edit Client
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-60"
+            >
+              {deleting ? 'Deleting...' : 'Delete'}
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

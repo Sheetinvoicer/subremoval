@@ -1,5 +1,4 @@
 "use client";
-"use client";
 
 
 import Link from 'next/link'
@@ -13,7 +12,7 @@ export default function PrivacyPage() {
       </nav>
       <main className="flex-1 max-w-4xl mx-auto px-6 py-12">
         <h1 className="text-3xl font-bold mb-2">Privacy Policy</h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-8">Last updated: June 1, 2026</p>
+        <p className="text-gray-500 dark:text-gray-400 mb-8">Last updated: June 20, 2026</p>
         
         <div className="space-y-8 text-gray-600 dark:text-gray-300">
           
@@ -81,11 +80,11 @@ export default function PrivacyPage() {
             <ul className="list-disc pl-6 mt-2 space-y-1">
               <li>Access your personal data</li>
               <li>Correct inaccurate data</li>
-              <li>Export your data (CSV format)</li>
+              <li>Export your data (JSON format)</li>
               <li>Delete your account and data</li>
               <li>Opt out of marketing communications</li>
             </ul>
-            <p className="mt-3">To exercise these rights, email <a href="mailto:privacy@sheetinvoicer.com" className="text-blue-600 hover:underline">privacy@sheetinvoicer.com</a></p>
+            <p className="mt-3">You can export or delete your data directly from Dashboard Settings. For help, email <a href="mailto:privacy@sheetinvoicer.com" className="text-blue-600 hover:underline">privacy@sheetinvoicer.com</a>.</p>
           </section>
 
           <section>
@@ -96,7 +95,7 @@ export default function PrivacyPage() {
               <li>Remember your preferences and settings</li>
               <li>Analyze usage patterns to improve our service</li>
             </ul>
-            <p className="mt-3">You can disable cookies in your browser settings, but some features may not function properly.</p>
+            <p className="mt-3">When you first visit our app, you can accept or reject optional analytics cookies. Essential security/session cookies remain active so the service can function.</p>
           </section>
 
           <section>

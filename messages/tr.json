@@ -1,0 +1,51 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "invoices": "Invoices",
+    "clients": "Clients",
+    "expenses": "Expenses",
+    "estimates": "Estimates",
+    "recurring": "Recurring",
+    "settings": "Settings"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "loading": "Loading...",
+    "back": "Back",
+    "create": "Create",
+    "search": "Search"
+  },
+  "invoices": {
+    "title": "Invoices",
+    "create_new": "Create New Invoice",
+    "invoice_number": "Invoice Number",
+    "status": "Status",
+    "amount": "Amount",
+    "due_date": "Due Date",
+    "actions": "Actions",
+    "draft": "Draft",
+    "sent": "Sent",
+    "paid": "Paid",
+    "overdue": "Overdue",
+    "send": "Send Invoice",
+    "download": "Download PDF",
+    "pay_now": "Pay Now"
+  },
+  "clients": {
+    "title": "Clients",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "add_client": "Add Client"
+  },
+  "estimates": {
+    "title": "Estimates & Proposals",
+    "new": "New Estimate",
+    "convert": "Convert to Invoice"
+  }
+}

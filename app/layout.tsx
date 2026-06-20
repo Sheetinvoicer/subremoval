@@ -1,7 +1,11 @@
 import './globals.css'
 import { ThemeProvider } from '@/components/ThemeProvider'
-import { Analytics } from '@vercel/analytics/react'
+import ConsentAwareAnalytics from '@/components/ConsentAwareAnalytics'
+import CookieConsentBanner from '@/components/CookieConsentBanner'
 import { Toaster } from 'react-hot-toast'
+import { NextIntlClientProvider } from 'next-intl'
+import { getLocale, getMessages } from 'next-intl/server'
+import { rtlLocales } from '@/i18n/routing'
 
 export const metadata = {
   title: 'SheetInvoicer - AI-Powered Invoicing Platform',
@@ -26,19 +30,26 @@ export const viewport = {
   themeColor: '#8b5cf6',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const locale = await getLocale()
+  const messages = await getMessages()
+  const direction = rtlLocales.has(locale) ? 'rtl' : 'ltr'
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} dir={direction} suppressHydrationWarning>
       <body>
-        <ThemeProvider>
-          {children}
-          <Toaster position="top-right" />
-          <Analytics />
-        </ThemeProvider>
+        <NextIntlClientProvider messages={messages}>
+          <ThemeProvider>
+            {children}
+            <Toaster position="top-right" />
+            <CookieConsentBanner />
+            <ConsentAwareAnalytics />
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   )

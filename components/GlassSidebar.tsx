@@ -5,8 +5,8 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { motion, AnimatePresence, useSpring, useMotionValue } from 'framer-motion'
-import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { Menu, X, Sparkles, ChevronRight } from 'lucide-react'
+import type { User } from '@supabase/supabase-js'
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: '📊', tutorial: 'View your business overview and key metrics' },
@@ -19,8 +19,23 @@ const navItems = [
   { name: 'Settings', href: '/dashboard/settings', icon: '⚙️', tutorial: 'Configure your account settings' },
 ]
 
+type NavItemData = {
+  name: string
+  href: string
+  icon: string
+  tutorial: string
+}
+
+type NavItemProps = {
+  item: NavItemData
+  isActive: boolean
+  onClick: () => void
+  showTooltip: boolean
+  onTooltipNext: () => void
+}
+
 // Memoized nav item for performance
-const NavItem = memo(({ item, isActive, onClick, showTooltip, onTooltipNext }) => {
+const NavItem = memo(function NavItem({ item, isActive, onClick, showTooltip, onTooltipNext }: NavItemProps) {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -90,7 +105,7 @@ NavItem.displayName = 'NavItem'
 
 export default function GlassSidebar() {
   const [isOpen, setIsOpen] = useState(false)
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<User | null>(null)
   const [showTutorial, setShowTutorial] = useState(false)
   const [tutorialStep, setTutorialStep] = useState(0)
   const [isClient, setIsClient] = useState(false)
@@ -252,8 +267,6 @@ export default function GlassSidebar() {
             animate={{ opacity: 1, y: 0 }}
             className="p-4 border-t border-gray-200/50 dark:border-gray-700/50 space-y-3 overflow-visible"
           >
-            <LanguageSwitcher />
-            
             {user && (
               <motion.div 
                 whileHover={{ x: 5 }}

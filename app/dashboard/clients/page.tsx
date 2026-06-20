@@ -1,15 +1,17 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { motion } from 'framer-motion';
 
 interface Client {
   id: string;
+  user_id: string;
   name: string;
   email: string;
   phone?: string;
+  company?: string;
+  address?: string;
   country?: string;
   created_at: string;
 }
@@ -33,9 +35,18 @@ export default function ClientsPage() {
         setLoading(false);
         return;
       }
+
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+      if (authError || !authData?.user) {
+        setError(authError?.message || 'Please log in to view clients');
+        setLoading(false);
+        return;
+      }
+
       const { data, error: queryError } = await supabase
         .from('clients')
         .select('*')
+        .eq('user_id', authData.user.id)
         .order('created_at', { ascending: false });
 
       if (queryError) {
@@ -79,10 +90,11 @@ export default function ClientsPage() {
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Clients</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">Manage your client relationships</p>
         </div>
-        <Link href="/dashboard/clients/new">
-          <a className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all">
-            + Add Client
-          </a>
+        <Link
+          href="/dashboard/clients/new"
+          className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all"
+        >
+          + Add Client
         </Link>
       </div>
 
@@ -98,10 +110,8 @@ export default function ClientsPage() {
           >
             <div className="flex items-start justify-between mb-4">
               <div className="text-4xl">👤</div>
-              <Link href={`/dashboard/clients/${client.id}`}>
-                <a className="text-blue-600 dark:text-blue-400 text-sm">
-                  Edit →
-                </a>
+              <Link href={`/dashboard/clients/${client.id}`} className="text-blue-600 dark:text-blue-400 text-sm">
+                Edit →
               </Link>
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{client.name}</h3>

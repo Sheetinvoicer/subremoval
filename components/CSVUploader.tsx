@@ -1,21 +1,31 @@
 'use client'
 
+import type { ChangeEvent } from 'react'
 import { useState } from 'react'
 import Papa from 'papaparse'
 import toast from 'react-hot-toast'
 
-export default function CSVUploader({ onDataLoaded }) {
+type CsvRow = Record<string, string>
+
+type Props = {
+  onDataLoaded: (data: CsvRow[], fields?: string[]) => void
+}
+
+export default function CSVUploader({ onDataLoaded }: Props) {
   const [loading, setLoading] = useState(false)
   const [fileName, setFileName] = useState('')
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0]
+  const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files || files.length === 0) return
+
+    const file = files[0]
     if (!file) return
 
     setFileName(file.name)
     setLoading(true)
 
-    Papa.parse(file, {
+    Papa.parse<CsvRow>(file, {
       header: true,
       skipEmptyLines: true,
       complete: (results) => {

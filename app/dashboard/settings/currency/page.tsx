@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { t } from '@/lib/i18n';
+import { convertAmount, formatCurrencyAmount, getRatesWithDailyCache } from '@/lib/currency';
 
 interface CurrencySetting {
   id: string;
@@ -29,12 +30,24 @@ export default function CurrencySettingsPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [rates, setRates] = useState<Record<string, number> | null>(null);
+  const [converterAmount, setConverterAmount] = useState(1000);
   const [currentSetting, setCurrentSetting] = useState<CurrencySetting | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     loadSettings();
+    loadRates();
   }, []);
+
+  async function loadRates() {
+    try {
+      const loadedRates = await getRatesWithDailyCache();
+      setRates(loadedRates);
+    } catch {
+      setRates(null);
+    }
+  }
 
   async function loadSettings() {
     try {
@@ -128,10 +141,9 @@ export default function CurrencySettingsPage() {
     );
   }
 
-  const getCurrencySymbol = (code: string) => {
-    const currency = CURRENCIES.find(c => c.code === code);
-    return currency?.symbol || '$';
-  };
+  const convertedPreviewAmount = rates
+    ? convertAmount(converterAmount, 'USD', selectedCurrency, rates as any)
+    : converterAmount;
 
   return (
     <div className="container mx-auto p-4 max-w-2xl">
@@ -185,9 +197,29 @@ export default function CurrencySettingsPage() {
 
         <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            <span className="font-medium">{t('preview') || 'Preview'}:</span>{' '}
-            {getCurrencySymbol(selectedCurrency)} 1,000.00
+            <span className="font-medium">{t('preview') || 'Preview'}:</span>
           </p>
+          <div className="mt-2 flex flex-col gap-2">
+            <label className="text-xs text-gray-500 dark:text-gray-400" htmlFor="converterAmount">
+              {t('converterAmount') || 'Converter Amount (USD)'}
+            </label>
+            <input
+              id="converterAmount"
+              type="number"
+              min="0"
+              value={converterAmount}
+              onChange={(event) => setConverterAmount(Number(event.target.value || 0))}
+              className="w-full md:w-56 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            />
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              {formatCurrencyAmount(converterAmount, 'USD')} = {formatCurrencyAmount(convertedPreviewAmount, selectedCurrency)}
+            </p>
+            {!rates && (
+              <p className="text-xs text-amber-600 dark:text-amber-400">
+                {t('usingFallbackRates') || 'Using fallback conversion rates right now.'}
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">

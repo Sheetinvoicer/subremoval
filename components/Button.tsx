@@ -1,5 +1,18 @@
 'use client'
 
+import type { ButtonHTMLAttributes, MouseEventHandler, ReactNode } from 'react'
+
+type ButtonVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'outline'
+type ButtonSize = 'sm' | 'md' | 'lg'
+
+type Props = {
+  children: ReactNode
+  onClick?: MouseEventHandler<HTMLButtonElement>
+  variant?: ButtonVariant
+  size?: ButtonSize
+  className?: string
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick' | 'children' | 'className'>
+
 export default function Button({ 
   children, 
   onClick, 
@@ -8,7 +21,7 @@ export default function Button({
   disabled = false,
   type = "button",
   className = ""
-}) {
+}: Props) {
   const variants = {
     primary: "bg-blue-600 text-white hover:bg-blue-700",
     secondary: "bg-gray-500 text-white hover:bg-gray-600",

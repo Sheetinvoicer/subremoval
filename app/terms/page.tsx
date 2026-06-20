@@ -1,5 +1,4 @@
 "use client";
-"use client";
 
 
 import Link from 'next/link'
@@ -13,7 +12,7 @@ export default function TermsPage() {
       </nav>
       <main className="flex-1 max-w-4xl mx-auto px-6 py-12">
         <h1 className="text-3xl font-bold mb-2">Terms of Service</h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-8">Last updated: June 1, 2026</p>
+        <p className="text-gray-500 dark:text-gray-400 mb-8">Last updated: June 20, 2026</p>
         
         <div className="space-y-8 text-gray-600 dark:text-gray-300">
           
@@ -82,7 +81,7 @@ export default function TermsPage() {
               <li>You will be downgraded to the Free plan</li>
               <li>Data exceeding free plan limits will be viewable but not editable</li>
             </ul>
-            <p className="mt-3">We reserve the right to suspend or terminate accounts for violation of these terms or extended inactivity.</p>
+            <p className="mt-3">You can also permanently delete your account and associated personal data from Dashboard Settings. We reserve the right to suspend or terminate accounts for violation of these terms or extended inactivity.</p>
           </section>
 
           <section>

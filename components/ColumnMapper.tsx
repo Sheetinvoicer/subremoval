@@ -2,7 +2,20 @@
 
 import { useState, useEffect } from 'react'
 
-export default function ColumnMapper({ columns, sampleData, onMappingComplete }) {
+type Mapping = {
+  name: string
+  email: string
+  amount: string
+  description: string
+}
+
+type Props = {
+  columns: string[]
+  sampleData?: Record<string, string>[]
+  onMappingComplete: (mapping: Mapping) => void
+}
+
+export default function ColumnMapper({ columns, sampleData, onMappingComplete }: Props) {
   const [mapping, setMapping] = useState({
     name: '',
     email: '',
@@ -12,15 +25,15 @@ export default function ColumnMapper({ columns, sampleData, onMappingComplete })
 
   useEffect(() => {
     const autoMap = {
-      name: columns.find(col => /name|customer|client/i.test(col)) || '',
-      email: columns.find(col => /email|e-?mail/i.test(col)) || '',
-      amount: columns.find(col => /amount|total|price|value/i.test(col)) || '',
-      description: columns.find(col => /desc|item|product|service/i.test(col)) || ''
+      name: columns.find((col) => /name|customer|client/i.test(col)) || '',
+      email: columns.find((col) => /email|e-?mail/i.test(col)) || '',
+      amount: columns.find((col) => /amount|total|price|value/i.test(col)) || '',
+      description: columns.find((col) => /desc|item|product|service/i.test(col)) || ''
     }
     setMapping(autoMap)
   }, [columns])
 
-  const handleMappingChange = (field, value) => {
+  const handleMappingChange = (field: keyof Mapping, value: string) => {
     const newMapping = { ...mapping, [field]: value }
     setMapping(newMapping)
     
@@ -47,7 +60,7 @@ export default function ColumnMapper({ columns, sampleData, onMappingComplete })
             className="w-full p-2 border border-gray-300 rounded-lg text-gray-900"
           >
             <option value="">Select column...</option>
-            {columns.map(col => (
+            {columns.map((col) => (
               <option key={col} value={col}>{col}</option>
             ))}
           </select>
@@ -63,7 +76,7 @@ export default function ColumnMapper({ columns, sampleData, onMappingComplete })
             className="w-full p-2 border border-gray-300 rounded-lg text-gray-900"
           >
             <option value="">Select column...</option>
-            {columns.map(col => (
+            {columns.map((col) => (
               <option key={col} value={col}>{col}</option>
             ))}
           </select>
@@ -79,7 +92,7 @@ export default function ColumnMapper({ columns, sampleData, onMappingComplete })
             className="w-full p-2 border border-gray-300 rounded-lg text-gray-900"
           >
             <option value="">Select column...</option>
-            {columns.map(col => (
+            {columns.map((col) => (
               <option key={col} value={col}>{col}</option>
             ))}
           </select>
@@ -95,7 +108,7 @@ export default function ColumnMapper({ columns, sampleData, onMappingComplete })
             className="w-full p-2 border border-gray-300 rounded-lg text-gray-900"
           >
             <option value="">Select column...</option>
-            {columns.map(col => (
+            {columns.map((col) => (
               <option key={col} value={col}>{col}</option>
             ))}
           </select>

@@ -1,36 +1,41 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+'use client'
+import { useEffect, useMemo, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase/client'
 import toast, { Toaster } from 'react-hot-toast';
+import CurrencyDisplay from '@/components/CurrencyDisplay';
+import {
+  DEFAULT_INVOICE_TEMPLATE_SETTINGS,
+  INVOICE_TEMPLATE_STORAGE_KEY,
+  type InvoiceTemplateSettings,
+  sanitizeAccentColor,
+  sanitizeInvoiceTemplateSettings,
+} from '@/lib/invoiceTemplate';
+import { formatMinutesAsHoursMinutes } from '@/lib/timeTracking';
 
 interface Invoice {
-  id: string;
-  invoice_number: string;
-  client_name: string;
-  client_email: string;
-  amount: number;
-  currency: string;
-  status: 'draft' | 'sent' | 'paid' | 'overdue';
-  due_date: string;
-  items?: any[];
-  notes?: string;
-  tax_rate?: number;
-  created_at: string;
+  id: string
+  invoice_number: string
+  total: number
+  subtotal?: number
+  tax_amount?: number
+  tax_rate_percentage?: number
+  currency: string
+  status: 'draft' | 'sent' | 'paid' | 'overdue'
+  due_date: string
+  items?: { description: string; quantity: number; price: number; total?: number }[]
+  notes?: string
+  created_at: string
+  clients?: { name?: string; email?: string } | null
 }
 
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  USD: '$',
-  EUR: '€',
-  GBP: '£',
-  CAD: 'C$',
-  AUD: 'A$',
-};
-
-function formatCurrency(amount: number, currency: string): string {
-  const symbol = CURRENCY_SYMBOLS[currency] || '$';
-  return `${symbol} ${Number(amount).toFixed(2)}`;
+interface InvoiceTimeEntry {
+  id: string
+  description: string
+  duration_minutes: number
+  entry_date: string
+  billable: boolean
 }
 
 function getStatusColor(status: string): string {
@@ -49,42 +54,119 @@ function getStatusColor(status: string): string {
 }
 
 export default function InvoiceDetailPage() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [invoice, setInvoice] = useState<Invoice | null>(null);
-  const [sending, setSending] = useState(false);
-  const params = useParams<{ id: string }>();
-  const router = useRouter();
-  const id = params?.id;
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [invoice, setInvoice] = useState<Invoice | null>(null)
+  const [displayCurrency, setDisplayCurrency] = useState('USD')
+  const [sending, setSending] = useState(false)
+  const [updatingStatus, setUpdatingStatus] = useState(false)
+  const [templateSettings, setTemplateSettings] = useState<InvoiceTemplateSettings>(DEFAULT_INVOICE_TEMPLATE_SETTINGS)
+  const [timeEntries, setTimeEntries] = useState<InvoiceTimeEntry[]>([])
+  const params = useParams<{ id: string }>()
+  const router = useRouter()
+  const id = params?.id
 
   useEffect(() => {
     async function loadInvoice() {
-      const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+      const supabase = createClient()
 
       if (!supabase) {
-        setError('Failed to connect to database');
-        return;
+        setError('Failed to connect to database')
+        return
+      }
+
+      const { data: userData } = await supabase.auth.getUser()
+      const user = userData?.user
+      if (!user) {
+        setError('Please login to view invoice details.')
+        setLoading(false)
+        return
       }
 
       const { data, error: queryError } = await supabase
         .from('invoices')
-        .select('*')
+        .select('*, clients(name,email)')
+        .eq('user_id', user.id)
         .eq('id', id)
-        .single();
+        .single()
 
       if (queryError) {
-        setError(queryError.message);
-        return;
+        setError(queryError.message)
+        setLoading(false)
+        return
       }
 
-      setInvoice(data);
-      setLoading(false);
+      setInvoice(data)
+
+      const { data: timeData } = await supabase
+        .from('time_entries')
+        .select('id,description,duration_minutes,entry_date,billable')
+        .eq('user_id', user.id)
+        .eq('invoice_id', id)
+        .order('entry_date', { ascending: false })
+
+      setTimeEntries((timeData || []) as InvoiceTimeEntry[])
+
+      const { data: currencySettings } = await supabase
+        .from('user_currency_settings')
+        .select('default_currency')
+        .eq('user_id', user.id)
+        .single()
+
+      setDisplayCurrency(currencySettings?.default_currency || 'USD')
+      setLoading(false)
     }
 
     if (id) {
-      loadInvoice();
+      loadInvoice()
     }
-  }, [id]);
+  }, [id])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const raw = window.localStorage.getItem(INVOICE_TEMPLATE_STORAGE_KEY)
+    if (!raw) return
+    try {
+      setTemplateSettings(sanitizeInvoiceTemplateSettings(JSON.parse(raw)))
+    } catch {
+      setTemplateSettings(DEFAULT_INVOICE_TEMPLATE_SETTINGS)
+    }
+  }, [])
+
+  const computedSubtotal = useMemo(() => {
+    if (!invoice?.items?.length) return Number(invoice?.subtotal || 0)
+    return invoice.items.reduce((sum, item) => sum + Number(item.quantity || 0) * Number(item.price || 0), 0)
+  }, [invoice])
+
+  const totalTrackedMinutes = useMemo(
+    () => timeEntries.reduce((sum, entry) => sum + Number(entry.duration_minutes || 0), 0),
+    [timeEntries],
+  )
+
+  const updateStatus = async (status: Invoice['status']) => {
+    if (!invoice) return
+    const supabase = createClient()
+    if (!supabase) {
+      toast.error('Failed to initialize Supabase client.')
+      return
+    }
+
+    setUpdatingStatus(true)
+    const { error: statusError } = await supabase
+      .from('invoices')
+      .update({ status })
+      .eq('id', invoice.id)
+
+    setUpdatingStatus(false)
+
+    if (statusError) {
+      toast.error(statusError.message)
+      return
+    }
+
+    setInvoice({ ...invoice, status })
+    toast.success(`Invoice status updated to ${status}.`)
+  }
 
   const handleSendInvoice = async () => {
     if (!invoice) return;
@@ -95,7 +177,7 @@ export default function InvoiceDetailPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ invoiceId: invoice.id }),
-      });
+      })
 
       if (!response.ok) {
         throw new Error('Failed to send invoice');
@@ -103,28 +185,21 @@ export default function InvoiceDetailPage() {
 
       toast.success('Invoice sent successfully!');
       
-      // Update invoice status
-      const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-      await supabase
-        .from('invoices')
-        .update({ status: 'sent' })
-        .eq('id', invoice.id);
-      
-      setInvoice({ ...invoice, status: 'sent' });
+      await updateStatus('sent')
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to send invoice';
-      toast.error(errorMessage);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to send invoice'
+      toast.error(errorMessage)
     } finally {
-      setSending(false);
+      setSending(false)
     }
-  };
+  }
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -140,7 +215,7 @@ export default function InvoiceDetailPage() {
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   if (!invoice) {
@@ -156,7 +231,7 @@ export default function InvoiceDetailPage() {
           </Link>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -173,6 +248,14 @@ export default function InvoiceDetailPage() {
               Created: {new Date(invoice.created_at).toLocaleDateString()}
             </p>
           </div>
+          {templateSettings.fields.showStatusBadge && (
+            <span
+              className="px-3 py-1 rounded-full text-xs text-white"
+              style={{ backgroundColor: sanitizeAccentColor(templateSettings.accentColor) }}
+            >
+              {templateSettings.template.toUpperCase()} TEMPLATE
+            </span>
+          )}
           <div className="flex flex-wrap gap-2">
             {invoice.status === 'draft' && (
               <>
@@ -183,14 +266,19 @@ export default function InvoiceDetailPage() {
                 >
                   {sending ? 'Sending...' : 'Send Invoice'}
                 </button>
-                <Link
-                  href={`/dashboard/invoices/${invoice.id}/edit`}
-                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                >
-                  Edit
-                </Link>
+                <Link href={`/dashboard/invoices/${invoice.id}/edit`} className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Edit</Link>
               </>
             )}
+            {['draft', 'sent', 'paid', 'overdue'].map((statusOption) => (
+              <button
+                key={statusOption}
+                onClick={() => updateStatus(statusOption as Invoice['status'])}
+                disabled={updatingStatus || invoice.status === statusOption}
+                className="px-3 py-2 border rounded-lg text-xs disabled:opacity-50"
+              >
+                {statusOption}
+              </button>
+            ))}
             <button
               onClick={() => router.back()}
               className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
@@ -201,15 +289,17 @@ export default function InvoiceDetailPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Client</h3>
-            <p className="text-gray-900 dark:text-white">{invoice.client_name}</p>
-            <p className="text-gray-600 dark:text-gray-300">{invoice.client_email}</p>
-          </div>
+          {templateSettings.fields.showClientDetails && (
+            <div>
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Client</h3>
+              <p className="text-gray-900 dark:text-white">{invoice.clients?.name || '-'}</p>
+              <p className="text-gray-600 dark:text-gray-300">{invoice.clients?.email || '-'}</p>
+            </div>
+          )}
           <div>
             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Amount</h3>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
-              {formatCurrency(invoice.amount, invoice.currency)}
+              <CurrencyDisplay amount={invoice.total} sourceCurrency={invoice.currency} displayCurrency={displayCurrency} />
             </p>
           </div>
           <div>
@@ -218,12 +308,14 @@ export default function InvoiceDetailPage() {
               {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
             </span>
           </div>
-          <div>
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Due Date</h3>
-            <p className="text-gray-900 dark:text-white">
-              {new Date(invoice.due_date).toLocaleDateString()}
-            </p>
-          </div>
+          {templateSettings.fields.showDueDate && (
+            <div>
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Due Date</h3>
+              <p className="text-gray-900 dark:text-white">
+                {new Date(invoice.due_date).toLocaleDateString()}
+              </p>
+            </div>
+          )}
         </div>
 
         {invoice.items && invoice.items.length > 0 && (
@@ -240,25 +332,27 @@ export default function InvoiceDetailPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {invoice.items.map((item: any, idx: number) => (
+                  {invoice.items.map((item, idx: number) => (
                     <tr key={idx} className="border-t border-gray-200 dark:border-gray-700">
                       <td className="px-4 py-2 text-gray-900 dark:text-white">{item.description}</td>
                       <td className="px-4 py-2 text-right text-gray-900 dark:text-white">{item.quantity}</td>
-                      <td className="px-4 py-2 text-right text-gray-900 dark:text-white">{formatCurrency(item.price, invoice.currency)}</td>
+                      <td className="px-4 py-2 text-right text-gray-900 dark:text-white">
+                        <CurrencyDisplay amount={item.price} sourceCurrency={invoice.currency} displayCurrency={displayCurrency} />
+                      </td>
                       <td className="px-4 py-2 text-right font-medium text-gray-900 dark:text-white">
-                        {formatCurrency(item.quantity * item.price, invoice.currency)}
+                        <CurrencyDisplay amount={item.quantity * item.price} sourceCurrency={invoice.currency} displayCurrency={displayCurrency} />
                       </td>
                     </tr>
                   ))}
                 </tbody>
-                {invoice.tax_rate && invoice.tax_rate > 0 && (
+                {(invoice.tax_rate_percentage || 0) > 0 && (
                   <tfoot className="bg-gray-50 dark:bg-gray-900/50">
                     <tr>
                       <td colSpan={3} className="px-4 py-2 text-right font-medium text-gray-700 dark:text-gray-300">
-                        Tax ({invoice.tax_rate}%)
+                        Tax ({invoice.tax_rate_percentage}%)
                       </td>
                       <td className="px-4 py-2 text-right font-medium text-gray-900 dark:text-white">
-                        {formatCurrency((invoice.amount * invoice.tax_rate) / 100, invoice.currency)}
+                        <CurrencyDisplay amount={invoice.tax_amount || 0} sourceCurrency={invoice.currency} displayCurrency={displayCurrency} />
                       </td>
                     </tr>
                     <tr>
@@ -266,7 +360,11 @@ export default function InvoiceDetailPage() {
                         Total
                       </td>
                       <td className="px-4 py-2 text-right font-bold text-gray-900 dark:text-white">
-                        {formatCurrency(invoice.amount + ((invoice.amount * invoice.tax_rate) / 100), invoice.currency)}
+                        <CurrencyDisplay
+                          amount={invoice.total || computedSubtotal + (invoice.tax_amount || 0)}
+                          sourceCurrency={invoice.currency}
+                          displayCurrency={displayCurrency}
+                        />
                       </td>
                     </tr>
                   </tfoot>
@@ -276,7 +374,29 @@ export default function InvoiceDetailPage() {
           </div>
         )}
 
-        {invoice.notes && (
+        <div className="mt-6">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Linked Time Entries</h3>
+            <Link href="/dashboard/time" className="text-sm text-blue-600 hover:underline">Manage time entries</Link>
+          </div>
+          <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+            <p className="text-sm text-gray-500 mb-3">Total tracked: <span className="font-semibold text-gray-900 dark:text-white">{formatMinutesAsHoursMinutes(totalTrackedMinutes)}</span></p>
+            {timeEntries.length === 0 ? (
+              <p className="text-sm text-gray-500">No time entries linked to this invoice yet.</p>
+            ) : (
+              <div className="space-y-2">
+                {timeEntries.map((entry) => (
+                  <div key={entry.id} className="flex justify-between text-sm border-t first:border-t-0 pt-2 first:pt-0 border-gray-200 dark:border-gray-700">
+                    <span>{entry.description}</span>
+                    <span className="font-medium">{formatMinutesAsHoursMinutes(entry.duration_minutes)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {invoice.notes && templateSettings.fields.showNotes && (
           <div className="mt-6">
             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Notes</h3>
             <p className="text-gray-700 dark:text-gray-300 mt-1 whitespace-pre-wrap">{invoice.notes}</p>
@@ -284,5 +404,5 @@ export default function InvoiceDetailPage() {
         )}
       </div>
     </div>
-  );
+  )
 }

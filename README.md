@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## SheetInvoicer
 
-## Getting Started
+SheetInvoicer is a full-stack invoicing platform for freelancers and small businesses. It helps you create invoices and estimates, manage clients and expenses, automate recurring billing and reminders, and accept online payments.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Invoice lifecycle: draft → sent → paid
+- Estimate creation and conversion workflows
+- Client management with contact details and invoice linking
+- Expense tracking for reporting and profitability visibility
+- Recurring invoice templates + scheduled generation
+- Payment portal with Stripe Checkout integration
+- Email workflows (invoice sending, reminders, welcome messages)
+- AI assistant endpoints for invoice/business actions
+- Internationalization (i18n) support and locale switching
+- Dashboard analytics and reports
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Screenshot placeholders
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `[Screenshot Placeholder] Dashboard overview`
+- `[Screenshot Placeholder] Invoice editor`
+- `[Screenshot Placeholder] Clients management`
+- `[Screenshot Placeholder] Expenses management`
+- `[Screenshot Placeholder] Reports dashboard`
+- `[Screenshot Placeholder] Recurring invoices`
+- `[Screenshot Placeholder] Payment portal`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tech Stack
 
-## Learn More
+- **Frontend/App**: Next.js 16 (App Router), React 19, Tailwind CSS
+- **Data/Auth**: Supabase (PostgreSQL + Auth)
+- **Payments**: Stripe
+- **Email**: Resend
+- **AI**: OpenAI / Anthropic through `lib/ai/config.js`
+- **Testing**: Jest + Testing Library
+- **Monitoring/Analytics**: Sentry, Vercel Analytics, PostHog
 
-To learn more about Next.js, take a look at the following resources:
+## Installation & Setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Prerequisites
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Node.js `20.x`
+- npm `>=10`
+- Supabase project
+- Stripe account
 
-## Deploy on Vercel
+### Steps
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Clone the repository:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```bash
+   git clone <your-repo-url>
+   cd sheetinvoicer
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Create environment file:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+4. Fill all required values in `.env.local`.
+
+5. Run the app:
+
+   ```bash
+   npm run dev
+   ```
+
+6. Open `http://localhost:3000`.
+
+## Environment Variables
+
+See the full variable list and descriptions in `.env.example`.
+
+Core groups:
+
+- Supabase (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`)
+- Stripe (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, optional publishable key)
+- Email (`RESEND_API_KEY`, `NEXT_PUBLIC_APP_URL`)
+- Scheduled jobs (`CRON_SECRET`)
+- AI providers (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`)
+- Observability (`NEXT_PUBLIC_SENTRY_DSN`, PostHog keys)
+
+## API Documentation
+
+- OpenAPI specification: `openapi.yaml`
+- In-app API docs page: `/api-docs`
+
+## Deployment Guide
+
+Use `DEPLOYMENT.md` for complete deployment instructions, including:
+
+- Vercel setup
+- Supabase configuration
+- Stripe webhook setup
+- Resend domain/API setup
+- AI provider configuration
+
+## Contributing
+
+See `CONTRIBUTING.md` for:
+
+- Local development workflow
+- Branch and PR process
+- Testing requirements and quality checks
+
+## License
+
+This project is currently distributed as **proprietary/internal** unless a separate LICENSE file states otherwise.
+
+If you plan to open source this repository, add a `LICENSE` file and update this section.

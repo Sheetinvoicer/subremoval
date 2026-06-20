@@ -25,9 +25,17 @@ interface Invoice {
 export default function PublicPaymentPage({ params }: PublicPaymentPageProps) {
   const [invoice, setInvoice] = useState<Invoice | null>(null)
   const [loading, setLoading] = useState(true)
-  const [paymentUrl, setPaymentUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [creatingPayment, setCreatingPayment] = useState(false)
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search)
+    const status = searchParams.get('status')
+
+    if (status === 'cancel') {
+      setError('Payment was canceled. You can try again.')
+    }
+  }, [])
 
   useEffect(() => {
     async function loadInvoice() {
@@ -83,6 +91,11 @@ export default function PublicPaymentPage({ params }: PublicPaymentPageProps) {
       })
       
       const result = await response.json()
+      if (!response.ok) {
+        setError(result?.error || 'Could not create payment link')
+        return
+      }
+
       if (result.url) {
         window.location.href = result.url
       } else {

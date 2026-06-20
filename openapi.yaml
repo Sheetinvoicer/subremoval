@@ -1,0 +1,307 @@
+openapi: 3.0.3
+info:
+  title: SheetInvoicer API
+  version: 0.1.0
+  description: API documentation for SheetInvoicer app routes.
+servers:
+  - url: http://localhost:3000
+    description: Local development
+  - url: https://{deployment-host}
+    description: Production
+    variables:
+      deployment-host:
+        default: your-domain.vercel.app
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    CronSecret:
+      type: apiKey
+      in: header
+      name: Authorization
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+    AiChatRequest:
+      type: object
+      properties:
+        message:
+          type: string
+      required: [message]
+    AiActionRequest:
+      type: object
+      properties:
+        action:
+          type: string
+        payload:
+          nullable: true
+      required: [action]
+    StripeCheckoutRequest:
+      type: object
+      properties:
+        invoiceId:
+          type: string
+        invoiceNumber:
+          type: string
+        amount:
+          type: number
+        clientName:
+          type: string
+        clientEmail:
+          type: string
+          format: email
+        successUrl:
+          type: string
+          format: uri
+        cancelUrl:
+          type: string
+          format: uri
+        returnUrl:
+          type: string
+          format: uri
+        currency:
+          type: string
+          default: usd
+      required: [invoiceId, invoiceNumber, amount]
+    SendInvoiceRequest:
+      type: object
+      properties:
+        invoiceId:
+          type: string
+      required: [invoiceId]
+paths:
+  /api/agents/chat:
+    post:
+      summary: Send a chat prompt to the AI assistant.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AiChatRequest'
+      responses:
+        '200':
+          description: AI response generated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+        '400':
+          description: Missing message.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Empty AI provider response.
+        '500':
+          description: Internal server error.
+  /api/ai/action:
+    post:
+      summary: Trigger an AI action with payload context.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AiActionRequest'
+      responses:
+        '200':
+          description: AI action response generated.
+        '400':
+          description: Missing action.
+        '502':
+          description: Empty AI provider response.
+        '500':
+          description: Internal server error.
+  /api/auth/session:
+    get:
+      summary: Retrieve current authenticated session user via Supabase.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Session fetched.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  session:
+                    nullable: true
+                    type: object
+                    properties:
+                      user:
+                        type: object
+        '500':
+          description: Supabase/session error.
+  /api/auth/welcome-email:
+    post:
+      summary: Send welcome email to newly signed-up user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Welcome email sent.
+        '400':
+          description: Invalid request body.
+        '500':
+          description: Email provider error.
+  /api/cron/generate-recurring:
+    post:
+      summary: Generate invoices from recurring templates and optionally email clients.
+      security:
+        - CronSecret: []
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Must be `Bearer <CRON_SECRET>`.
+      responses:
+        '200':
+          description: Recurring generation completed.
+        '401':
+          description: Invalid cron secret.
+        '500':
+          description: Processing error.
+  /api/cron/send-reminders:
+    get:
+      summary: Send reminders for due/overdue invoices.
+      security:
+        - CronSecret: []
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Must be `Bearer <CRON_SECRET>`.
+      responses:
+        '200':
+          description: Reminder run completed.
+        '401':
+          description: Unauthorized.
+        '500':
+          description: Processing error.
+  /api/invoices/send-magic-link:
+    post:
+      summary: Send client invoice portal magic-link email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                invoiceId:
+                  type: string
+      responses:
+        '200':
+          description: Magic-link sent.
+        '400':
+          description: Invalid request or missing client email.
+        '404':
+          description: Invoice not found.
+        '500':
+          description: Internal/error from email provider.
+  /api/locale:
+    post:
+      summary: Update locale preference.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locale:
+                  type: string
+      responses:
+        '200':
+          description: Locale updated.
+        '400':
+          description: Invalid locale.
+  /api/send-invoice:
+    post:
+      summary: Send invoice email to client and update invoice status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendInvoiceRequest'
+      responses:
+        '200':
+          description: Sent successfully.
+        '400':
+          description: Missing invoice ID or recipient email.
+        '404':
+          description: Invoice not found.
+        '500':
+          description: Missing env config or email/send error.
+  /api/stripe/create-checkout:
+    post:
+      summary: Create Stripe Checkout session for invoice payment.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StripeCheckoutRequest'
+      responses:
+        '200':
+          description: Session created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    nullable: true
+                  sessionId:
+                    type: string
+        '400':
+          description: Invalid input.
+        '500':
+          description: Stripe/environment error.
+  /api/stripe/webhook:
+    post:
+      summary: Stripe webhook endpoint for payment events.
+      description: Expects Stripe signature in `stripe-signature` header and raw request body.
+      responses:
+        '200':
+          description: Webhook event handled.
+        '400':
+          description: Invalid signature/payload.
+        '500':
+          description: Internal processing error.
+  /api/sentry-example-api:
+    get:
+      summary: Example endpoint used to verify Sentry integration.
+      responses:
+        '200':
+          description: Example response.
+        '500':
+          description: Example error path.

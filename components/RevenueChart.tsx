@@ -40,7 +40,7 @@ export default function RevenueChart({ data }) {
     ]
   }
 
-  const options = {
+  const options: any = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {

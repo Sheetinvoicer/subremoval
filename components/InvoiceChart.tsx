@@ -44,7 +44,7 @@ export default function InvoiceChart({ data }) {
     ]
   }
 
-  const options = {
+  const options: any = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {

@@ -17,9 +17,10 @@ export default function AIAssistant() {
   }, [])
 
   const sendMessage = async () => {
-    if (!input.trim()) return
+    const nextMessage = input.trim()
+    if (!nextMessage || loading) return
 
-    const userMessage = { role: 'user', content: input }
+    const userMessage = { role: 'user', content: nextMessage }
     setMessages(prev => [...prev, userMessage])
     setInput('')
     setLoading(true)
@@ -28,10 +29,17 @@ export default function AIAssistant() {
       const response = await fetch('/api/agents/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: nextMessage }),
       })
+
       const data = await response.json()
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response || 'Sorry, I could not process that.' }])
+
+      if (!response.ok) {
+        setMessages(prev => [...prev, { role: 'assistant', content: data?.error || 'Sorry, I could not process that.' }])
+        return
+      }
+
+      setMessages(prev => [...prev, { role: 'assistant', content: data?.response || 'Sorry, I could not process that.' }])
     } catch (error) {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Error connecting to AI. Please try again.' }])
     } finally {
@@ -84,14 +92,14 @@ export default function AIAssistant() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
               placeholder="Ask me anything..."
               className="flex-1 px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
               autoComplete="off"
             />
             <button 
               onClick={sendMessage} 
-              disabled={loading} 
+              disabled={loading || !input.trim()} 
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
               aria-label="Send message"
             >

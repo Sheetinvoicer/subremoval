@@ -79,6 +79,47 @@ export default function RecurringPage() {
     }
   };
 
+  const toggleStatus = async (invoice: RecurringInvoice) => {
+    try {
+      const supabase = createClient();
+      const nextStatus = invoice.status === 'active' ? 'paused' : 'active';
+      const { error: updateError } = await supabase
+        .from('recurring_invoices')
+        .update({ status: nextStatus })
+        .eq('id', invoice.id);
+
+      if (updateError) {
+        setError(updateError.message);
+        return;
+      }
+
+      setRecurringInvoices((prev) =>
+        prev.map((item) => (item.id === invoice.id ? { ...item, status: nextStatus } : item))
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update recurring invoice');
+    }
+  };
+
+  const deleteTemplate = async (id: string) => {
+    try {
+      const supabase = createClient();
+      const { error: deleteError } = await supabase
+        .from('recurring_invoices')
+        .delete()
+        .eq('id', id);
+
+      if (deleteError) {
+        setError(deleteError.message);
+        return;
+      }
+
+      setRecurringInvoices((prev) => prev.filter((item) => item.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete recurring invoice');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -188,16 +229,16 @@ export default function RecurringPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
-                        onClick={() => router.push(`/dashboard/recurring/${invoice.id}`)}
+                        onClick={() => toggleStatus(invoice)}
                         className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm mr-3"
                       >
-                        {t('view') || 'View'}
+                        {invoice.status === 'active' ? 'Pause' : 'Resume'}
                       </button>
                       <button
-                        onClick={() => router.push(`/dashboard/recurring/${invoice.id}/edit`)}
+                        onClick={() => deleteTemplate(invoice.id)}
                         className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-sm"
                       >
-                        {t('edit') || 'Edit'}
+                        Delete
                       </button>
                     </td>
                   </tr>

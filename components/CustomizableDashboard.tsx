@@ -18,6 +18,8 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { Layout, Save, RotateCcw, GripVertical, X, Maximize2, Minimize2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import type { DragEndEvent } from '@dnd-kit/core';
+import type { ReactNode } from 'react';
 
 // Available widgets
 const AVAILABLE_WIDGETS = [
@@ -30,7 +32,18 @@ const AVAILABLE_WIDGETS = [
   { id: 'quickActions', name: 'Quick Actions', defaultEnabled: true, resizable: false },
 ];
 
-function DraggableWidget({ id, title, children, onRemove, onResize, isResizable = true }) {
+type WidgetId = string;
+
+type DraggableWidgetProps = {
+  id: WidgetId;
+  title: string;
+  children: ReactNode;
+  onRemove?: ((id: WidgetId) => void) | null;
+  onResize?: (id: WidgetId, isExpanded: boolean) => void;
+  isResizable?: boolean;
+};
+
+function DraggableWidget({ id, title, children, onRemove, onResize, isResizable = true }: DraggableWidgetProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   
   const handleResize = () => {
@@ -75,8 +88,12 @@ function DraggableWidget({ id, title, children, onRemove, onResize, isResizable 
   );
 }
 
-export default function CustomizableDashboard({ widgetContent }) {
-  const [items, setItems] = useState([]);
+type CustomizableDashboardProps = {
+  widgetContent: Record<string, ReactNode>;
+};
+
+export default function CustomizableDashboard({ widgetContent }: CustomizableDashboardProps) {
+  const [items, setItems] = useState<WidgetId[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -88,6 +105,11 @@ export default function CustomizableDashboard({ widgetContent }) {
   }, []);
 
   const loadSavedLayout = async () => {
+    if (!supabase) {
+      const defaultItems = AVAILABLE_WIDGETS.filter(w => w.defaultEnabled).map(w => w.id);
+      setItems(defaultItems);
+      return;
+    }
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -114,6 +136,10 @@ export default function CustomizableDashboard({ widgetContent }) {
   };
 
   const saveLayout = async () => {
+    if (!supabase) {
+      toast.error('Unable to save layout');
+      return;
+    }
     setSaving(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -140,7 +166,7 @@ export default function CustomizableDashboard({ widgetContent }) {
     toast.success('Layout reset to default');
   };
 
-  const toggleWidget = (widgetId) => {
+  const toggleWidget = (widgetId: WidgetId) => {
     if (items.includes(widgetId)) {
       setItems(items.filter(id => id !== widgetId));
     } else {
@@ -148,12 +174,12 @@ export default function CustomizableDashboard({ widgetContent }) {
     }
   };
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (active.id !== over.id) {
       setItems((prevItems) => {
-        const oldIndex = prevItems.indexOf(active.id);
-        const newIndex = prevItems.indexOf(over.id);
+        const oldIndex = prevItems.indexOf(String(active.id));
+        const newIndex = prevItems.indexOf(String(over.id));
         return arrayMove(prevItems, oldIndex, newIndex);
       });
     }
