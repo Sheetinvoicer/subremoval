@@ -1,0 +1,176 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
+
+interface Estimate {
+  id: string;
+  estimate_number: string;
+  client_name: string;
+  client_email: string;
+  amount: number;
+  currency: string;
+  status: string;
+  created_at: string;
+}
+
+interface PageProps {
+  params: Promise<{ id: string }> | { id: string };
+}
+
+export default function EstimateDetailPage({ params }: PageProps) {
+  const router = useRouter();
+  const [estimate, setEstimate] = useState<Estimate | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [converting, setConverting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadEstimate() {
+      try {
+        const { id } = await params;
+        const supabase = createClient();
+        if (!supabase) {
+          setError('Failed to initialize Supabase client');
+          setLoading(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('estimates')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) {
+          setError(error.message);
+          setLoading(false);
+          return;
+        }
+
+        setEstimate(data);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load estimate';
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadEstimate();
+  }, [params]);
+
+  const handleConvertToInvoice = async () => {
+    if (!estimate) return;
+
+    try {
+      setConverting(true);
+      setError(null);
+
+      const response = await fetch(`/api/estimates/${estimate.id}/convert`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to convert estimate');
+      }
+
+      const data = await response.json();
+      router.push(`/dashboard/invoices/${data.invoice.id}`);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to convert';
+      setError(errorMessage);
+    } finally {
+      setConverting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto p-4">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+          <button
+            onClick={() => router.back()}
+            className="mt-2 text-sm text-blue-600 hover:underline"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!estimate) {
+    return (
+      <div className="container mx-auto p-4">
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+          <p className="text-yellow-600 dark:text-yellow-400">Estimate not found</p>
+          <button
+            onClick={() => router.back()}
+            className="mt-2 text-sm text-blue-600 hover:underline"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Estimate #{estimate.estimate_number}
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">
+              Created: {new Date(estimate.created_at).toLocaleDateString()}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            {estimate.status === 'draft' && (
+              <button
+                onClick={handleConvertToInvoice}
+                disabled={converting}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+              >
+                {converting ? 'Converting...' : 'Convert to Invoice'}
+              </button>
+            )}
+            <button
+              onClick={() => router.back()}
+              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+            >
+              Back
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Client</h3>
+            <p className="text-gray-900 dark:text-white">{estimate.client_name}</p>
+            <p className="text-gray-600 dark:text-gray-300">{estimate.client_email}</p>
+          </div>
+          <div>
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Amount</h3>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+              {estimate.currency} {estimate.amount.toFixed(2)}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

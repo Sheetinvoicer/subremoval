@@ -1,0 +1,229 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
+import { t } from '@/lib/i18n';
+
+interface RecurringInvoice {
+  id: string;
+  invoice_number: string;
+  client_name: string;
+  amount: number;
+  currency: string;
+  frequency: string;
+  next_date: string;
+  status: string;
+  created_at: string;
+}
+
+export default function RecurringPage() {
+  const router = useRouter();
+  const [recurringInvoices, setRecurringInvoices] = useState<RecurringInvoice[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadRecurringInvoices();
+  }, []);
+
+  async function loadRecurringInvoices() {
+    try {
+      try {
+      const supabase = createClient();
+      if (!supabase) {
+        setError("Failed to initialize Supabase client");
+        setLoading(false);
+        return;
+      }
+    if (!supabase) {
+      setError("Failed to initialize Supabase client");
+      setLoading(false);
+      return;
+    }
+      if (!supabase) {
+        setError('Failed to initialize Supabase client');
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('recurring_invoices')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      setRecurringInvoices(data || []);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to load data";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load recurring invoices';
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const getFrequencyLabel = (frequency: string) => {
+    const labels: Record<string, string> = {
+      weekly: 'Weekly',
+      biweekly: 'Bi-Weekly',
+      monthly: 'Monthly',
+      quarterly: 'Quarterly',
+      yearly: 'Yearly',
+    };
+    return labels[frequency] || frequency;
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active':
+        return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300';
+      case 'paused':
+        return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300';
+      case 'cancelled':
+        return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300';
+      default:
+        return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200';
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto p-4">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-2 text-sm text-blue-600 hover:underline"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            {t('recurringInvoices') || 'Recurring Invoices'}
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
+            {t('manageRecurring') || 'Manage your recurring invoices'}
+          </p>
+        </div>
+        <button
+          onClick={() => router.push('/dashboard/recurring/new')}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+        >
+          + {t('newRecurring') || 'New Recurring'}
+        </button>
+      </div>
+
+      {recurringInvoices.length === 0 ? (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
+          <p className="text-gray-500 dark:text-gray-400 mb-4">
+            {t('noRecurring') || 'No recurring invoices yet'}
+          </p>
+          <button
+            onClick={() => router.push('/dashboard/recurring/new')}
+            className="text-blue-600 hover:underline"
+          >
+            {t('createRecurring') || 'Create your first recurring invoice'}
+          </button>
+        </div>
+      ) : (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 dark:bg-gray-900/50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
+                    {t('invoice') || 'Invoice'}
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
+                    {t('client') || 'Client'}
+                  </th>
+                  <th className="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400">
+                    {t('amount') || 'Amount'}
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
+                    {t('frequency') || 'Frequency'}
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
+                    {t('nextDate') || 'Next Date'}
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
+                    {t('status') || 'Status'}
+                  </th>
+                  <th className="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400">
+                    {t('actions') || 'Actions'}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                {recurringInvoices.map((invoice) => (
+                  <tr key={invoice.id} className="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                      {invoice.invoice_number}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                      {invoice.client_name || 'Unknown Client'}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-right text-gray-900 dark:text-white">
+                      {invoice.currency} {invoice.amount.toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                      {getFrequencyLabel(invoice.frequency)}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                      {new Date(invoice.next_date).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(invoice.status)}`}>
+                        {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <button
+                        onClick={() => router.push(`/dashboard/recurring/${invoice.id}`)}
+                        className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm mr-3"
+                      >
+                        {t('view') || 'View'}
+                      </button>
+                      <button
+                        onClick={() => router.push(`/dashboard/recurring/${invoice.id}/edit`)}
+                        className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-sm"
+                      >
+                        {t('edit') || 'Edit'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,298 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import toast, { Toaster } from 'react-hot-toast';
+
+interface Invoice {
+  id: string;
+  invoice_number: string;
+  client_name: string;
+  client_email: string;
+  amount: number;
+  currency: string;
+  status: string;
+  due_date: string;
+  items?: any[];
+  notes?: string;
+  tax_rate?: number;
+}
+
+interface PageProps {
+  params: Promise<{ id: string }> | { id: string };
+}
+
+export default function EditInvoicePage({ params }: PageProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [invoice, setInvoice] = useState<Invoice | null>(null);
+
+  useEffect(() => {
+    async function loadInvoice() {
+      try {
+        const { id } = await params;
+        const supabase = createClient();
+    if (!supabase) {
+      setError("Failed to initialize Supabase client");
+      setLoading(false);
+      return;
+    }
+        if (!supabase) {
+          setError('Failed to initialize Supabase client');
+          setLoading(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('invoices')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) {
+          setError(error.message);
+          setLoading(false);
+          return;
+        }
+
+        setInvoice(data);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load invoice';
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadInvoice();
+  }, [params]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!invoice) return;
+
+    try {
+      setSaving(true);
+      setError(null);
+
+      const supabase = createClient();
+    if (!supabase) {
+      setError("Failed to initialize Supabase client");
+      setLoading(false);
+      return;
+    }
+      if (!supabase) {
+        setError('Failed to initialize Supabase client');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('invoices')
+        .update({
+          client_name: invoice.client_name,
+          client_email: invoice.client_email,
+          amount: invoice.amount,
+          currency: invoice.currency,
+          due_date: invoice.due_date,
+          notes: invoice.notes,
+          tax_rate: invoice.tax_rate,
+        })
+        .eq('id', invoice.id);
+
+      if (error) {
+        setError(error.message);
+        toast.error('Failed to update invoice');
+        return;
+      }
+
+      toast.success('Invoice updated successfully!');
+      router.push(`/dashboard/invoices/${invoice.id}`);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update invoice';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto p-4">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+          <button
+            onClick={() => router.back()}
+            className="mt-2 text-sm text-blue-600 hover:underline"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!invoice) {
+    return (
+      <div className="container mx-auto p-4">
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+          <p className="text-yellow-600 dark:text-yellow-400">Invoice not found</p>
+          <Link
+            href="/dashboard/invoices"
+            className="mt-2 inline-block text-sm text-blue-600 hover:underline"
+          >
+            Back to Invoices
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto p-4 max-w-2xl">
+      <Toaster position="top-right" />
+      
+      <div className="flex items-center gap-4 mb-6">
+        <Link
+          href={`/dashboard/invoices/${invoice.id}`}
+          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+        >
+          ← Back
+        </Link>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Edit Invoice #{invoice.invoice_number}
+        </h1>
+      </div>
+
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Client Name *
+            </label>
+            <input
+              type="text"
+              value={invoice.client_name || ''}
+              onChange={(e) => setInvoice({ ...invoice, client_name: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Client Email *
+            </label>
+            <input
+              type="email"
+              value={invoice.client_email || ''}
+              onChange={(e) => setInvoice({ ...invoice, client_email: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Amount *
+            </label>
+            <input
+              type="number"
+              value={invoice.amount}
+              onChange={(e) => setInvoice({ ...invoice, amount: parseFloat(e.target.value) || 0 })}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              min="0.01"
+              step="0.01"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Currency
+            </label>
+            <select
+              value={invoice.currency || 'USD'}
+              onChange={(e) => setInvoice({ ...invoice, currency: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            >
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="CAD">CAD (C$)</option>
+              <option value="AUD">AUD (A$)</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Due Date *
+            </label>
+            <input
+              type="date"
+              value={invoice.due_date ? invoice.due_date.split('T')[0] : ''}
+              onChange={(e) => setInvoice({ ...invoice, due_date: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              required
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Tax Rate (%)
+          </label>
+          <input
+            type="number"
+            value={invoice.tax_rate || 0}
+            onChange={(e) => setInvoice({ ...invoice, tax_rate: parseFloat(e.target.value) || 0 })}
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            min="0"
+            max="100"
+            step="0.01"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Notes (Optional)
+          </label>
+          <textarea
+            value={invoice.notes || ''}
+            onChange={(e) => setInvoice({ ...invoice, notes: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            rows={3}
+            placeholder="Add any additional notes..."
+          />
+        </div>
+
+        <div className="flex gap-3 pt-4">
+          <button
+            type="submit"
+            disabled={saving}
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
+          >
+            {saving ? 'Saving...' : 'Update Invoice'}
+          </button>
+          <Link
+            href={`/dashboard/invoices/${invoice.id}`}
+            className="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          >
+            Cancel
+          </Link>
+        </div>
+      </form>
+    </div>
+  );
+}

@@ -1,0 +1,401 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import toast, { Toaster } from 'react-hot-toast';
+
+interface Client {
+  id: string;
+  name: string;
+  email: string;
+}
+
+interface InvoiceItem {
+  description: string;
+  quantity: number;
+  price: number;
+}
+
+export default function NewInvoicePage() {
+  const router = useRouter();
+  const [clients, setClients] = useState<Client[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const [formData, setFormData] = useState({
+    client_id: '',
+    items: [{ description: '', quantity: 1, price: 0 }] as InvoiceItem[],
+    due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    notes: '',
+    tax_rate: 0,
+    currency: 'USD',
+  });
+
+  useEffect(() => {
+    loadClients();
+  }, []);
+
+  async function loadClients() {
+    try {
+      try {
+      const supabase = createClient();
+      if (!supabase) {
+        setError("Failed to initialize Supabase client");
+        setLoading(false);
+        return;
+      }
+    if (!supabase) {
+      setError("Failed to initialize Supabase client");
+      setLoading(false);
+      return;
+    }
+      if (!supabase) {
+        setError('Failed to initialize Supabase client');
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('clients')
+        .select('*');
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      setClients(data || []);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to load data";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load clients';
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function addItem() {
+    setFormData({
+      ...formData,
+      items: [...formData.items, { description: '', quantity: 1, price: 0 }],
+    });
+  }
+
+  function removeItem(index: number) {
+    if (formData.items.length > 1) {
+      setFormData({
+        ...formData,
+        items: formData.items.filter((_, i) => i !== index),
+      });
+    }
+  }
+
+  function updateItem(index: number, field: keyof InvoiceItem, value: any) {
+    const updatedItems = [...formData.items];
+    updatedItems[index] = { ...updatedItems[index], [field]: value };
+    setFormData({ ...formData, items: updatedItems });
+  }
+
+  function calculateTotal() {
+    return formData.items.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    
+    if (!formData.client_id) {
+      setError('Please select a client');
+      return;
+    }
+
+    if (formData.items.some(item => !item.description || item.quantity <= 0 || item.price <= 0)) {
+      setError('Please fill in all item details');
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      setError(null);
+
+      try {
+      const supabase = createClient();
+      if (!supabase) {
+        setError("Failed to initialize Supabase client");
+        setLoading(false);
+        return;
+      }
+    if (!supabase) {
+      setError("Failed to initialize Supabase client");
+      setLoading(false);
+      return;
+    }
+      if (!supabase) {
+        setError('Failed to initialize Supabase client');
+        return;
+      }
+
+      // Get the selected client
+      const client = clients.find(c => c.id === formData.client_id);
+      if (!client) {
+        setError('Selected client not found');
+        return;
+      }
+
+      const total = calculateTotal();
+      const invoiceNumber = `INV-${Date.now().toString().slice(-6)}`;
+
+      const { data, error } = await supabase
+        .from('invoices')
+        .insert({
+          client_id: formData.client_id,
+          client_name: client.name,
+          client_email: client.email,
+          invoice_number: invoiceNumber,
+          items: formData.items,
+          notes: formData.notes,
+          tax_rate: formData.tax_rate,
+          currency: formData.currency,
+          amount: total + (total * (formData.tax_rate || 0) / 100),
+          due_date: formData.due_date,
+          status: 'draft',
+        })
+        .select()
+        .single();
+
+      if (error) {
+        setError(error.message);
+        toast.error('Failed to create invoice');
+        return;
+      }
+
+      toast.success('Invoice created successfully!');
+      router.push(`/dashboard/invoices/${data.id}`);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to load data";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create invoice';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto p-4 max-w-4xl">
+      <Toaster position="top-right" />
+      
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">New Invoice</h1>
+        <Link
+          href="/dashboard/invoices"
+          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+        >
+          Cancel
+        </Link>
+      </div>
+
+      {error && (
+        <div className="mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <p className="text-red-600 dark:text-red-400">{error}</p>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Client *
+              </label>
+              <select
+                value={formData.client_id}
+                onChange={(e) => setFormData({ ...formData, client_id: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                required
+              >
+                <option value="">Select a client</option>
+                {clients.map((client) => (
+                  <option key={client.id} value={client.id}>
+                    {client.name} - {client.email}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Currency
+              </label>
+              <select
+                value={formData.currency}
+                onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              >
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+                <option value="CAD">CAD (C$)</option>
+                <option value="AUD">AUD (A$)</option>
+              </select>
+            </div>
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Due Date *
+            </label>
+            <input
+              type="date"
+              value={formData.due_date}
+              onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Items</h2>
+          
+          <div className="space-y-3">
+            {formData.items.map((item, index) => (
+              <div key={index} className="grid grid-cols-12 gap-3 items-end">
+                <div className="col-span-6">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Description
+                  </label>
+                  <input
+                    type="text"
+                    value={item.description}
+                    onChange={(e) => updateItem(index, 'description', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="Item description"
+                    required
+                  />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Qty
+                  </label>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) => updateItem(index, 'quantity', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    min="1"
+                    step="1"
+                    required
+                  />
+                </div>
+                <div className="col-span-3">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Price
+                  </label>
+                  <input
+                    type="number"
+                    value={item.price}
+                    onChange={(e) => updateItem(index, 'price', parseFloat(e.target.value) || 0)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </div>
+                <div className="col-span-1">
+                  <button
+                    type="button"
+                    onClick={() => removeItem(index)}
+                    className="w-full py-2 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                    disabled={formData.items.length <= 1}
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={addItem}
+            className="mt-3 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            + Add Item
+          </button>
+
+          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex justify-end">
+              <div className="text-right">
+                <p className="text-sm text-gray-500 dark:text-gray-400">Subtotal</p>
+                <p className="text-xl font-bold text-gray-900 dark:text-white">
+                  {formData.currency} {calculateTotal().toFixed(2)}
+                </p>
+                {formData.tax_rate > 0 && (
+                  <>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Tax ({formData.tax_rate}%)
+                    </p>
+                    <p className="text-lg text-gray-900 dark:text-white">
+                      {formData.currency} {((calculateTotal() * formData.tax_rate) / 100).toFixed(2)}
+                    </p>
+                  </>
+                )}
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Total</p>
+                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                  {formData.currency} {(calculateTotal() + (calculateTotal() * (formData.tax_rate || 0) / 100)).toFixed(2)}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Notes (Optional)
+          </label>
+          <textarea
+            value={formData.notes}
+            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            rows={3}
+            placeholder="Add any additional notes..."
+          />
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            type="submit"
+            disabled={submitting}
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
+          >
+            {submitting ? 'Creating...' : 'Create Invoice'}
+          </button>
+          <Link
+            href="/dashboard/invoices"
+            className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          >
+            Cancel
+          </Link>
+        </div>
+      </form>
+    </div>
+  );
+}
