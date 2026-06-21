@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import {routing} from './i18n/routing'
 import { createServerClient } from '@supabase/ssr'
+import createMiddleware from 'next-intl/middleware'
 import { hasRequiredRole, ROLES } from '@/lib/auth/roles'
 
 const adminRouteMatchers = [/^\/dashboard\/admin(\/.*)?$/, /^\/api\/admin(\/.*)?$/]
+const handleI18nRouting = createMiddleware(routing)
 
 const getRoleRequirement = (pathname: string) => {
   if (adminRouteMatchers.some((re) => re.test(pathname))) {
@@ -42,6 +44,7 @@ async function getCurrentRoleFromRequest(request: NextRequest) {
 }
 
 export default async function middleware(request: NextRequest) {
+  const i18nResponse = handleI18nRouting(request)
   const pathname = getPathWithoutLocale(request.nextUrl.pathname)
   const requiredRole = getRoleRequirement(pathname)
 
@@ -55,7 +58,7 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next()
+  return i18nResponse
 }
 
 export const config = {

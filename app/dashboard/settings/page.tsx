@@ -1,7 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/client';
+import { routing, rtlLocales } from '@/i18n/routing';
 import {
   DEFAULT_ACCOUNTING_MAPPING,
   type AccountingMapping,
@@ -17,6 +20,17 @@ import {
 } from '@/lib/invoiceTemplate';
 
 const ACCOUNTING_MAPPING_STORAGE_KEY = 'sheetinvoicer_accounting_mapping';
+
+const languageLabels: Record<(typeof routing.locales)[number], string> = {
+  en: 'English',
+  es: 'Español',
+  fr: 'Français',
+  de: 'Deutsch',
+  it: 'Italiano',
+  pt: 'Português',
+  tr: 'Türkçe',
+  ar: 'العربية',
+};
 
 interface UserSettings {
   default_currency: string;
@@ -41,6 +55,9 @@ const DEFAULT_SETTINGS: UserSettings = {
 };
 
 export default function SettingsPage() {
+  const t = useTranslations('settings');
+  const locale = useLocale();
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [exportingData, setExportingData] = useState(false);
@@ -88,6 +105,27 @@ export default function SettingsPage() {
     }
   }, []);
 
+  async function persistLocale(nextLocale: string, shouldRefresh = true) {
+    if (!routing.locales.includes(nextLocale as (typeof routing.locales)[number])) {
+      return;
+    }
+
+    await fetch('/api/locale', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ locale: nextLocale }),
+    });
+
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = nextLocale;
+      document.documentElement.dir = rtlLocales.has(nextLocale) ? 'rtl' : 'ltr';
+    }
+
+    if (shouldRefresh) {
+      router.refresh();
+    }
+  }
+
   async function loadSettings() {
     try {
       const supabase = createClient();
@@ -132,6 +170,10 @@ export default function SettingsPage() {
           company_phone: data.company_phone || '',
           company_address: data.company_address || '',
         });
+
+        if (data.language && data.language !== locale) {
+          await persistLocale(data.language, false);
+        }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load settings';
@@ -178,7 +220,8 @@ export default function SettingsPage() {
         return;
       }
 
-      setSuccess('Settings saved successfully!');
+      await persistLocale(settings.language);
+      setSuccess(t('messages.saved'));
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to save settings';
@@ -387,8 +430,8 @@ export default function SettingsPage() {
   return (
     <div className="p-6 md:p-8 max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Settings</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">Manage your account preferences</p>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-2">{t('subtitle')}</p>
       </div>
 
       {error && (
@@ -421,17 +464,17 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Language</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('language.label')}</label>
             <select
               value={settings.language}
               onChange={(e) => updateField('language', e.target.value)}
               className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
             >
-              <option value="en">English</option>
-              <option value="es">Spanish</option>
-              <option value="fr">French</option>
-              <option value="de">German</option>
-              <option value="ar">Arabic</option>
+              {routing.locales.map((value) => (
+                <option key={value} value={value}>
+                  {languageLabels[value]}
+                </option>
+              ))}
             </select>
           </div>
 

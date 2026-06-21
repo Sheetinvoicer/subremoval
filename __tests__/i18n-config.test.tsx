@@ -11,7 +11,13 @@ jest.mock('@/i18n/routing', () => ({
 }))
 
 jest.mock('next-intl', () => ({
-  useLocale: () => 'en'
+  useLocale: () => 'en',
+  useTranslations: () => (key: string) => {
+    if (key === 'label') {
+      return 'Language'
+    }
+    return key
+  }
 }))
 
 const replace = jest.fn()

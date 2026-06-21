@@ -47,5 +47,18 @@
     "title": "عروض الأسعار",
     "new": "عرض سعر جديد",
     "convert": "تحويل إلى فاتورة"
+  },
+  "languageSwitcher": {
+    "label": "اللغة"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "subtitle": "إدارة تفضيلات حسابك",
+    "language": {
+      "label": "اللغة"
+    },
+    "messages": {
+      "saved": "تم حفظ الإعدادات بنجاح!"
+    }
   }
 }

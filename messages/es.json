@@ -47,5 +47,18 @@
     "title": "Presupuestos",
     "new": "Nuevo Presupuesto",
     "convert": "Convertir a Factura"
+  },
+  "languageSwitcher": {
+    "label": "Idioma"
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Administra las preferencias de tu cuenta",
+    "language": {
+      "label": "Idioma"
+    },
+    "messages": {
+      "saved": "¡Configuración guardada correctamente!"
+    }
   }
 }

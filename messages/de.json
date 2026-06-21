@@ -47,5 +47,18 @@
     "title": "Estimates & Proposals",
     "new": "New Estimate",
     "convert": "Convert to Invoice"
+  },
+  "languageSwitcher": {
+    "label": "Sprache"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "subtitle": "Verwalte deine Kontoeinstellungen",
+    "language": {
+      "label": "Sprache"
+    },
+    "messages": {
+      "saved": "Einstellungen erfolgreich gespeichert!"
+    }
   }
 }

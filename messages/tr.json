@@ -47,5 +47,18 @@
     "title": "Estimates & Proposals",
     "new": "New Estimate",
     "convert": "Convert to Invoice"
+  },
+  "languageSwitcher": {
+    "label": "Dil"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "subtitle": "Hesap tercihlerinizi yönetin",
+    "language": {
+      "label": "Dil"
+    },
+    "messages": {
+      "saved": "Ayarlar başarıyla kaydedildi!"
+    }
   }
 }

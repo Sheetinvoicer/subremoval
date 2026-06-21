@@ -1,7 +1,7 @@
 'use client'
 
 import {useTransition} from 'react'
-import {useLocale} from 'next-intl'
+import {useLocale, useTranslations} from 'next-intl'
 import {usePathname, useRouter} from 'next/navigation'
 import {routing} from '@/i18n/routing'
 
@@ -17,6 +17,7 @@ const languageLabels: Record<(typeof routing.locales)[number], string> = {
 }
 
 export default function LanguageSwitcher() {
+  const t = useTranslations('languageSwitcher')
   const locale = useLocale()
   const pathname = usePathname()
   const router = useRouter()
@@ -25,7 +26,7 @@ export default function LanguageSwitcher() {
   return (
     <div className="flex items-center gap-2 rounded-xl border border-gray-200/60 dark:border-gray-700/70 p-2">
       <label htmlFor="language-switcher" className="text-xs font-medium text-gray-600 dark:text-gray-300">
-        Language
+        {t('label')}
       </label>
       <select
         id="language-switcher"
@@ -36,11 +37,15 @@ export default function LanguageSwitcher() {
           const nextLocale = event.target.value
 
           startTransition(async () => {
-            await fetch('/api/locale', {
+            const response = await fetch('/api/locale', {
               method: 'POST',
               headers: {'content-type': 'application/json'},
               body: JSON.stringify({locale: nextLocale})
             })
+
+            if (!response.ok) {
+              return
+            }
 
             router.replace(pathname)
             router.refresh()
