@@ -70,6 +70,12 @@ export default function DashboardPage() {
   const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
   const [statusData, setStatusData] = useState<StatusDataPoint[]>([]);
 
+  const isUnauthenticatedError = (message?: string | null) => {
+    if (!message) return false;
+    const normalized = message.toLowerCase();
+    return normalized.includes('auth session missing') || normalized.includes('jwt');
+  };
+
   // Navigation helper
   const navigateTo = (path: string, filter: string | null = null) => {
     if (filter) {
@@ -93,13 +99,18 @@ export default function DashboardPage() {
 
       const { data: authData, error: authError } = await supabase.auth.getUser();
       if (authError) {
-        setError(authError.message || 'Failed to get authenticated user');
+        if (isUnauthenticatedError(authError.message)) {
+          router.replace('/login');
+          return;
+        }
+
+        setError(authError.message || 'Failed to verify your session. Please try again.');
         return;
       }
 
       const userId = authData.user?.id;
       if (!userId) {
-        setError('You must be logged in to view dashboard data');
+        router.replace('/login');
         return;
       }
 

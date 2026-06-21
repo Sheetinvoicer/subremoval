@@ -2,9 +2,12 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import DashboardPage from '@/app/dashboard/page';
 
+const replaceMock = jest.fn();
+
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
+    replace: replaceMock,
   }),
 }));
 
@@ -79,6 +82,10 @@ jest.mock('@/lib/supabase/client', () => ({
 const { createClient } = require('@/lib/supabase/client');
 
 describe('DashboardPage', () => {
+  beforeEach(() => {
+    replaceMock.mockClear();
+  });
+
   it('loads invoices for the logged-in user', async () => {
     createClient.mockReturnValue(
       createSupabaseMock({
@@ -111,5 +118,48 @@ describe('DashboardPage', () => {
       expect(screen.getByText(/invoice query failed/i)).toBeInTheDocument();
       expect(screen.getByText('Try Again')).toBeInTheDocument();
     });
+  });
+
+  it('redirects to login when auth session is missing', async () => {
+    createClient.mockReturnValue(
+      createSupabaseMock({
+        userId: null,
+        authError: { message: 'Auth session missing!' },
+      })
+    );
+
+    render(<DashboardPage />);
+
+    await waitFor(() => {
+      expect(replaceMock).toHaveBeenCalledWith('/login');
+    });
+    expect(screen.queryByText(/auth session missing/i)).not.toBeInTheDocument();
+  });
+
+  it('redirects to login when user is not authenticated', async () => {
+    createClient.mockReturnValue(createSupabaseMock({ userId: null, authError: null }));
+
+    render(<DashboardPage />);
+
+    await waitFor(() => {
+      expect(replaceMock).toHaveBeenCalledWith('/login');
+    });
+  });
+
+  it('shows auth error when failure is not unauthenticated state', async () => {
+    createClient.mockReturnValue(
+      createSupabaseMock({
+        userId: null,
+        authError: { message: 'Network unavailable' },
+      })
+    );
+
+    render(<DashboardPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/network unavailable/i)).toBeInTheDocument();
+      expect(screen.getByText('Try Again')).toBeInTheDocument();
+    });
+    expect(replaceMock).not.toHaveBeenCalledWith('/login');
   });
 });

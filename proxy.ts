@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { routing } from './i18n/routing'
 import { createServerClient } from '@supabase/ssr'
-import createMiddleware from 'next-intl/middleware'
 import { hasRequiredRole, ROLES } from '@/lib/auth/roles'
 
 const adminRouteMatchers = [/^\/dashboard\/admin(\/.*)?$/, /^\/api\/admin(\/.*)?$/]
-const handleI18nRouting = createMiddleware(routing)
 
 const getRoleRequirement = (pathname: string) => {
   if (adminRouteMatchers.some((re) => re.test(pathname))) {
@@ -44,12 +42,6 @@ async function getCurrentRoleFromRequest(request: NextRequest) {
 }
 
 export default async function middleware(request: NextRequest) {
-  // Skip locale redirect for root path
-  if (request.nextUrl.pathname === '/') {
-    const i18nResponse = handleI18nRouting(request)
-    return i18nResponse
-  }
-
   const localePrefixRegex = new RegExp(`^\/(${routing.locales.join('|')})(?=\/|$)`)
   if (routing.localePrefix === 'never' && localePrefixRegex.test(request.nextUrl.pathname)) {
     const pathnameWithoutLocale = request.nextUrl.pathname.replace(localePrefixRegex, '') || '/'
@@ -58,7 +50,6 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl)
   }
 
-  const i18nResponse = handleI18nRouting(request)
   const pathname = getPathWithoutLocale(request.nextUrl.pathname)
   const requiredRole = getRoleRequirement(pathname)
 
@@ -72,7 +63,7 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
-  return i18nResponse
+  return NextResponse.next()
 }
 
 export const config = {
