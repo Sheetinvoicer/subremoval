@@ -21,7 +21,8 @@ import {
 
 const ACCOUNTING_MAPPING_STORAGE_KEY = 'sheetinvoicer_accounting_mapping';
 
-const languageLabels: Record<(typeof routing.locales)[number], string> = {
+// FIX 1: Changed type to avoid issues
+const languageLabels: Record<string, string> = {
   en: 'English',
   es: 'Español',
   fr: 'Français',
@@ -72,6 +73,7 @@ export default function SettingsPage() {
   const [accountingMapping, setAccountingMapping] =
     useState<AccountingMapping>(DEFAULT_ACCOUNTING_MAPPING);
 
+  // ORIGINAL useEffect - unchanged
   useEffect(() => {
     loadSettings();
     if (typeof document !== 'undefined') {
@@ -104,6 +106,32 @@ export default function SettingsPage() {
       }
     }
   }, []);
+
+  // FIX 2: NEW useEffect - Load template settings from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('templateSettings');
+    if (saved) {
+      try {
+        setInvoiceTemplateSettings(JSON.parse(saved));
+      } catch (e) {
+        console.error('Error loading template settings:', e);
+      }
+    }
+  }, []);
+
+  // FIX 3: NEW useEffect - Auto-save template settings when they change
+  useEffect(() => {
+    if (typeof window !== 'undefined' && invoiceTemplateSettings) {
+      saveTemplateSettings();
+    }
+  }, [invoiceTemplateSettings]);
+
+  // FIX 4: NEW useEffect - Auto-save accounting mapping when it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && accountingMapping) {
+      saveAccountingMapping();
+    }
+  }, [accountingMapping]);
 
   async function persistLocale(nextLocale: string, shouldRefresh = true) {
     if (!routing.locales.includes(nextLocale as (typeof routing.locales)[number])) {
@@ -255,6 +283,7 @@ export default function SettingsPage() {
     }));
   }
 
+  // FIX 5: UPDATED function - Now shows success message
   function saveTemplateSettings() {
     if (typeof window === 'undefined') return;
     window.localStorage.setItem(
@@ -264,6 +293,8 @@ export default function SettingsPage() {
         accentColor: sanitizeAccentColor(invoiceTemplateSettings.accentColor),
       }),
     );
+    setSuccess('Template settings saved!');
+    setTimeout(() => setSuccess(null), 3000);
   }
 
   function updateAccountingMapping<K extends keyof AccountingMapping>(
@@ -273,6 +304,7 @@ export default function SettingsPage() {
     setAccountingMapping((prev) => ({ ...prev, [key]: value }));
   }
 
+  // ORIGINAL function - unchanged (already had success message)
   function saveAccountingMapping() {
     if (typeof window === 'undefined') return;
     window.localStorage.setItem(
