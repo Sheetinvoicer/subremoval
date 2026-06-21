@@ -1,10 +1,7 @@
-import createMiddleware from 'next-intl/middleware'
 import { NextRequest, NextResponse } from 'next/server'
 import {routing} from './i18n/routing'
 import { createServerClient } from '@supabase/ssr'
 import { hasRequiredRole, ROLES } from '@/lib/auth/roles'
-
-const intlMiddleware = createMiddleware(routing)
 
 const adminRouteMatchers = [/^\/dashboard\/admin(\/.*)?$/, /^\/api\/admin(\/.*)?$/]
 
@@ -58,7 +55,7 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
-  return intlMiddleware(request)
+  return NextResponse.next()
 }
 
 export const config = {

@@ -40,17 +40,24 @@ export async function POST(request: Request) {
     const body = (await request.json().catch(() => ({}))) as ExportRequestBody
     const format = sanitizeFormat(body.format)
 
-    const { data, error } = await supabase
+    const invoicesQuery = supabase
       .from('invoices')
-      .select('id, invoice_number, issue_date, due_date, currency, subtotal, tax_amount, total, status, clients(name, email)')
+      .select('id, invoice_number, issue_date, due_date, created_at, currency, subtotal, tax_amount, total, status, clients(name, email)')
       .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
+
+    const { data, error } = await (invoicesQuery as any)
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    const invoices = (data ?? []) as unknown as AccountingInvoice[]
+    const invoices = ((data ?? []) as Array<AccountingInvoice & { created_at?: string | null }>)
+      .sort((a, b) => {
+        const aTime = a.created_at ? Date.parse(a.created_at) : 0
+        const bTime = b.created_at ? Date.parse(b.created_at) : 0
+        return bTime - aTime
+      })
+      .map(({ created_at: _createdAt, ...invoice }) => invoice)
     if (invoices.length === 0) {
       return NextResponse.json({ error: 'No invoices found to export' }, { status: 400 })
     }
