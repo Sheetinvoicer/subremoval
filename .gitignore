@@ -17,6 +17,7 @@
 # misc
 .DS_Store
 *.pem
+issue.md.junie_standalone
 
 # debug
 npm-debug.log*
