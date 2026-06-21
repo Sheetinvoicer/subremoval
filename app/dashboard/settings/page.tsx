@@ -162,11 +162,16 @@ export default function SettingsPage() {
         return;
       }
 
-      const { error: upsertError } = await supabase.from('user_settings').upsert({
-        user_id: user.id,
-        ...settings,
-        updated_at: new Date().toISOString(),
-      });
+      const { error: upsertError } = await supabase
+        .from('user_settings')
+        .upsert(
+          {
+            user_id: user.id,
+            ...settings,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'user_id' },
+        );
 
       if (upsertError) {
         setError(upsertError.message);
