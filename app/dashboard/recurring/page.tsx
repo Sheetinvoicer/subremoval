@@ -27,12 +27,13 @@ export default function RecurringPage() {
   }, []);
 
   async function loadRecurringInvoices() {
+    setLoading(true);
+    setError(null);
+
     try {
       const supabase = createClient();
       if (!supabase) {
-        setError("Failed to initialize Supabase client");
-        setLoading(false);
-        return;
+        throw new Error('Failed to initialize Supabase client');
       }
 
       const { data, error: queryError } = await supabase
@@ -41,14 +42,14 @@ export default function RecurringPage() {
         .order('created_at', { ascending: false });
 
       if (queryError) {
-        setError(queryError.message);
-        setLoading(false);
-        return;
+        throw new Error(queryError.message);
       }
 
-      setRecurringInvoices(data || []);
+      setRecurringInvoices(Array.isArray(data) ? data : []);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load data";
+      setRecurringInvoices([]);
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to load recurring invoices';
       setError(errorMessage);
     } finally {
       setLoading(false);
