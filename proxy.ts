@@ -44,6 +44,14 @@ async function getCurrentRoleFromRequest(request: NextRequest) {
 }
 
 export default async function middleware(request: NextRequest) {
+  const localePrefixRegex = new RegExp(`^\/(${routing.locales.join('|')})(?=\/|$)`)
+  if (routing.localePrefix === 'never' && localePrefixRegex.test(request.nextUrl.pathname)) {
+    const pathnameWithoutLocale = request.nextUrl.pathname.replace(localePrefixRegex, '') || '/'
+    const redirectUrl = new URL(pathnameWithoutLocale, request.url)
+    redirectUrl.search = request.nextUrl.search
+    return NextResponse.redirect(redirectUrl)
+  }
+
   const i18nResponse = handleI18nRouting(request)
   const pathname = getPathWithoutLocale(request.nextUrl.pathname)
   const requiredRole = getRoleRequirement(pathname)
