@@ -3,13 +3,14 @@ import { createClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const supabase = createClient();
     const { data: { user }, error } = await supabase.auth.getUser();
     
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      const status = error.message === 'Auth session missing!' ? 401 : 500;
+      return NextResponse.json({ error: error.message }, { status });
     }
 
     return NextResponse.json({ 
