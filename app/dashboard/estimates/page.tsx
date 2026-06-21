@@ -1,174 +1,151 @@
 'use client';
-import { useState, useEffect, FC } from 'react';
-import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import Link from 'next/link';
 
 interface Estimate {
   id: string;
   estimate_number: string;
-  client_name: string;
-  amount: number;
+  client_id: string;
+  total: number;
   currency: string;
   status: string;
   created_at: string;
+  subtotal: number;
+  tax_amount: number;
+  valid_until: string;
 }
 
-const EstimatesPage: FC = () => {
-  const [estimates, setEstimates] = useState<Estimate[]>([]);
+export default function EstimatesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [estimates, setEstimates] = useState<Estimate[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     loadEstimates();
   }, []);
 
-  async function loadEstimates() {
+  const loadEstimates = async () => {
     try {
       setLoading(true);
       setError(null);
 
       const supabase = createClient();
-      if (!supabase) {
-        setError('Failed to initialize Supabase client');
-        setLoading(false);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push('/login');
         return;
       }
 
-      const { data, error: queryError } = await supabase
+      const { data, error: fetchError } = await supabase
         .from('estimates')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (queryError) {
-        setError(queryError.message);
-        setLoading(false);
-        return;
+      if (fetchError) {
+        console.error('Fetch error:', fetchError);
+        setError(fetchError.message);
+        setEstimates([]);
+      } else {
+        console.log('Estimates data:', data);
+        setEstimates(data || []);
       }
-
-      setEstimates(data || []);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load estimates';
-      setError(errorMessage);
+      console.error('Error loading estimates:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load estimates');
+      setEstimates([]);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'draft':
-        return 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200';
-      case 'sent':
-        return 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300';
-      case 'accepted':
-        return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300';
-      case 'rejected':
-        return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300';
-      case 'converted':
-        return 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300';
-      default:
-        return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200';
+      case 'draft': return 'bg-gray-200 text-gray-700';
+      case 'sent': return 'bg-blue-200 text-blue-700';
+      case 'accepted': return 'bg-green-200 text-green-700';
+      case 'rejected': return 'bg-red-200 text-red-700';
+      case 'converted': return 'bg-purple-200 text-purple-700';
+      default: return 'bg-gray-200 text-gray-700';
     }
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Estimates</h1>
+        <div className="text-gray-500 dark:text-gray-400">Loading estimates...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="container mx-auto p-4">
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="mt-2 text-sm text-blue-600 hover:underline"
-          >
-            Try Again
-          </button>
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Estimates</h1>
+        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg">
+          Error: {error}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Estimates</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Manage your estimates</p>
-        </div>
-        <Link href="/dashboard/estimates/new">
-          <a className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-            + New Estimate
-          </a>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Estimates</h1>
+        <Link
+          href="/dashboard/estimates/new"
+          className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+        >
+          + New Estimate
         </Link>
       </div>
 
       {estimates.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
-          <p className="text-gray-500 dark:text-gray-400 mb-4">No estimates yet</p>
-          <Link href="/dashboard/estimates/new">
-            <a className="text-blue-600 hover:underline">
-              Create your first estimate
-            </a>
-          </Link>
+        <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
+          <p className="text-gray-500 dark:text-gray-400">No estimates found. Create your first estimate!</p>
         </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-gray-900/50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">Estimate #</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">Client</th>
-                  <th className="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400">Amount</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">Status</th>
-                  <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">Date</th>
-                  <th className="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {estimates.map((estimate) => (
-                  <tr key={estimate.id} className="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                      {estimate.estimate_number}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
-                      {estimate.client_name || 'Unknown Client'}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-right text-gray-900 dark:text-white">
-                      {estimate.currency} {estimate.amount.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(estimate.status)}`}>
-                        {estimate.status.charAt(0).toUpperCase() + estimate.status.slice(1)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                      {new Date(estimate.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <Link href={`/dashboard/estimates/${estimate.id}`}>
-                        <a className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm">
-                          View →
-                        </a>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="space-y-4">
+          {estimates.map((est) => (
+            <Link
+              key={est.id}
+              href={`/dashboard/estimates/${est.id}`}
+              className="block bg-white dark:bg-gray-800 p-4 rounded-lg shadow hover:shadow-lg transition-shadow"
+            >
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {est.estimate_number || 'Estimate'}
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(est.status)}`}>
+                      {est.status || 'draft'}
+                    </span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      Created: {new Date(est.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold text-gray-900 dark:text-white">
+                    {est.currency || 'USD'} {est.total || 0}
+                  </p>
+                  {est.valid_until && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Valid until: {new Date(est.valid_until).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       )}
     </div>
   );
 }
-
-export default EstimatesPage;
