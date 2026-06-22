@@ -693,6 +693,68 @@
       "supabaseInit": "فشل تهيئة عميل Supabase",
       "loginRequired": "يرجى تسجيل الدخول لعرض المشاريع",
       "loadFailed": "فشل تحميل المشاريع"
+    },
+    "new": {
+      "title": "مشروع جديد",
+      "projectNameLabel": "اسم المشروع *",
+      "projectNamePlaceholder": "اسم المشروع *",
+      "descriptionLabel": "الوصف",
+      "descriptionPlaceholder": "الوصف",
+      "statusLabel": "الحالة",
+      "clientLabel": "العميل المرتبط",
+      "noClient": "لا يوجد عميل مرتبط",
+      "saving": "جارٍ الحفظ...",
+      "createProject": "إنشاء مشروع",
+      "cancel": "إلغاء",
+      "errors": {
+        "nameRequired": "اسم المشروع مطلوب.",
+        "supabaseInit": "فشل تهيئة عميل Supabase",
+        "loginRequired": "يرجى تسجيل الدخول لإنشاء المشاريع"
+      }
+    },
+    "detail": {
+      "loading": "جارٍ التحميل...",
+      "notFound": "المشروع غير موجود.",
+      "noDescription": "لا يوجد وصف للمشروع.",
+      "edit": "تعديل",
+      "back": "رجوع",
+      "statusLabel": "الحالة",
+      "clientLabel": "العميل",
+      "unassigned": "غير مُعيَّن",
+      "invoicesLabel": "الفواتير",
+      "revenueLabel": "الإيرادات",
+      "dashboard": {
+        "title": "لوحة تحكم المشروع",
+        "paidInvoices": "الفواتير المدفوعة",
+        "pendingInvoices": "الفواتير المعلقة",
+        "openAmount": "المبلغ المفتوح"
+      },
+      "reports": {
+        "title": "تقارير المشروع",
+        "totalInvoices": "إجمالي الفواتير المُنشأة",
+        "totalCollected": "إجمالي المبلغ المحصّل",
+        "totalOutstanding": "إجمالي المبلغ المستحق"
+      },
+      "linkedInvoices": "الفواتير المرتبطة",
+      "noLinkedInvoices": "لا توجد فواتير مرتبطة بعد.",
+      "errors": {
+        "supabaseInit": "فشل تهيئة عميل Supabase",
+        "loginRequired": "يرجى تسجيل الدخول لعرض المشروع."
+      }
+    },
+    "edit": {
+      "title": "تعديل المشروع",
+      "projectNamePlaceholder": "اسم المشروع *",
+      "descriptionPlaceholder": "الوصف",
+      "noClient": "لا يوجد عميل مرتبط",
+      "saving": "جارٍ الحفظ...",
+      "saveProject": "حفظ المشروع",
+      "cancel": "إلغاء",
+      "errors": {
+        "nameRequired": "اسم المشروع مطلوب.",
+        "supabaseInit": "فشل تهيئة عميل Supabase",
+        "loginRequired": "يرجى تسجيل الدخول لتعديل المشروع."
+      }
     }
   },
   "recurringPage": {

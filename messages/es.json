@@ -636,6 +636,68 @@
       "supabaseInit": "Error al inicializar el cliente Supabase",
       "loginRequired": "Por favor inicia sesión para ver proyectos",
       "loadFailed": "Error al cargar proyectos"
+    },
+    "new": {
+      "title": "Nuevo Proyecto",
+      "projectNameLabel": "Nombre del proyecto *",
+      "projectNamePlaceholder": "Nombre del proyecto *",
+      "descriptionLabel": "Descripción",
+      "descriptionPlaceholder": "Descripción",
+      "statusLabel": "Estado",
+      "clientLabel": "Cliente vinculado",
+      "noClient": "Sin cliente vinculado",
+      "saving": "Guardando...",
+      "createProject": "Crear Proyecto",
+      "cancel": "Cancelar",
+      "errors": {
+        "nameRequired": "El nombre del proyecto es obligatorio.",
+        "supabaseInit": "Error al inicializar el cliente Supabase",
+        "loginRequired": "Por favor inicia sesión para crear proyectos"
+      }
+    },
+    "detail": {
+      "loading": "Cargando...",
+      "notFound": "Proyecto no encontrado.",
+      "noDescription": "No se proporcionó descripción del proyecto.",
+      "edit": "Editar",
+      "back": "Atrás",
+      "statusLabel": "Estado",
+      "clientLabel": "Cliente",
+      "unassigned": "Sin asignar",
+      "invoicesLabel": "Facturas",
+      "revenueLabel": "Ingresos",
+      "dashboard": {
+        "title": "Panel del Proyecto",
+        "paidInvoices": "Facturas pagadas",
+        "pendingInvoices": "Facturas pendientes",
+        "openAmount": "Monto abierto"
+      },
+      "reports": {
+        "title": "Informes del Proyecto",
+        "totalInvoices": "Total de facturas generadas",
+        "totalCollected": "Monto total cobrado",
+        "totalOutstanding": "Monto total pendiente"
+      },
+      "linkedInvoices": "Facturas Vinculadas",
+      "noLinkedInvoices": "Aún no hay facturas vinculadas.",
+      "errors": {
+        "supabaseInit": "Error al inicializar el cliente Supabase",
+        "loginRequired": "Por favor inicia sesión para ver el proyecto."
+      }
+    },
+    "edit": {
+      "title": "Editar Proyecto",
+      "projectNamePlaceholder": "Nombre del proyecto *",
+      "descriptionPlaceholder": "Descripción",
+      "noClient": "Sin cliente vinculado",
+      "saving": "Guardando...",
+      "saveProject": "Guardar Proyecto",
+      "cancel": "Cancelar",
+      "errors": {
+        "nameRequired": "El nombre del proyecto es obligatorio.",
+        "supabaseInit": "Error al inicializar el cliente Supabase",
+        "loginRequired": "Por favor inicia sesión para editar el proyecto."
+      }
     }
   },
   "recurringPage": {

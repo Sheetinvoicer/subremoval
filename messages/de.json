@@ -594,6 +594,68 @@
       "supabaseInit": "Supabase-Client konnte nicht initialisiert werden",
       "loginRequired": "Bitte melden Sie sich an, um Projekte anzuzeigen",
       "loadFailed": "Projekte konnten nicht geladen werden"
+    },
+    "new": {
+      "title": "Neues Projekt",
+      "projectNameLabel": "Projektname *",
+      "projectNamePlaceholder": "Projektname *",
+      "descriptionLabel": "Beschreibung",
+      "descriptionPlaceholder": "Beschreibung",
+      "statusLabel": "Status",
+      "clientLabel": "Verknüpfter Kunde",
+      "noClient": "Kein verknüpfter Kunde",
+      "saving": "Speichern...",
+      "createProject": "Projekt erstellen",
+      "cancel": "Abbrechen",
+      "errors": {
+        "nameRequired": "Projektname ist erforderlich.",
+        "supabaseInit": "Supabase-Client konnte nicht initialisiert werden",
+        "loginRequired": "Bitte melden Sie sich an, um Projekte zu erstellen"
+      }
+    },
+    "detail": {
+      "loading": "Laden...",
+      "notFound": "Projekt nicht gefunden.",
+      "noDescription": "Keine Projektbeschreibung vorhanden.",
+      "edit": "Bearbeiten",
+      "back": "Zurück",
+      "statusLabel": "Status",
+      "clientLabel": "Kunde",
+      "unassigned": "Nicht zugewiesen",
+      "invoicesLabel": "Rechnungen",
+      "revenueLabel": "Umsatz",
+      "dashboard": {
+        "title": "Projekt-Dashboard",
+        "paidInvoices": "Bezahlte Rechnungen",
+        "pendingInvoices": "Ausstehende Rechnungen",
+        "openAmount": "Offener Betrag"
+      },
+      "reports": {
+        "title": "Projektberichte",
+        "totalInvoices": "Insgesamt erstellte Rechnungen",
+        "totalCollected": "Gesamtbetrag eingenommen",
+        "totalOutstanding": "Gesamtbetrag ausstehend"
+      },
+      "linkedInvoices": "Verknüpfte Rechnungen",
+      "noLinkedInvoices": "Noch keine verknüpften Rechnungen.",
+      "errors": {
+        "supabaseInit": "Supabase-Client konnte nicht initialisiert werden",
+        "loginRequired": "Bitte melden Sie sich an, um das Projekt anzuzeigen."
+      }
+    },
+    "edit": {
+      "title": "Projekt bearbeiten",
+      "projectNamePlaceholder": "Projektname *",
+      "descriptionPlaceholder": "Beschreibung",
+      "noClient": "Kein verknüpfter Kunde",
+      "saving": "Speichern...",
+      "saveProject": "Projekt speichern",
+      "cancel": "Abbrechen",
+      "errors": {
+        "nameRequired": "Projektname ist erforderlich.",
+        "supabaseInit": "Supabase-Client konnte nicht initialisiert werden",
+        "loginRequired": "Bitte melden Sie sich an, um das Projekt zu bearbeiten."
+      }
     }
   },
   "recurringPage": {

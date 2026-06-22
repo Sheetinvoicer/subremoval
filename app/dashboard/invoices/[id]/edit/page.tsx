@@ -248,7 +248,7 @@ export default function EditInvoicePage() {
       <Toaster position="top-right" />
       
       <div className="flex items-center gap-4 mb-6">
-        <Link href={`/dashboard/invoices/${invoice.id}`} className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">← Back</Link>
+        <Link href="/dashboard/invoices" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">← Back</Link>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Edit Invoice #{invoice.invoice_number}
         </h1>

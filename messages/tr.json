@@ -594,6 +594,68 @@
       "supabaseInit": "Supabase istemcisi başlatılamadı",
       "loginRequired": "Projeleri görüntülemek için giriş yapın",
       "loadFailed": "Projeler yüklenemedi"
+    },
+    "new": {
+      "title": "Yeni Proje",
+      "projectNameLabel": "Proje adı *",
+      "projectNamePlaceholder": "Proje adı *",
+      "descriptionLabel": "Açıklama",
+      "descriptionPlaceholder": "Açıklama",
+      "statusLabel": "Durum",
+      "clientLabel": "Bağlı müşteri",
+      "noClient": "Bağlı müşteri yok",
+      "saving": "Kaydediliyor...",
+      "createProject": "Proje oluştur",
+      "cancel": "İptal",
+      "errors": {
+        "nameRequired": "Proje adı gereklidir.",
+        "supabaseInit": "Supabase istemcisi başlatılamadı",
+        "loginRequired": "Proje oluşturmak için giriş yapın"
+      }
+    },
+    "detail": {
+      "loading": "Yükleniyor...",
+      "notFound": "Proje bulunamadı.",
+      "noDescription": "Proje açıklaması girilmedi.",
+      "edit": "Düzenle",
+      "back": "Geri",
+      "statusLabel": "Durum",
+      "clientLabel": "Müşteri",
+      "unassigned": "Atanmamış",
+      "invoicesLabel": "Faturalar",
+      "revenueLabel": "Gelir",
+      "dashboard": {
+        "title": "Proje Panosu",
+        "paidInvoices": "Ödenen faturalar",
+        "pendingInvoices": "Bekleyen faturalar",
+        "openAmount": "Açık tutar"
+      },
+      "reports": {
+        "title": "Proje Raporları",
+        "totalInvoices": "Toplam oluşturulan fatura",
+        "totalCollected": "Toplam tahsil edilen tutar",
+        "totalOutstanding": "Toplam bekleyen tutar"
+      },
+      "linkedInvoices": "Bağlı Faturalar",
+      "noLinkedInvoices": "Henüz bağlı fatura yok.",
+      "errors": {
+        "supabaseInit": "Supabase istemcisi başlatılamadı",
+        "loginRequired": "Projeyi görüntülemek için giriş yapın."
+      }
+    },
+    "edit": {
+      "title": "Projeyi düzenle",
+      "projectNamePlaceholder": "Proje adı *",
+      "descriptionPlaceholder": "Açıklama",
+      "noClient": "Bağlı müşteri yok",
+      "saving": "Kaydediliyor...",
+      "saveProject": "Projeyi kaydet",
+      "cancel": "İptal",
+      "errors": {
+        "nameRequired": "Proje adı gereklidir.",
+        "supabaseInit": "Supabase istemcisi başlatılamadı",
+        "loginRequired": "Projeyi düzenlemek için giriş yapın."
+      }
     }
   },
   "recurringPage": {

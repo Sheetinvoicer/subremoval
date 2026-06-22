@@ -635,6 +635,68 @@
       "supabaseInit": "Failed to initialize Supabase client",
       "loginRequired": "Please log in to view projects",
       "loadFailed": "Failed to load projects"
+    },
+    "new": {
+      "title": "New Project",
+      "projectNameLabel": "Project name *",
+      "projectNamePlaceholder": "Project name *",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Description",
+      "statusLabel": "Status",
+      "clientLabel": "Linked client",
+      "noClient": "No linked client",
+      "saving": "Saving...",
+      "createProject": "Create Project",
+      "cancel": "Cancel",
+      "errors": {
+        "nameRequired": "Project name is required.",
+        "supabaseInit": "Failed to initialize Supabase client",
+        "loginRequired": "Please log in to create projects"
+      }
+    },
+    "detail": {
+      "loading": "Loading...",
+      "notFound": "Project not found.",
+      "noDescription": "No project description provided.",
+      "edit": "Edit",
+      "back": "Back",
+      "statusLabel": "Status",
+      "clientLabel": "Client",
+      "unassigned": "Unassigned",
+      "invoicesLabel": "Invoices",
+      "revenueLabel": "Revenue",
+      "dashboard": {
+        "title": "Project Dashboard",
+        "paidInvoices": "Paid invoices",
+        "pendingInvoices": "Pending invoices",
+        "openAmount": "Open amount"
+      },
+      "reports": {
+        "title": "Project Reports",
+        "totalInvoices": "Total invoices generated",
+        "totalCollected": "Total collected amount",
+        "totalOutstanding": "Total outstanding amount"
+      },
+      "linkedInvoices": "Linked Invoices",
+      "noLinkedInvoices": "No linked invoices yet.",
+      "errors": {
+        "supabaseInit": "Failed to initialize Supabase client",
+        "loginRequired": "Please log in to view project."
+      }
+    },
+    "edit": {
+      "title": "Edit Project",
+      "projectNamePlaceholder": "Project name *",
+      "descriptionPlaceholder": "Description",
+      "noClient": "No linked client",
+      "saving": "Saving...",
+      "saveProject": "Save Project",
+      "cancel": "Cancel",
+      "errors": {
+        "nameRequired": "Project name is required.",
+        "supabaseInit": "Failed to initialize Supabase client",
+        "loginRequired": "Please log in to edit project."
+      }
     }
   },
   "recurringPage": {
