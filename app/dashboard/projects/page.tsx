@@ -10,7 +10,7 @@ interface Project {
   id: string;
   name: string;
   description?: string | null;
-  status: 'planning' | 'active' | 'on_hold' | 'completed' | 'archived' | string;
+  status: 'active' | 'on-hold' | 'completed' | 'archived' | string;
   created_at: string;
   clients?: { name?: string } | null;
 }
@@ -103,9 +103,8 @@ export default function ProjectsPage() {
       <div className="mb-6 w-56">
         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-full border rounded px-3 py-2 bg-white dark:bg-gray-900">
           <option value="all">{t('filters.allStatuses')}</option>
-          <option value="planning">{t('filters.planning')}</option>
           <option value="active">{t('filters.active')}</option>
-          <option value="on_hold">{t('filters.onHold')}</option>
+          <option value="on-hold">{t('filters.on-hold')}</option>
           <option value="completed">{t('filters.completed')}</option>
           <option value="archived">{t('filters.archived')}</option>
         </select>

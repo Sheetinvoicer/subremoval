@@ -53,6 +53,7 @@
       "4": "o",
       "5": "n",
       "6": "s",
+      "7": "n",
       "tryAgain": "Réessayer",
       "newInvoice": "Nouvelle facture",
       "selectPage": "Sélectionner la page",
@@ -429,6 +430,23 @@
     }
   },
   "clientsPage": {
+    "clients": "Clients",
+    "newClient": "Nouveau client",
+    "clientName": "Nom du client",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "company": "Entreprise",
+    "address": "Adresse",
+    "noClients": "Aucun client pour le moment",
+    "createClient": "Créer un client",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "view": "Voir",
+    "clientCreated": "Client créé",
+    "clientUpdated": "Client mis à jour",
+    "clientDeleted": "Client supprimé",
     "title": "Clients",
     "subtitle": "Gérez vos relations clients",
     "newTitle": "Nouveau client",
@@ -613,16 +631,14 @@
     },
     "filters": {
       "allStatuses": "Tous les statuts",
-      "planning": "Planification",
       "active": "Actif",
-      "onHold": "En pause",
+      "on-hold": "En pause",
       "completed": "Terminé",
       "archived": "Archivé"
     },
     "status": {
-      "planning": "Planification",
       "active": "Actif",
-      "on_hold": "En pause",
+      "on-hold": "En pause",
       "completed": "Terminé",
       "archived": "Archivé"
     },
@@ -736,6 +752,37 @@
       "loadFailed": "Échec du chargement des factures récurrentes",
       "updateFailed": "Échec de la mise à jour de la facture récurrente",
       "deleteFailed": "Échec de la suppression de la facture récurrente"
+    },
+    "new": {
+      "title": "Nouvelle facture récurrente",
+      "fields": {
+        "invoiceNumber": "Numéro de facture",
+        "clientName": "Nom du client",
+        "amount": "Montant",
+        "currency": "Devise",
+        "frequency": "Fréquence",
+        "nextDate": "Prochaine date",
+        "status": "Statut",
+        "notes": "Notes"
+      },
+      "status": {
+        "active": "Active",
+        "paused": "En pause",
+        "cancelled": "Annulée"
+      },
+      "actions": {
+        "create": "Créer une facture récurrente",
+        "saving": "Enregistrement...",
+        "cancel": "Annuler"
+      },
+      "validation": {
+        "clientRequired": "Le nom du client est requis",
+        "amountInvalid": "Veuillez saisir un montant valide",
+        "nextDateRequired": "La prochaine date est requise"
+      },
+      "errors": {
+        "loginRequired": "Vous devez être connecté pour créer une facture récurrente"
+      }
     }
   },
   "estimatesPage": {
@@ -746,7 +793,38 @@
     "empty": "Aucun devis trouvé. Créez votre premier devis !",
     "defaultEstimate": "Devis",
     "createdLabel": "Créé le",
-    "validUntilLabel": "Valable jusqu'au"
+    "validUntilLabel": "Valable jusqu'au",
+    "new": {
+      "title": "Nouveau devis",
+      "fields": {
+        "estimateNumber": "Numéro de devis",
+        "clientName": "Nom du client",
+        "amount": "Montant",
+        "currency": "Devise",
+        "status": "Statut",
+        "validUntil": "Valable jusqu'au",
+        "notes": "Notes"
+      },
+      "status": {
+        "draft": "Brouillon",
+        "sent": "Envoyé",
+        "accepted": "Accepté",
+        "rejected": "Refusé"
+      },
+      "actions": {
+        "create": "Créer un devis",
+        "saving": "Enregistrement...",
+        "cancel": "Annuler"
+      },
+      "validation": {
+        "clientRequired": "Le nom du client est requis",
+        "amountInvalid": "Veuillez saisir un montant valide"
+      },
+      "errors": {
+        "supabaseInit": "Impossible de se connecter à la base de données",
+        "loginRequired": "Vous devez être connecté pour créer un devis"
+      }
+    }
   },
   "timePage": {
     "title": "Suivi du temps",
@@ -854,5 +932,45 @@
       "loadFailed": "Échec du chargement des rapports",
       "insightsFailed": "Échec de la génération des analyses"
     }
+  },
+  "recurring": {
+    "title": "الفواتير المتكررة",
+    "new": "فاتورة متكررة جديدة",
+    "frequency": "التكرار",
+    "nextDate": "التاريخ القادم",
+    "status": "الحالة",
+    "active": "نشط",
+    "paused": "متوقف"
+  },
+  "timeTracking": {
+    "title": "تتبع الوقت",
+    "start": "بدء المؤقت",
+    "stop": "إيقاف المؤقت",
+    "hours": "الساعات",
+    "project": "المشروع",
+    "task": "المهمة"
+  },
+  "reports": {
+    "title": "التقارير",
+    "overview": "نظرة عامة",
+    "income": "الدخل",
+    "expenses": "المصروفات",
+    "profit": "الربح",
+    "export": "تصدير التقرير"
+  },
+  "auth": {
+    "logout": "تسجيل الخروج"
+  },
+  "forms": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "address": "العنوان",
+    "amount": "المبلغ",
+    "date": "التاريخ",
+    "description": "الوصف",
+    "notes": "ملاحظات",
+    "status": "الحالة",
+    "actions": "الإجراءات"
   }
 }

@@ -16,7 +16,7 @@ interface Project {
 
 interface ClientItem { id: string; name: string; }
 
-const statuses = ['planning', 'active', 'on_hold', 'completed', 'archived'];
+const statuses = ['active', 'completed', 'on-hold', 'archived'];
 
 export default function EditProjectPage() {
   const t = useTranslations('projectsPage');

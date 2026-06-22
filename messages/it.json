@@ -44,6 +44,8 @@
       "3": "o",
       "4": "n",
       "5": "i",
+      "6": "s",
+      "7": "n",
       "tryAgain": "Riprova",
       "newInvoice": "Nuova fattura",
       "selectPage": "Seleziona pagina",
@@ -152,6 +154,40 @@
         "createFailed": "Failed to create invoice."
       },
       "csvUploadLabel": "Importa elementi da CSV (facoltativo)"
+    },
+    "detail": {
+      "createdLabel": "Created:",
+      "templateSuffix": "TEMPLATE",
+      "sending": "Sending...",
+      "sendInvoice": "Send Invoice",
+      "edit": "Edit",
+      "back": "Back",
+      "goBack": "Go Back",
+      "backToInvoices": "Back to Invoices",
+      "errorPrefix": "Error:",
+      "invoiceNotFound": "Invoice not found",
+      "invoiceNumber": "Invoice #{number}",
+      "client": "Client",
+      "amount": "Amount",
+      "status": "Status",
+      "dueDate": "Due Date",
+      "items": "Items",
+      "description": "Description",
+      "quantity": "Quantity",
+      "price": "Price",
+      "total": "Total",
+      "tax": "Tax ({rate}%)",
+      "linkedTimeEntries": "Linked Time Entries",
+      "manageTimeEntries": "Manage time entries",
+      "totalTracked": "Total tracked:",
+      "noTimeEntries": "No time entries linked to this invoice yet.",
+      "notes": "Notes",
+      "statusUpdated": "Invoice status updated to {status}.",
+      "sendSuccess": "Invoice sent successfully!",
+      "failedSend": "Failed to send invoice",
+      "failedConnect": "Failed to connect to database",
+      "loginRequired": "Please login to view invoice details.",
+      "supabaseInit": "Failed to initialize Supabase client."
     }
   },
   "clients": {
@@ -386,6 +422,23 @@
     }
   },
   "clientsPage": {
+    "clients": "Clienti",
+    "newClient": "Nuovo cliente",
+    "clientName": "Nome del cliente",
+    "email": "Email",
+    "phone": "Telefono",
+    "company": "Azienda",
+    "address": "Indirizzo",
+    "noClients": "Ancora nessun cliente",
+    "createClient": "Crea cliente",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "view": "Visualizza",
+    "clientCreated": "Cliente creato",
+    "clientUpdated": "Cliente aggiornato",
+    "clientDeleted": "Cliente eliminato",
     "title": "Clienti",
     "subtitle": "Gestisci le tue relazioni con i clienti",
     "newTitle": "Nuovo cliente",
@@ -570,16 +623,14 @@
     },
     "filters": {
       "allStatuses": "Tutti gli stati",
-      "planning": "Pianificazione",
       "active": "Attivo",
-      "onHold": "In pausa",
+      "on-hold": "In pausa",
       "completed": "Completato",
       "archived": "Archiviato"
     },
     "status": {
-      "planning": "Pianificazione",
       "active": "Attivo",
-      "on_hold": "In pausa",
+      "on-hold": "In pausa",
       "completed": "Completato",
       "archived": "Archiviato"
     },
@@ -693,6 +744,37 @@
       "loadFailed": "Impossibile caricare le fatture ricorrenti",
       "updateFailed": "Impossibile aggiornare la fattura ricorrente",
       "deleteFailed": "Impossibile eliminare la fattura ricorrente"
+    },
+    "new": {
+      "title": "Nuova fattura ricorrente",
+      "fields": {
+        "invoiceNumber": "Numero fattura",
+        "clientName": "Nome del cliente",
+        "amount": "Importo",
+        "currency": "Valuta",
+        "frequency": "Frequenza",
+        "nextDate": "Prossima data",
+        "status": "Stato",
+        "notes": "Note"
+      },
+      "status": {
+        "active": "Attiva",
+        "paused": "In pausa",
+        "cancelled": "Annullata"
+      },
+      "actions": {
+        "create": "Crea fattura ricorrente",
+        "saving": "Salvataggio...",
+        "cancel": "Annulla"
+      },
+      "validation": {
+        "clientRequired": "Il nome del cliente è obbligatorio",
+        "amountInvalid": "Inserisci un importo valido",
+        "nextDateRequired": "La prossima data è obbligatoria"
+      },
+      "errors": {
+        "loginRequired": "Devi aver effettuato l'accesso per creare una fattura ricorrente"
+      }
     }
   },
   "estimatesPage": {
@@ -703,7 +785,38 @@
     "empty": "Nessun preventivo trovato. Crea il tuo primo preventivo!",
     "defaultEstimate": "Preventivo",
     "createdLabel": "Creato",
-    "validUntilLabel": "Valido fino al"
+    "validUntilLabel": "Valido fino al",
+    "new": {
+      "title": "Nuovo preventivo",
+      "fields": {
+        "estimateNumber": "Numero preventivo",
+        "clientName": "Nome del cliente",
+        "amount": "Importo",
+        "currency": "Valuta",
+        "status": "Stato",
+        "validUntil": "Valido fino al",
+        "notes": "Note"
+      },
+      "status": {
+        "draft": "Bozza",
+        "sent": "Inviato",
+        "accepted": "Accettato",
+        "rejected": "Rifiutato"
+      },
+      "actions": {
+        "create": "Crea preventivo",
+        "saving": "Salvataggio...",
+        "cancel": "Annulla"
+      },
+      "validation": {
+        "clientRequired": "Il nome del cliente è obbligatorio",
+        "amountInvalid": "Inserisci un importo valido"
+      },
+      "errors": {
+        "supabaseInit": "Impossibile connettersi al database",
+        "loginRequired": "Devi aver effettuato l'accesso per creare un preventivo"
+      }
+    }
   },
   "timePage": {
     "title": "Monitoraggio tempo",
@@ -819,5 +932,45 @@
     "loadedRows": "{count} righe caricate",
     "noData": "Nessun dato trovato nel CSV",
     "parseError": "Errore durante l'analisi del CSV: {message}"
+  },
+  "recurring": {
+    "title": "الفواتير المتكررة",
+    "new": "فاتورة متكررة جديدة",
+    "frequency": "التكرار",
+    "nextDate": "التاريخ القادم",
+    "status": "الحالة",
+    "active": "نشط",
+    "paused": "متوقف"
+  },
+  "timeTracking": {
+    "title": "تتبع الوقت",
+    "start": "بدء المؤقت",
+    "stop": "إيقاف المؤقت",
+    "hours": "الساعات",
+    "project": "المشروع",
+    "task": "المهمة"
+  },
+  "reports": {
+    "title": "التقارير",
+    "overview": "نظرة عامة",
+    "income": "الدخل",
+    "expenses": "المصروفات",
+    "profit": "الربح",
+    "export": "تصدير التقرير"
+  },
+  "auth": {
+    "logout": "تسجيل الخروج"
+  },
+  "forms": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "address": "العنوان",
+    "amount": "المبلغ",
+    "date": "التاريخ",
+    "description": "الوصف",
+    "notes": "ملاحظات",
+    "status": "الحالة",
+    "actions": "الإجراءات"
   }
 }

@@ -7,27 +7,29 @@ import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
 
 interface FormState {
-  estimate_number: string;
+  invoice_number: string;
   client_name: string;
   amount: string;
   currency: string;
+  frequency: string;
+  next_date: string;
   status: string;
-  valid_until: string;
   notes: string;
 }
 
 const initialForm: FormState = {
-  estimate_number: '',
+  invoice_number: '',
   client_name: '',
   amount: '',
   currency: 'USD',
-  status: 'draft',
-  valid_until: '',
+  frequency: 'monthly',
+  next_date: new Date().toISOString().slice(0, 10),
+  status: 'active',
   notes: '',
 };
 
-export default function NewEstimatePage() {
-  const t = useTranslations('estimatesPage');
+export default function NewRecurringPage() {
+  const t = useTranslations('recurringPage');
   const router = useRouter();
   const [form, setForm] = useState<FormState>(initialForm);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +42,8 @@ export default function NewEstimatePage() {
   const validate = () => {
     if (!form.client_name.trim()) return t('new.validation.clientRequired');
     const amount = parseFloat(form.amount);
-    if (Number.isNaN(amount) || amount < 0) return t('new.validation.amountInvalid');
+    if (Number.isNaN(amount) || amount <= 0) return t('new.validation.amountInvalid');
+    if (!form.next_date) return t('new.validation.nextDateRequired');
     return null;
   };
 
@@ -54,7 +57,7 @@ export default function NewEstimatePage() {
 
     const supabase = createClient();
     if (!supabase) {
-      setError(t('new.errors.supabaseInit'));
+      setError(t('errors.supabaseInit'));
       return;
     }
 
@@ -70,27 +73,26 @@ export default function NewEstimatePage() {
 
       const payload = {
         user_id: authData.user.id,
-        estimate_number: form.estimate_number.trim() || null,
+        invoice_number: form.invoice_number.trim() || null,
         client_name: form.client_name.trim(),
-        amount: parseFloat(form.amount) || 0,
+        amount: parseFloat(form.amount),
         currency: form.currency.trim() || 'USD',
+        frequency: form.frequency,
+        next_date: form.next_date,
         status: form.status,
-        valid_until: form.valid_until || null,
         notes: form.notes.trim() || null,
       };
 
-      const { data, error: insertError } = await supabase
-        .from('estimates')
-        .insert(payload)
-        .select('id')
-        .single();
+      const { error: insertError } = await supabase
+        .from('recurring_invoices')
+        .insert(payload);
 
       if (insertError) {
         setError(insertError.message);
         return;
       }
 
-      router.push(`/dashboard/estimates/${data.id}`);
+      router.push('/dashboard/recurring');
     } finally {
       setSubmitting(false);
     }
@@ -103,8 +105,8 @@ export default function NewEstimatePage() {
 
       <form onSubmit={onSubmit} className="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700">
         <div>
-          <label htmlFor="estimate-number" className="block text-sm font-medium mb-1">{t('new.fields.estimateNumber')}</label>
-          <input id="estimate-number" name="estimate_number" value={form.estimate_number} onChange={(e) => updateField('estimate_number', e.target.value)} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2" />
+          <label htmlFor="invoice-number" className="block text-sm font-medium mb-1">{t('new.fields.invoiceNumber')}</label>
+          <input id="invoice-number" name="invoice_number" value={form.invoice_number} onChange={(e) => updateField('invoice_number', e.target.value)} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2" />
         </div>
         <div>
           <label htmlFor="client-name" className="block text-sm font-medium mb-1">{t('new.fields.clientName')}</label>
@@ -122,18 +124,27 @@ export default function NewEstimatePage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="status" className="block text-sm font-medium mb-1">{t('new.fields.status')}</label>
-            <select id="status" name="status" value={form.status} onChange={(e) => updateField('status', e.target.value)} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2">
-              <option value="draft">{t('new.status.draft')}</option>
-              <option value="sent">{t('new.status.sent')}</option>
-              <option value="accepted">{t('new.status.accepted')}</option>
-              <option value="rejected">{t('new.status.rejected')}</option>
+            <label htmlFor="frequency" className="block text-sm font-medium mb-1">{t('new.fields.frequency')}</label>
+            <select id="frequency" name="frequency" value={form.frequency} onChange={(e) => updateField('frequency', e.target.value)} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2">
+              <option value="weekly">{t('frequency.weekly')}</option>
+              <option value="biweekly">{t('frequency.biweekly')}</option>
+              <option value="monthly">{t('frequency.monthly')}</option>
+              <option value="quarterly">{t('frequency.quarterly')}</option>
+              <option value="yearly">{t('frequency.yearly')}</option>
             </select>
           </div>
           <div>
-            <label htmlFor="valid-until" className="block text-sm font-medium mb-1">{t('new.fields.validUntil')}</label>
-            <input id="valid-until" name="valid_until" type="date" value={form.valid_until} onChange={(e) => updateField('valid_until', e.target.value)} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2" />
+            <label htmlFor="next-date" className="block text-sm font-medium mb-1">{t('new.fields.nextDate')}</label>
+            <input id="next-date" name="next_date" type="date" value={form.next_date} onChange={(e) => updateField('next_date', e.target.value)} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2" />
           </div>
+        </div>
+        <div>
+          <label htmlFor="status" className="block text-sm font-medium mb-1">{t('new.fields.status')}</label>
+          <select id="status" name="status" value={form.status} onChange={(e) => updateField('status', e.target.value)} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2">
+            <option value="active">{t('new.status.active')}</option>
+            <option value="paused">{t('new.status.paused')}</option>
+            <option value="cancelled">{t('new.status.cancelled')}</option>
+          </select>
         </div>
         <div>
           <label htmlFor="notes" className="block text-sm font-medium mb-1">{t('new.fields.notes')}</label>
@@ -141,10 +152,10 @@ export default function NewEstimatePage() {
         </div>
 
         <div className="flex gap-3 pt-2">
-          <button type="submit" disabled={submitting} className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg disabled:opacity-60">
+          <button type="submit" disabled={submitting} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg disabled:opacity-60">
             {submitting ? t('new.actions.saving') : t('new.actions.create')}
           </button>
-          <Link href="/dashboard/estimates" className="px-5 py-2 rounded-lg border border-gray-300 dark:border-gray-600">{t('new.actions.cancel')}</Link>
+          <Link href="/dashboard/recurring" className="px-5 py-2 rounded-lg border border-gray-300 dark:border-gray-600">{t('new.actions.cancel')}</Link>
         </div>
       </form>
     </div>

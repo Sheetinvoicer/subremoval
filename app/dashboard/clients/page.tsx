@@ -100,6 +100,9 @@ export default function ClientsPage() {
         </Link>
       </div>
 
+      {clients.length === 0 ? (
+        <p className="text-gray-500 dark:text-gray-400">{t('noClients')}</p>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {clients.map((client, idx) => (
           <motion.div
@@ -123,6 +126,7 @@ export default function ClientsPage() {
           </motion.div>
         ))}
       </div>
+      )}
     </div>
   );
 }

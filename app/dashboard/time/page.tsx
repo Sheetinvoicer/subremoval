@@ -175,12 +175,14 @@ export default function TimeTrackingPage() {
         throw new Error(t('errors.loginCreate'));
       }
 
+      const minutes = Number(durationMinutes);
       const { data: inserted, error: insertError } = await supabase
         .from('time_entries')
         .insert({
           user_id: user.id,
           description: description.trim(),
-          duration_minutes: Number(durationMinutes),
+          duration_minutes: minutes,
+          hours: Math.round((minutes / 60) * 100) / 100,
           entry_date: entryDate,
           client_id: clientId || null,
           invoice_id: invoiceId || null,

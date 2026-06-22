@@ -430,6 +430,23 @@
     }
   },
   "clientsPage": {
+    "clients": "Clientes",
+    "newClient": "Nuevo cliente",
+    "clientName": "Nombre del cliente",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "company": "Empresa",
+    "address": "Dirección",
+    "noClients": "Aún no hay clientes",
+    "createClient": "Crear cliente",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "view": "Ver",
+    "clientCreated": "Cliente creado",
+    "clientUpdated": "Cliente actualizado",
+    "clientDeleted": "Cliente eliminado",
     "title": "Clientes",
     "subtitle": "Gestiona tus relaciones con clientes",
     "newTitle": "Nuevo Cliente",
@@ -614,16 +631,14 @@
     },
     "filters": {
       "allStatuses": "Todos los estados",
-      "planning": "Planificación",
       "active": "Activo",
-      "onHold": "En Espera",
+      "on-hold": "En Espera",
       "completed": "Completado",
       "archived": "Archivado"
     },
     "status": {
-      "planning": "Planificación",
       "active": "Activo",
-      "on_hold": "En Espera",
+      "on-hold": "En Espera",
       "completed": "Completado",
       "archived": "Archivado"
     },
@@ -737,6 +752,37 @@
       "loadFailed": "Error al cargar facturas recurrentes",
       "updateFailed": "Error al actualizar factura recurrente",
       "deleteFailed": "Error al eliminar factura recurrente"
+    },
+    "new": {
+      "title": "Nueva factura recurrente",
+      "fields": {
+        "invoiceNumber": "Número de factura",
+        "clientName": "Nombre del cliente",
+        "amount": "Importe",
+        "currency": "Moneda",
+        "frequency": "Frecuencia",
+        "nextDate": "Próxima fecha",
+        "status": "Estado",
+        "notes": "Notas"
+      },
+      "status": {
+        "active": "Activa",
+        "paused": "Pausada",
+        "cancelled": "Cancelada"
+      },
+      "actions": {
+        "create": "Crear factura recurrente",
+        "saving": "Guardando...",
+        "cancel": "Cancelar"
+      },
+      "validation": {
+        "clientRequired": "El nombre del cliente es obligatorio",
+        "amountInvalid": "Introduzca un importe válido",
+        "nextDateRequired": "La próxima fecha es obligatoria"
+      },
+      "errors": {
+        "loginRequired": "Debe iniciar sesión para crear una factura recurrente"
+      }
     }
   },
   "estimatesPage": {
@@ -747,7 +793,38 @@
     "empty": "No se encontraron presupuestos. ¡Crea tu primer presupuesto!",
     "defaultEstimate": "Presupuesto",
     "createdLabel": "Creado",
-    "validUntilLabel": "Válido hasta"
+    "validUntilLabel": "Válido hasta",
+    "new": {
+      "title": "Nuevo presupuesto",
+      "fields": {
+        "estimateNumber": "Número de presupuesto",
+        "clientName": "Nombre del cliente",
+        "amount": "Importe",
+        "currency": "Moneda",
+        "status": "Estado",
+        "validUntil": "Válido hasta",
+        "notes": "Notas"
+      },
+      "status": {
+        "draft": "Borrador",
+        "sent": "Enviado",
+        "accepted": "Aceptado",
+        "rejected": "Rechazado"
+      },
+      "actions": {
+        "create": "Crear presupuesto",
+        "saving": "Guardando...",
+        "cancel": "Cancelar"
+      },
+      "validation": {
+        "clientRequired": "El nombre del cliente es obligatorio",
+        "amountInvalid": "Introduzca un importe válido"
+      },
+      "errors": {
+        "supabaseInit": "No se pudo conectar a la base de datos",
+        "loginRequired": "Debe iniciar sesión para crear un presupuesto"
+      }
+    }
   },
   "timePage": {
     "title": "Control de Tiempo",
@@ -855,5 +932,45 @@
       "loadFailed": "Error al cargar informes",
       "insightsFailed": "Error al generar análisis"
     }
+  },
+  "recurring": {
+    "title": "الفواتير المتكررة",
+    "new": "فاتورة متكررة جديدة",
+    "frequency": "التكرار",
+    "nextDate": "التاريخ القادم",
+    "status": "الحالة",
+    "active": "نشط",
+    "paused": "متوقف"
+  },
+  "timeTracking": {
+    "title": "تتبع الوقت",
+    "start": "بدء المؤقت",
+    "stop": "إيقاف المؤقت",
+    "hours": "الساعات",
+    "project": "المشروع",
+    "task": "المهمة"
+  },
+  "reports": {
+    "title": "التقارير",
+    "overview": "نظرة عامة",
+    "income": "الدخل",
+    "expenses": "المصروفات",
+    "profit": "الربح",
+    "export": "تصدير التقرير"
+  },
+  "auth": {
+    "logout": "تسجيل الخروج"
+  },
+  "forms": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "address": "العنوان",
+    "amount": "المبلغ",
+    "date": "التاريخ",
+    "description": "الوصف",
+    "notes": "ملاحظات",
+    "status": "الحالة",
+    "actions": "الإجراءات"
   }
 }

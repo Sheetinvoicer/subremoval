@@ -8,14 +8,14 @@ import { useTranslations } from 'next-intl';
 
 interface ClientItem { id: string; name: string; }
 
-const statuses = ['planning', 'active', 'on_hold', 'completed', 'archived'];
+const statuses = ['active', 'completed', 'on-hold', 'archived'];
 
 export default function NewProjectPage() {
   const t = useTranslations('projectsPage');
   const router = useRouter();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [status, setStatus] = useState('planning');
+  const [status, setStatus] = useState('active');
   const [clientId, setClientId] = useState('');
   const [clients, setClients] = useState<ClientItem[]>([]);
   const [error, setError] = useState<string | null>(null);

@@ -53,6 +53,7 @@
       "4": "o",
       "5": "n",
       "6": "s",
+      "7": "n",
       "tryAgain": "Try Again",
       "newInvoice": "New Invoice",
       "selectPage": "Select page",
@@ -206,6 +207,23 @@
     "add_client": "Add Client"
   },
   "clientsPage": {
+    "clients": "Clients",
+    "newClient": "New Client",
+    "clientName": "Client Name",
+    "email": "Email",
+    "phone": "Phone",
+    "company": "Company",
+    "address": "Address",
+    "noClients": "No clients yet",
+    "createClient": "Create Client",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "view": "View",
+    "clientCreated": "Client created",
+    "clientUpdated": "Client updated",
+    "clientDeleted": "Client deleted",
     "title": "Clients",
     "subtitle": "Manage your client relationships",
     "newTitle": "New Client",
@@ -613,16 +631,14 @@
     },
     "filters": {
       "allStatuses": "All statuses",
-      "planning": "Planning",
       "active": "Active",
-      "onHold": "On Hold",
+      "on-hold": "On Hold",
       "completed": "Completed",
       "archived": "Archived"
     },
     "status": {
-      "planning": "Planning",
       "active": "Active",
-      "on_hold": "On Hold",
+      "on-hold": "On Hold",
       "completed": "Completed",
       "archived": "Archived"
     },
@@ -736,6 +752,37 @@
       "loadFailed": "Failed to load recurring invoices",
       "updateFailed": "Failed to update recurring invoice",
       "deleteFailed": "Failed to delete recurring invoice"
+    },
+    "new": {
+      "title": "New Recurring Invoice",
+      "fields": {
+        "invoiceNumber": "Invoice Number",
+        "clientName": "Client Name",
+        "amount": "Amount",
+        "currency": "Currency",
+        "frequency": "Frequency",
+        "nextDate": "Next Date",
+        "status": "Status",
+        "notes": "Notes"
+      },
+      "status": {
+        "active": "Active",
+        "paused": "Paused",
+        "cancelled": "Cancelled"
+      },
+      "actions": {
+        "create": "Create Recurring Invoice",
+        "saving": "Saving...",
+        "cancel": "Cancel"
+      },
+      "validation": {
+        "clientRequired": "Client name is required",
+        "amountInvalid": "Please enter a valid amount",
+        "nextDateRequired": "Next date is required"
+      },
+      "errors": {
+        "loginRequired": "You must be logged in to create a recurring invoice"
+      }
     }
   },
   "estimatesPage": {
@@ -746,7 +793,38 @@
     "empty": "No estimates found. Create your first estimate!",
     "defaultEstimate": "Estimate",
     "createdLabel": "Created",
-    "validUntilLabel": "Valid until"
+    "validUntilLabel": "Valid until",
+    "new": {
+      "title": "New Estimate",
+      "fields": {
+        "estimateNumber": "Estimate Number",
+        "clientName": "Client Name",
+        "amount": "Amount",
+        "currency": "Currency",
+        "status": "Status",
+        "validUntil": "Valid Until",
+        "notes": "Notes"
+      },
+      "status": {
+        "draft": "Draft",
+        "sent": "Sent",
+        "accepted": "Accepted",
+        "rejected": "Rejected"
+      },
+      "actions": {
+        "create": "Create Estimate",
+        "saving": "Saving...",
+        "cancel": "Cancel"
+      },
+      "validation": {
+        "clientRequired": "Client name is required",
+        "amountInvalid": "Please enter a valid amount"
+      },
+      "errors": {
+        "supabaseInit": "Could not connect to the database",
+        "loginRequired": "You must be logged in to create an estimate"
+      }
+    }
   },
   "timePage": {
     "title": "Time Tracking",
@@ -854,5 +932,45 @@
       "loadFailed": "Failed to load reports",
       "insightsFailed": "Failed to generate insights"
     }
+  },
+  "recurring": {
+    "title": "الفواتير المتكررة",
+    "new": "فاتورة متكررة جديدة",
+    "frequency": "التكرار",
+    "nextDate": "التاريخ القادم",
+    "status": "الحالة",
+    "active": "نشط",
+    "paused": "متوقف"
+  },
+  "timeTracking": {
+    "title": "تتبع الوقت",
+    "start": "بدء المؤقت",
+    "stop": "إيقاف المؤقت",
+    "hours": "الساعات",
+    "project": "المشروع",
+    "task": "المهمة"
+  },
+  "reports": {
+    "title": "التقارير",
+    "overview": "نظرة عامة",
+    "income": "الدخل",
+    "expenses": "المصروفات",
+    "profit": "الربح",
+    "export": "تصدير التقرير"
+  },
+  "auth": {
+    "logout": "تسجيل الخروج"
+  },
+  "forms": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "address": "العنوان",
+    "amount": "المبلغ",
+    "date": "التاريخ",
+    "description": "الوصف",
+    "notes": "ملاحظات",
+    "status": "الحالة",
+    "actions": "الإجراءات"
   }
 }

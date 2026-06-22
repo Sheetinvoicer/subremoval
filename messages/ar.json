@@ -53,6 +53,7 @@
       "4": "ء",
       "5": "ا",
       "6": "ت",
+      "7": "n",
       "tryAgain": "حاول مرة أخرى",
       "newInvoice": "فاتورة جديدة",
       "selectPage": "تحديد الصفحة",
@@ -206,6 +207,23 @@
     "add_client": "إضافة عميل"
   },
   "clientsPage": {
+    "clients": "العملاء",
+    "newClient": "عميل جديد",
+    "clientName": "اسم العميل",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "company": "الشركة",
+    "address": "العنوان",
+    "noClients": "لا يوجد عملاء بعد",
+    "createClient": "إنشاء عميل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "view": "عرض",
+    "clientCreated": "تم إنشاء العميل",
+    "clientUpdated": "تم تحديث العميل",
+    "clientDeleted": "تم حذف العميل",
     "title": "العملاء",
     "subtitle": "إدارة علاقاتك مع العملاء",
     "newTitle": "عميل جديد",
@@ -443,24 +461,6 @@
       "verifySession": "فشل التحقق من الجلسة"
     }
   },
-  "projects": {
-    "title": "المشاريع",
-    "new": "مشروع جديد",
-    "name": "اسم المشروع",
-    "client": "العميل",
-    "status": "الحالة",
-    "budget": "الميزانية",
-    "description": "الوصف"
-  },
-  "expenses": {
-    "title": "المصروفات",
-    "new": "مصروف جديد",
-    "category": "الفئة",
-    "amount": "المبلغ",
-    "date": "التاريخ",
-    "vendor": "المورّد",
-    "notes": "ملاحظات"
-  },
   "recurring": {
     "title": "الفواتير المتكررة",
     "new": "فاتورة متكررة جديدة",
@@ -671,16 +671,14 @@
     },
     "filters": {
       "allStatuses": "كل الحالات",
-      "planning": "تخطيط",
       "active": "نشط",
-      "onHold": "معلّق",
+      "on-hold": "معلّق",
       "completed": "مكتمل",
       "archived": "مؤرشف"
     },
     "status": {
-      "planning": "تخطيط",
       "active": "نشط",
-      "on_hold": "معلّق",
+      "on-hold": "معلّق",
       "completed": "مكتمل",
       "archived": "مؤرشف"
     },
@@ -794,6 +792,37 @@
       "loadFailed": "فشل تحميل الفواتير المتكررة",
       "updateFailed": "فشل تحديث الفاتورة المتكررة",
       "deleteFailed": "فشل حذف الفاتورة المتكررة"
+    },
+    "new": {
+      "title": "فاتورة متكررة جديدة",
+      "fields": {
+        "invoiceNumber": "رقم الفاتورة",
+        "clientName": "اسم العميل",
+        "amount": "المبلغ",
+        "currency": "العملة",
+        "frequency": "التكرار",
+        "nextDate": "التاريخ التالي",
+        "status": "الحالة",
+        "notes": "ملاحظات"
+      },
+      "status": {
+        "active": "نشطة",
+        "paused": "متوقفة مؤقتاً",
+        "cancelled": "ملغاة"
+      },
+      "actions": {
+        "create": "إنشاء فاتورة متكررة",
+        "saving": "جارٍ الحفظ...",
+        "cancel": "إلغاء"
+      },
+      "validation": {
+        "clientRequired": "اسم العميل مطلوب",
+        "amountInvalid": "الرجاء إدخال مبلغ صالح",
+        "nextDateRequired": "التاريخ التالي مطلوب"
+      },
+      "errors": {
+        "loginRequired": "يجب تسجيل الدخول لإنشاء فاتورة متكررة"
+      }
     }
   },
   "estimatesPage": {
@@ -804,7 +833,38 @@
     "empty": "لا توجد عروض أسعار. أنشئ عرضك الأول!",
     "defaultEstimate": "عرض سعر",
     "createdLabel": "تاريخ الإنشاء",
-    "validUntilLabel": "صالح حتى"
+    "validUntilLabel": "صالح حتى",
+    "new": {
+      "title": "عرض سعر جديد",
+      "fields": {
+        "estimateNumber": "رقم عرض السعر",
+        "clientName": "اسم العميل",
+        "amount": "المبلغ",
+        "currency": "العملة",
+        "status": "الحالة",
+        "validUntil": "صالح حتى",
+        "notes": "ملاحظات"
+      },
+      "status": {
+        "draft": "مسودة",
+        "sent": "مُرسل",
+        "accepted": "مقبول",
+        "rejected": "مرفوض"
+      },
+      "actions": {
+        "create": "إنشاء عرض سعر",
+        "saving": "جارٍ الحفظ...",
+        "cancel": "إلغاء"
+      },
+      "validation": {
+        "clientRequired": "اسم العميل مطلوب",
+        "amountInvalid": "الرجاء إدخال مبلغ صالح"
+      },
+      "errors": {
+        "supabaseInit": "تعذّر الاتصال بقاعدة البيانات",
+        "loginRequired": "يجب تسجيل الدخول لإنشاء عرض سعر"
+      }
+    }
   },
   "timePage": {
     "title": "تتبع الوقت",

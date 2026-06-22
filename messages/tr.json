@@ -154,6 +154,40 @@
         "createFailed": "Failed to create invoice."
       },
       "csvUploadLabel": "CSV'den öğeleri içe aktar (isteğe bağlı)"
+    },
+    "detail": {
+      "createdLabel": "Created:",
+      "templateSuffix": "TEMPLATE",
+      "sending": "Sending...",
+      "sendInvoice": "Send Invoice",
+      "edit": "Edit",
+      "back": "Back",
+      "goBack": "Go Back",
+      "backToInvoices": "Back to Invoices",
+      "errorPrefix": "Error:",
+      "invoiceNotFound": "Invoice not found",
+      "invoiceNumber": "Invoice #{number}",
+      "client": "Client",
+      "amount": "Amount",
+      "status": "Status",
+      "dueDate": "Due Date",
+      "items": "Items",
+      "description": "Description",
+      "quantity": "Quantity",
+      "price": "Price",
+      "total": "Total",
+      "tax": "Tax ({rate}%)",
+      "linkedTimeEntries": "Linked Time Entries",
+      "manageTimeEntries": "Manage time entries",
+      "totalTracked": "Total tracked:",
+      "noTimeEntries": "No time entries linked to this invoice yet.",
+      "notes": "Notes",
+      "statusUpdated": "Invoice status updated to {status}.",
+      "sendSuccess": "Invoice sent successfully!",
+      "failedSend": "Failed to send invoice",
+      "failedConnect": "Failed to connect to database",
+      "loginRequired": "Please login to view invoice details.",
+      "supabaseInit": "Failed to initialize Supabase client."
     }
   },
   "clients": {
@@ -388,6 +422,23 @@
     }
   },
   "clientsPage": {
+    "clients": "Müşteriler",
+    "newClient": "Yeni Müşteri",
+    "clientName": "Müşteri Adı",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "company": "Şirket",
+    "address": "Adres",
+    "noClients": "Henüz müşteri yok",
+    "createClient": "Müşteri Oluştur",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "view": "Görüntüle",
+    "clientCreated": "Müşteri oluşturuldu",
+    "clientUpdated": "Müşteri güncellendi",
+    "clientDeleted": "Müşteri silindi",
     "title": "Müşteriler",
     "subtitle": "Müşteri ilişkilerinizi yönetin",
     "newTitle": "Yeni Müşteri",
@@ -572,16 +623,14 @@
     },
     "filters": {
       "allStatuses": "Tüm durumlar",
-      "planning": "Planlama",
       "active": "Aktif",
-      "onHold": "Beklemede",
+      "on-hold": "Beklemede",
       "completed": "Tamamlandı",
       "archived": "Arşivlendi"
     },
     "status": {
-      "planning": "Planlama",
       "active": "Aktif",
-      "on_hold": "Beklemede",
+      "on-hold": "Beklemede",
       "completed": "Tamamlandı",
       "archived": "Arşivlendi"
     },
@@ -695,6 +744,37 @@
       "loadFailed": "Tekrarlayan faturalar yüklenemedi",
       "updateFailed": "Tekrarlayan fatura güncellenemedi",
       "deleteFailed": "Tekrarlayan fatura silinemedi"
+    },
+    "new": {
+      "title": "Yeni Yinelenen Fatura",
+      "fields": {
+        "invoiceNumber": "Fatura Numarası",
+        "clientName": "Müşteri Adı",
+        "amount": "Tutar",
+        "currency": "Para Birimi",
+        "frequency": "Sıklık",
+        "nextDate": "Sonraki Tarih",
+        "status": "Durum",
+        "notes": "Notlar"
+      },
+      "status": {
+        "active": "Aktif",
+        "paused": "Duraklatıldı",
+        "cancelled": "İptal Edildi"
+      },
+      "actions": {
+        "create": "Yinelenen Fatura Oluştur",
+        "saving": "Kaydediliyor...",
+        "cancel": "İptal"
+      },
+      "validation": {
+        "clientRequired": "Müşteri adı gereklidir",
+        "amountInvalid": "Lütfen geçerli bir tutar girin",
+        "nextDateRequired": "Sonraki tarih gereklidir"
+      },
+      "errors": {
+        "loginRequired": "Yinelenen fatura oluşturmak için giriş yapmalısınız"
+      }
     }
   },
   "estimatesPage": {
@@ -705,7 +785,38 @@
     "empty": "Teklif bulunamadı. İlk teklifinizi oluşturun!",
     "defaultEstimate": "Teklif",
     "createdLabel": "Oluşturuldu",
-    "validUntilLabel": "Geçerlilik tarihi"
+    "validUntilLabel": "Geçerlilik tarihi",
+    "new": {
+      "title": "Yeni Teklif",
+      "fields": {
+        "estimateNumber": "Teklif Numarası",
+        "clientName": "Müşteri Adı",
+        "amount": "Tutar",
+        "currency": "Para Birimi",
+        "status": "Durum",
+        "validUntil": "Geçerlilik Tarihi",
+        "notes": "Notlar"
+      },
+      "status": {
+        "draft": "Taslak",
+        "sent": "Gönderildi",
+        "accepted": "Kabul Edildi",
+        "rejected": "Reddedildi"
+      },
+      "actions": {
+        "create": "Teklif Oluştur",
+        "saving": "Kaydediliyor...",
+        "cancel": "İptal"
+      },
+      "validation": {
+        "clientRequired": "Müşteri adı gereklidir",
+        "amountInvalid": "Lütfen geçerli bir tutar girin"
+      },
+      "errors": {
+        "supabaseInit": "Veritabanına bağlanılamadı",
+        "loginRequired": "Teklif oluşturmak için giriş yapmalısınız"
+      }
+    }
   },
   "timePage": {
     "title": "Zaman Takibi",
@@ -821,5 +932,45 @@
     "loadedRows": "{count} satır yüklendi",
     "noData": "CSV dosyasında veri bulunamadı",
     "parseError": "CSV ayrıştırma hatası: {message}"
+  },
+  "recurring": {
+    "title": "الفواتير المتكررة",
+    "new": "فاتورة متكررة جديدة",
+    "frequency": "التكرار",
+    "nextDate": "التاريخ القادم",
+    "status": "الحالة",
+    "active": "نشط",
+    "paused": "متوقف"
+  },
+  "timeTracking": {
+    "title": "تتبع الوقت",
+    "start": "بدء المؤقت",
+    "stop": "إيقاف المؤقت",
+    "hours": "الساعات",
+    "project": "المشروع",
+    "task": "المهمة"
+  },
+  "reports": {
+    "title": "التقارير",
+    "overview": "نظرة عامة",
+    "income": "الدخل",
+    "expenses": "المصروفات",
+    "profit": "الربح",
+    "export": "تصدير التقرير"
+  },
+  "auth": {
+    "logout": "تسجيل الخروج"
+  },
+  "forms": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "address": "العنوان",
+    "amount": "المبلغ",
+    "date": "التاريخ",
+    "description": "الوصف",
+    "notes": "ملاحظات",
+    "status": "الحالة",
+    "actions": "الإجراءات"
   }
 }
