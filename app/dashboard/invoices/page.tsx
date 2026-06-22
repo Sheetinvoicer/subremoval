@@ -231,26 +231,26 @@ export default function InvoicesPage() {
           disabled={selectedInvoicesCount === 0 || bulkSending}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
         >
-          {bulkSending ? `Sending ${bulkProgress.completed}/${bulkProgress.total}...` : `Send selected (${selectedInvoicesCount})`}
+          {bulkSending ? t('labels.bulkSending', { completed: bulkProgress.completed, total: bulkProgress.total }) : t('labels.sendSelected', { count: selectedInvoicesCount })}
         </button>
       </div>
 
       {bulkProgress.total > 0 && (
         <div className="mb-4 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
           <p className="text-sm text-gray-700 dark:text-gray-200">
-            Progress: {bulkProgress.completed}/{bulkProgress.total} • Sent: {bulkProgress.sent} • Failed: {bulkProgress.failed}
+            {t('labels.progress', { completed: bulkProgress.completed, total: bulkProgress.total, sent: bulkProgress.sent, failed: bulkProgress.failed })}
           </p>
         </div>
       )}
 
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-sm text-gray-600 dark:text-gray-300">Selected invoices: {selectedInvoicesCount}</span>
+        <span className="text-sm text-gray-600 dark:text-gray-300">{t('labels.selectedInvoices', { count: selectedInvoicesCount })}</span>
       </div>
 
       {invoices.length === 0 ? (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
-          <p className="text-gray-500 dark:text-gray-400 mb-4">No invoices yet</p>
-          <Link href="/dashboard/invoices/new" className="text-blue-600 hover:underline">Create your first invoice</Link>
+          <p className="text-gray-500 dark:text-gray-400 mb-4">{t('labels.noInvoices')}</p>
+          <Link href="/dashboard/invoices/new" className="text-blue-600 hover:underline">{t('actions.newInvoice')}</Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -269,11 +269,11 @@ export default function InvoicesPage() {
                     checked={selectedInvoiceIds.includes(invoice.id)}
                     onChange={() => toggleInvoiceSelection(invoice.id)}
                   />
-                  Select
+                  {t('labels.select')}
                 </label>
                 {bulkResults[invoice.id] && (
                   <span className={`text-xs ${bulkResults[invoice.id].success ? 'text-green-600' : 'text-red-600'}`}>
-                    {bulkResults[invoice.id].success ? 'Sent' : `Failed: ${bulkResults[invoice.id].error}`}
+                    {bulkResults[invoice.id].success ? t('labels.resultSent') : `${t('labels.resultFailed')} ${bulkResults[invoice.id].error}`}
                   </span>
                 )}
               </div>
@@ -283,14 +283,14 @@ export default function InvoicesPage() {
                     {invoice.invoice_number}
                   </p>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mt-1">
-                    {invoice.clients?.name || 'Unknown Client'}
+                    {invoice.clients?.name || t('labels.unknownClient')}
                   </h3>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Project: {invoice.projects?.name || 'Unassigned'}
+                    {t('labels.projectPrefix')} {invoice.projects?.name || t('labels.unassigned')}
                   </p>
                 </div>
                 <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(invoice.status)}`}>
-                  {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                  {t(`status.${invoice.status}`) || invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
                 </span>
               </div>
               
@@ -300,10 +300,10 @@ export default function InvoicesPage() {
                     {invoice.currency} {(invoice.total || 0).toFixed(2)}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Due: {new Date(invoice.due_date).toLocaleDateString()}
+                    {t('labels.due')} {new Date(invoice.due_date).toLocaleDateString()}
                   </p>
                 </div>
-                <Link href={`/dashboard/invoices/${invoice.id}`} className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm">View →</Link>
+                <Link href={`/dashboard/invoices/${invoice.id}`} className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm">{t('actions.view')}</Link>
               </div>
             </motion.div>
           ))}
@@ -312,9 +312,9 @@ export default function InvoicesPage() {
 
       {invoices.length > pageSize && (
         <div className="flex items-center justify-end gap-2 mt-6">
-          <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="px-3 py-1 border rounded disabled:opacity-50">Prev</button>
-          <span className="text-sm text-gray-600">Page {page} of {totalPages}</span>
-          <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="px-3 py-1 border rounded disabled:opacity-50">Next</button>
+          <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="px-3 py-1 border rounded disabled:opacity-50">{t('pagination.prev')}</button>
+          <span className="text-sm text-gray-600">{t('labels.page', { page, total: totalPages })}</span>
+          <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="px-3 py-1 border rounded disabled:opacity-50">{t('pagination.next')}</button>
         </div>
       )}
     </div>

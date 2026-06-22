@@ -48,7 +48,8 @@
       "tryAgain": "Try Again",
       "newInvoice": "New Invoice",
       "selectPage": "Select page",
-      "unselectPage": "Unselect page"
+      "unselectPage": "Unselect page",
+      "view": "View →"
     },
     "draft": "Draft",
     "sent": "Sent",
@@ -75,6 +76,25 @@
       "dueDesc": "Due date ↓",
       "amountHighLow": "Amount high → low",
       "amountLowHigh": "Amount low → high"
+    },
+    "labels": {
+      "select": "Select",
+      "projectPrefix": "Project:",
+      "unassigned": "Unassigned",
+      "selectedInvoices": "Selected invoices: {count}",
+      "noInvoices": "No invoices yet",
+      "due": "Due:",
+      "unknownClient": "Unknown Client",
+      "resultSent": "Sent",
+      "resultFailed": "Failed:",
+      "bulkSending": "Sending {completed}/{total}...",
+      "sendSelected": "Send selected ({count})",
+      "progress": "Progress: {completed}/{total} • Sent: {sent} • Failed: {failed}",
+      "page": "Page {page} of {total}"
+    },
+    "pagination": {
+      "prev": "Prev",
+      "next": "Next"
     }
   },
   "clients": {

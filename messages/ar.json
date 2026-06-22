@@ -48,7 +48,8 @@
       "tryAgain": "حاول مرة أخرى",
       "newInvoice": "فاتورة جديدة",
       "selectPage": "تحديد الصفحة",
-      "unselectPage": "إلغاء تحديد الصفحة"
+      "unselectPage": "إلغاء تحديد الصفحة",
+      "view": "عرض ←"
     },
     "draft": "مسودة",
     "sent": "مرسلة",
@@ -75,6 +76,25 @@
       "dueDesc": "تاريخ الاستحقاق ↓",
       "amountHighLow": "المبلغ من الأعلى إلى الأقل",
       "amountLowHigh": "المبلغ من الأقل إلى الأعلى"
+    },
+    "labels": {
+      "select": "تحديد",
+      "projectPrefix": "المشروع:",
+      "unassigned": "غير مخصص",
+      "selectedInvoices": "الفواتير المحددة: {count}",
+      "noInvoices": "لا توجد فواتير بعد",
+      "due": "الاستحقاق:",
+      "unknownClient": "عميل غير معروف",
+      "resultSent": "مرسلة",
+      "resultFailed": "فشل:",
+      "bulkSending": "جاري الإرسال {completed}/{total}...",
+      "sendSelected": "إرسال المحددة ({count})",
+      "progress": "التقدم: {completed}/{total} • مرسلة: {sent} • فشل: {failed}",
+      "page": "الصفحة {page} من {total}"
+    },
+    "pagination": {
+      "prev": "السابق",
+      "next": "التالي"
     }
   },
   "clients": {

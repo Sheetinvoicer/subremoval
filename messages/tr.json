@@ -49,7 +49,8 @@
       "tryAgain": "Tekrar dene",
       "newInvoice": "Yeni fatura",
       "selectPage": "Sayfayı seç",
-      "unselectPage": "Sayfa seçimini kaldır"
+      "unselectPage": "Sayfa seçimini kaldır",
+      "view": "Görüntüle →"
     },
     "draft": "Taslak",
     "sent": "Gönderildi",
@@ -76,6 +77,25 @@
       "dueDesc": "Son tarih ↓",
       "amountHighLow": "Tutar yüksek → düşük",
       "amountLowHigh": "Tutar düşük → yüksek"
+    },
+    "labels": {
+      "select": "Seç",
+      "projectPrefix": "Proje:",
+      "unassigned": "Atanmamış",
+      "selectedInvoices": "Seçilen faturalar: {count}",
+      "noInvoices": "Henüz fatura yok",
+      "due": "Son tarih:",
+      "unknownClient": "Bilinmeyen müşteri",
+      "resultSent": "Gönderildi",
+      "resultFailed": "Başarısız:",
+      "bulkSending": "Gönderiliyor {completed}/{total}...",
+      "sendSelected": "Seçilenleri gönder ({count})",
+      "progress": "İlerleme: {completed}/{total} • Gönderildi: {sent} • Başarısız: {failed}",
+      "page": "Sayfa {page} / {total}"
+    },
+    "pagination": {
+      "prev": "Önceki",
+      "next": "Sonraki"
     }
   },
   "clients": {

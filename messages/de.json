@@ -49,7 +49,8 @@
       "tryAgain": "Erneut versuchen",
       "newInvoice": "Neue Rechnung",
       "selectPage": "Seite auswählen",
-      "unselectPage": "Seitenauswahl aufheben"
+      "unselectPage": "Seitenauswahl aufheben",
+      "view": "Ansehen →"
     },
     "draft": "Entwurf",
     "sent": "Gesendet",
@@ -76,6 +77,25 @@
       "dueDesc": "Fälligkeit ↓",
       "amountHighLow": "Betrag hoch → niedrig",
       "amountLowHigh": "Betrag niedrig → hoch"
+    },
+    "labels": {
+      "select": "Auswählen",
+      "projectPrefix": "Projekt:",
+      "unassigned": "Nicht zugewiesen",
+      "selectedInvoices": "Ausgewählte Rechnungen: {count}",
+      "noInvoices": "Noch keine Rechnungen",
+      "due": "Fällig:",
+      "unknownClient": "Unbekannter Kunde",
+      "resultSent": "Gesendet",
+      "resultFailed": "Fehlgeschlagen:",
+      "bulkSending": "Sende {completed}/{total}...",
+      "sendSelected": "Ausgewählte senden ({count})",
+      "progress": "Fortschritt: {completed}/{total} • Gesendet: {sent} • Fehlgeschlagen: {failed}",
+      "page": "Seite {page} von {total}"
+    },
+    "pagination": {
+      "prev": "Zurück",
+      "next": "Weiter"
     }
   },
   "clients": {
