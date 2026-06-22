@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useTranslations } from 'next-intl';
 
 interface Client {
   id: string;
@@ -17,6 +18,7 @@ interface Client {
 }
 
 export default function ClientDetailPage() {
+  const t = useTranslations('clientsPage');
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
@@ -37,14 +39,14 @@ export default function ClientDetailPage() {
 
       const supabase = createClient();
       if (!supabase) {
-        setError('Failed to initialize Supabase client');
+        setError(t('errors.supabaseInit'));
         setLoading(false);
         return;
       }
 
       const { data: authData, error: authError } = await supabase.auth.getUser();
       if (authError || !authData?.user) {
-        setError(authError?.message || 'Please log in to view this client');
+        setError(authError?.message || t('errors.loginRequiredViewSingle'));
         setLoading(false);
         return;
       }
@@ -64,7 +66,7 @@ export default function ClientDetailPage() {
 
       setClient(data as Client);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load client';
+      const errorMessage = err instanceof Error ? err.message : t('errors.failedLoadClient');
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -72,7 +74,7 @@ export default function ClientDetailPage() {
   }
 
   async function handleDelete() {
-    if (!client || deleting || !window.confirm('Delete this client? This action cannot be undone.')) {
+    if (!client || deleting || !window.confirm(t('confirmDelete'))) {
       return;
     }
 
@@ -80,13 +82,13 @@ export default function ClientDetailPage() {
       setDeleting(true);
       const supabase = createClient();
       if (!supabase) {
-        setError('Failed to initialize Supabase client');
+        setError(t('errors.supabaseInit'));
         return;
       }
 
       const { data: authData, error: authError } = await supabase.auth.getUser();
       if (authError || !authData?.user) {
-        setError(authError?.message || 'Please log in to delete this client');
+        setError(authError?.message || t('errors.loginRequiredDelete'));
         return;
       }
 
@@ -119,12 +121,12 @@ export default function ClientDetailPage() {
     return (
       <div className="container mx-auto p-4">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+          <p className="text-red-600 dark:text-red-400">{t('errorPrefix')}: {error}</p>
           <button
             onClick={() => router.back()}
             className="mt-2 text-sm text-blue-600 hover:underline"
           >
-            Go Back
+            {t('actions.goBack')}
           </button>
         </div>
       </div>
@@ -135,12 +137,12 @@ export default function ClientDetailPage() {
     return (
       <div className="container mx-auto p-4">
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-          <p className="text-yellow-600 dark:text-yellow-400">Client not found</p>
+          <p className="text-yellow-600 dark:text-yellow-400">{t('clientNotFound')}</p>
           <button
             onClick={() => router.back()}
             className="mt-2 text-sm text-blue-600 hover:underline"
           >
-            Go Back
+            {t('actions.goBack')}
           </button>
         </div>
       </div>
@@ -159,38 +161,38 @@ export default function ClientDetailPage() {
               onClick={() => router.push(`/dashboard/clients/${id}/edit`)}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Edit Client
+              {t('actions.editClient')}
             </button>
             <button
               onClick={handleDelete}
               disabled={deleting}
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-60"
             >
-              {deleting ? 'Deleting...' : 'Delete'}
+              {deleting ? t('actions.deleting') : t('actions.delete')}
             </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</h3>
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('fields.email')}</h3>
             <p className="text-gray-900 dark:text-white">{client.email}</p>
           </div>
           {client.phone && (
             <div>
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</h3>
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('fields.phone')}</h3>
               <p className="text-gray-900 dark:text-white">{client.phone}</p>
             </div>
           )}
           {client.company && (
             <div>
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Company</h3>
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('fields.company')}</h3>
               <p className="text-gray-900 dark:text-white">{client.company}</p>
             </div>
           )}
           {client.address && (
             <div className="col-span-2">
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Address</h3>
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('fields.address')}</h3>
               <p className="text-gray-900 dark:text-white whitespace-pre-wrap">{client.address}</p>
             </div>
           )}
@@ -201,7 +203,7 @@ export default function ClientDetailPage() {
             onClick={() => router.back()}
             className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
           >
-            ← Back to Clients
+            {t('actions.backToClients')}
           </button>
         </div>
       </div>

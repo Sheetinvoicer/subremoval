@@ -23,17 +23,59 @@
     "title": "الفواتير",
     "create_new": "إنشاء فاتورة جديدة",
     "invoice_number": "رقم الفاتورة",
-    "status": "الحالة",
+    "status": {
+      "0": "ا",
+      "1": "ل",
+      "2": "ح",
+      "3": "ا",
+      "4": "ل",
+      "5": "ة",
+      "draft": "مسودة",
+      "sent": "مرسلة",
+      "paid": "مدفوعة",
+      "overdue": "متأخرة"
+    },
     "amount": "المبلغ",
     "due_date": "تاريخ الاستحقاق",
-    "actions": "إجراءات",
+    "actions": {
+      "0": "إ",
+      "1": "ج",
+      "2": "ر",
+      "3": "ا",
+      "4": "ء",
+      "5": "ا",
+      "6": "ت",
+      "tryAgain": "حاول مرة أخرى",
+      "newInvoice": "فاتورة جديدة",
+      "selectPage": "تحديد الصفحة",
+      "unselectPage": "إلغاء تحديد الصفحة"
+    },
     "draft": "مسودة",
     "sent": "مرسلة",
     "paid": "مدفوعة",
     "overdue": "متأخرة",
     "send": "إرسال الفاتورة",
     "download": "تحميل PDF",
-    "pay_now": "ادفع الآن"
+    "pay_now": "ادفع الآن",
+    "subtitle": "إدارة فواتيرك",
+    "errorLabel": "خطأ",
+    "errors": {
+      "supabaseInit": "فشل تهيئة عميل Supabase",
+      "loginRequired": "يجب تسجيل الدخول لعرض الفواتير.",
+      "failedLoadData": "فشل تحميل البيانات",
+      "failedSendInvoice": "فشل إرسال الفاتورة"
+    },
+    "filters": {
+      "allStatuses": "كل الحالات"
+    },
+    "sort": {
+      "newest": "الأحدث",
+      "oldest": "الأقدم",
+      "dueAsc": "تاريخ الاستحقاق ↑",
+      "dueDesc": "تاريخ الاستحقاق ↓",
+      "amountHighLow": "المبلغ من الأعلى إلى الأقل",
+      "amountLowHigh": "المبلغ من الأقل إلى الأعلى"
+    }
   },
   "clients": {
     "title": "العملاء",
@@ -42,6 +84,55 @@
     "phone": "الهاتف",
     "address": "العنوان",
     "add_client": "إضافة عميل"
+  },
+  "clientsPage": {
+    "title": "العملاء",
+    "subtitle": "إدارة علاقاتك مع العملاء",
+    "newTitle": "عميل جديد",
+    "editTitle": "تعديل العميل",
+    "loading": "جارٍ تحميل العملاء...",
+    "loadingSingle": "جارٍ تحميل العميل...",
+    "errorPrefix": "خطأ",
+    "clientNotFound": "العميل غير موجود",
+    "confirmDelete": "هل تريد حذف هذا العميل؟ لا يمكن التراجع عن هذا الإجراء.",
+    "fields": {
+      "nameRequired": "الاسم *",
+      "emailRequired": "البريد الإلكتروني *",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "company": "الشركة",
+      "country": "الدولة",
+      "address": "العنوان"
+    },
+    "actions": {
+      "tryAgain": "حاول مرة أخرى",
+      "addClient": "+ إضافة عميل",
+      "edit": "تعديل ←",
+      "goBack": "الرجوع",
+      "backToClients": "← العودة إلى العملاء",
+      "editClient": "تعديل العميل",
+      "delete": "حذف",
+      "deleting": "جارٍ الحذف...",
+      "saving": "جارٍ الحفظ...",
+      "createClient": "إنشاء عميل",
+      "saveChanges": "حفظ التعديلات",
+      "cancel": "إلغاء"
+    },
+    "validation": {
+      "nameRequired": "اسم العميل مطلوب.",
+      "emailRequired": "البريد الإلكتروني مطلوب.",
+      "emailInvalid": "يرجى إدخال بريد إلكتروني صالح."
+    },
+    "errors": {
+      "supabaseInit": "فشل تهيئة عميل Supabase",
+      "loginRequiredView": "يرجى تسجيل الدخول لعرض العملاء",
+      "loginRequiredViewSingle": "يرجى تسجيل الدخول لعرض هذا العميل",
+      "loginRequiredCreate": "يرجى تسجيل الدخول لإنشاء عميل",
+      "loginRequiredEdit": "يرجى تسجيل الدخول لتعديل العملاء",
+      "loginRequiredDelete": "يرجى تسجيل الدخول لحذف هذا العميل",
+      "failedLoadClients": "فشل تحميل العملاء",
+      "failedLoadClient": "فشل تحميل العميل"
+    }
   },
   "estimates": {
     "title": "عروض الأسعار",
@@ -58,7 +149,280 @@
       "label": "اللغة"
     },
     "messages": {
-      "saved": "تم حفظ الإعدادات بنجاح!"
+      "saved": "تم حفظ الإعدادات بنجاح!",
+      "templateSaved": "تم حفظ إعدادات القالب!",
+      "accountingMappingSaved": "تم حفظ تعيين المحاسبة.",
+      "dataExportReady": "تصدير بياناتك جاهز وتم تنزيله.",
+      "accountingExportReady": "تصدير {format} جاهز وتم تنزيله.",
+      "accountDeleted": "تم حذف حسابك وبياناتك الشخصية بنجاح.",
+      "cookiesEnabled": "تم تحديث تفضيلات ملفات تعريف الارتباط: تم تفعيل الملفات الاختيارية.",
+      "cookiesDisabled": "تم تحديث تفضيلات ملفات تعريف الارتباط: تم تعطيل الملفات الاختيارية."
+    },
+    "company": {
+      "title": "معلومات الشركة",
+      "nameLabel": "اسم الشركة",
+      "namePlaceholder": "اسم الشركة",
+      "emailLabel": "بريد الشركة الإلكتروني",
+      "emailPlaceholder": "بريد الشركة الإلكتروني",
+      "phoneLabel": "هاتف الشركة",
+      "phonePlaceholder": "هاتف الشركة",
+      "addressLabel": "عنوان الشركة",
+      "addressPlaceholder": "عنوان الشركة"
+    },
+    "template": {
+      "title": "تخصيص قالب الفاتورة",
+      "templateLabel": "القالب",
+      "templateOptions": {
+        "classic": "كلاسيكي",
+        "modern": "عصري",
+        "minimal": "بسيط"
+      },
+      "accentColor": "لون التمييز",
+      "logoUpload": "رفع الشعار",
+      "visibility": {
+        "showBusinessDetails": "إظهار بيانات النشاط",
+        "showClientDetails": "إظهار بيانات العميل",
+        "showDueDate": "إظهار تاريخ الاستحقاق",
+        "showNotes": "إظهار الملاحظات",
+        "showStatusBadge": "إظهار شارة الحالة"
+      },
+      "previewTitle": "معاينة القالب",
+      "invoiceLabel": "فاتورة",
+      "logoPreviewAlt": "معاينة شعار الفاتورة",
+      "previewBusiness": "المنشأة: Acme Studio",
+      "previewClient": "العميل: Example Client",
+      "previewDueDate": "تاريخ الاستحقاق: 2026-07-20",
+      "previewStatus": "مرسلة",
+      "previewNotes": "ملاحظات: شكرًا لتعاملكم معنا.",
+      "saveButton": "حفظ تخصيص القالب"
+    },
+    "languageOptions": {
+      "en": "الإنجليزية",
+      "es": "الإسبانية",
+      "fr": "الفرنسية",
+      "de": "الألمانية",
+      "it": "الإيطالية",
+      "pt": "البرتغالية",
+      "tr": "التركية",
+      "ar": "العربية"
+    },
+    "fields": {
+      "defaultCurrency": "العملة الافتراضية",
+      "theme": "السمة",
+      "enableNotifications": "تفعيل الإشعارات"
+    },
+    "themeOptions": {
+      "system": "النظام",
+      "light": "فاتح",
+      "dark": "داكن"
+    },
+    "actions": {
+      "saving": "جارٍ الحفظ...",
+      "saveSettings": "حفظ الإعدادات",
+      "preparing": "جارٍ التجهيز...",
+      "preparingExport": "جارٍ تجهيز التصدير...",
+      "deletingAccount": "جارٍ حذف الحساب..."
+    },
+    "accounting": {
+      "title": "تكامل البنك والمحاسبة",
+      "subtitle": "اضبط تعيين المحاسبة وصدّر الفواتير لـ QuickBooks أو Xero أو CSV أو Excel.",
+      "incomeAccount": "حساب الدخل",
+      "taxType": "نوع الضريبة",
+      "trackingCategory": "فئة التتبع",
+      "referencePrefix": "بادئة المرجع",
+      "placeholders": {
+        "incomeAccount": "المبيعات",
+        "taxType": "TAX001",
+        "trackingCategory": "عام",
+        "referencePrefix": "INV"
+      },
+      "saveMapping": "حفظ التعيين",
+      "exportQuickBooks": "تصدير QuickBooks (CSV)",
+      "exportXero": "تصدير Xero (CSV)",
+      "exportCsv": "تصدير CSV",
+      "exportExcel": "تصدير Excel"
+    },
+    "privacy": {
+      "title": "الخصوصية وGDPR",
+      "subtitle": "أدر تفضيل ملفات تعريف الارتباط، وصدّر بياناتك الشخصية، أو احذف حسابك نهائيًا.",
+      "cookieConsent": "موافقة ملفات تعريف الارتباط:",
+      "cookieState": {
+        "accepted": "مقبولة",
+        "rejected": "مرفوضة",
+        "notSet": "غير محددة"
+      },
+      "acceptCookies": "قبول ملفات تعريف الارتباط الاختيارية",
+      "rejectCookies": "رفض ملفات تعريف الارتباط الاختيارية",
+      "exportData": "تصدير بياناتي (JSON)",
+      "deleteAccount": "حذف الحساب وجميع البيانات",
+      "deleteConfirm": "سيؤدي هذا الإجراء إلى حذف حسابك وجميع البيانات المرتبطة به نهائيًا ولا يمكن التراجع عنه. هل تريد المتابعة؟"
+    },
+    "errors": {
+      "supabaseInit": "فشل تهيئة عميل Supabase",
+      "userNotAuthenticated": "المستخدم غير مسجل الدخول",
+      "failedLoadSettings": "فشل تحميل الإعدادات",
+      "failedSaveSettings": "فشل حفظ الإعدادات",
+      "logoImageOnly": "يرجى رفع ملف صورة لشعار الفاتورة.",
+      "failedExportData": "فشل تصدير البيانات",
+      "failedExportAccountingData": "فشل تصدير البيانات المحاسبية",
+      "failedDeleteAccountData": "فشل حذف بيانات الحساب"
+    }
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "welcome": "مرحبًا بعودتك",
+    "revenue": "الإيرادات",
+    "netProfit": "صافي الربح",
+    "pending": "قيد الانتظار",
+    "totalInvoices": "إجمالي الفواتير",
+    "noInvoices": "لا توجد فواتير بعد",
+    "createFirstInvoice": "أنشئ فاتورتك الأولى لبدء تتبع الإيرادات"
+  },
+  "projects": {
+    "title": "المشاريع",
+    "new": "مشروع جديد",
+    "name": "اسم المشروع",
+    "client": "العميل",
+    "status": "الحالة",
+    "budget": "الميزانية",
+    "description": "الوصف"
+  },
+  "expenses": {
+    "title": "المصروفات",
+    "new": "مصروف جديد",
+    "category": "الفئة",
+    "amount": "المبلغ",
+    "date": "التاريخ",
+    "vendor": "المورّد",
+    "notes": "ملاحظات"
+  },
+  "recurring": {
+    "title": "الفواتير المتكررة",
+    "new": "فاتورة متكررة جديدة",
+    "frequency": "التكرار",
+    "nextDate": "التاريخ القادم",
+    "status": "الحالة",
+    "active": "نشط",
+    "paused": "متوقف"
+  },
+  "timeTracking": {
+    "title": "تتبع الوقت",
+    "start": "بدء المؤقت",
+    "stop": "إيقاف المؤقت",
+    "hours": "الساعات",
+    "project": "المشروع",
+    "task": "المهمة"
+  },
+  "reports": {
+    "title": "التقارير",
+    "overview": "نظرة عامة",
+    "income": "الدخل",
+    "expenses": "المصروفات",
+    "profit": "الربح",
+    "export": "تصدير التقرير"
+  },
+  "auth": {
+    "logout": "تسجيل الخروج"
+  },
+  "forms": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "address": "العنوان",
+    "amount": "المبلغ",
+    "date": "التاريخ",
+    "description": "الوصف",
+    "notes": "ملاحظات",
+    "status": "الحالة",
+    "actions": "الإجراءات"
+  },
+  "login": {
+    "title": "مرحباً بعودتك",
+    "subtitle": "سجّل الدخول إلى حسابك",
+    "subtitle2fa": "أدخل رمز تطبيق المصادقة أو الرمز الاحتياطي",
+    "fields": {
+      "email": "عنوان البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "authenticatorCode": "رمز تطبيق المصادقة أو الرمز الاحتياطي"
+    },
+    "actions": {
+      "forgotPassword": "هل نسيت كلمة المرور؟",
+      "signingIn": "جارٍ تسجيل الدخول...",
+      "signIn": "تسجيل الدخول",
+      "orContinueWith": "أو المتابعة عبر",
+      "signInWithGoogle": "تسجيل الدخول باستخدام Google",
+      "rememberDevice": "تذكر هذا الجهاز لمدة 30 يومًا",
+      "verifying": "جارٍ التحقق...",
+      "verifyContinue": "تحقق وتابع"
+    },
+    "messages": {
+      "welcomeBack": "مرحباً بعودتك!",
+      "enter2fa": "أدخل رمز التحقق بخطوتين للمتابعة",
+      "resetEmailSent": "تم إرسال رسالة إعادة تعيين كلمة المرور!"
+    },
+    "errors": {
+      "initAuth": "فشل تهيئة المصادقة",
+      "invalidCode": "رمز المصادقة غير صالح",
+      "resetEmailFailed": "حدث خطأ ما"
+    },
+    "footer": {
+      "noAccount": "ليس لديك حساب؟",
+      "signUp": "إنشاء حساب"
+    },
+    "reset": {
+      "title": "إعادة تعيين كلمة المرور",
+      "subtitle": "أدخل بريدك الإلكتروني لاستلام رابط إعادة التعيين",
+      "sending": "جارٍ الإرسال...",
+      "sendLink": "إرسال رابط إعادة التعيين",
+      "backToSignIn": "العودة إلى تسجيل الدخول"
+    }
+  },
+  "signup": {
+    "title": "إنشاء حساب",
+    "subtitle": "ابدأ الفوترة خلال دقائق",
+    "fields": {
+      "fullName": "الاسم الكامل",
+      "email": "عنوان البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور"
+    },
+    "terms": {
+      "prefix": "أوافق على",
+      "termsOfService": "شروط الخدمة",
+      "privacyPolicy": "سياسة الخصوصية"
+    },
+    "actions": {
+      "creating": "جارٍ إنشاء الحساب...",
+      "signUp": "إنشاء حساب"
+    },
+    "footer": {
+      "alreadyHaveAccount": "لديك حساب بالفعل؟",
+      "signIn": "تسجيل الدخول"
+    },
+    "messages": {
+      "checkEmail": "تحقق من بريدك الإلكتروني لرابط التأكيد!"
+    },
+    "errors": {
+      "initAuth": "فشل تهيئة المصادقة",
+      "acceptTerms": "يجب الموافقة على شروط الخدمة وسياسة الخصوصية",
+      "passwordMismatch": "كلمتا المرور غير متطابقتين",
+      "passwordTooShort": "يجب أن تكون كلمة المرور 6 أحرف على الأقل"
+    }
+  },
+  "sidebar": {
+    "logout": "تسجيل الخروج",
+    "items": {
+      "dashboard": "لوحة التحكم",
+      "invoices": "الفواتير",
+      "clients": "العملاء",
+      "projects": "المشاريع",
+      "expenses": "المصروفات",
+      "recurring": "المتكررة",
+      "estimates": "عروض الأسعار",
+      "time": "تتبع الوقت",
+      "reports": "التقارير",
+      "admin": "الإدارة",
+      "settings": "الإعدادات"
     }
   }
 }

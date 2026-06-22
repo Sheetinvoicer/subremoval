@@ -108,6 +108,7 @@ export default function NewExpensePage() {
           <label htmlFor="expense-category" className="block text-sm font-medium mb-1">Category</label>
           <select
             id="expense-category"
+            name="category"
             value={form.category}
             onChange={(e) => setForm((prev) => ({ ...prev, category: e.target.value }))}
             className="w-full border rounded px-3 py-2"
@@ -125,6 +126,7 @@ export default function NewExpensePage() {
             <label htmlFor="expense-amount" className="block text-sm font-medium mb-1">Amount</label>
             <input
               id="expense-amount"
+              name="amount"
               type="number"
               min="0.01"
               step="0.01"
@@ -137,6 +139,7 @@ export default function NewExpensePage() {
             <label htmlFor="expense-currency" className="block text-sm font-medium mb-1">Currency</label>
             <input
               id="expense-currency"
+              name="currency"
               type="text"
               maxLength={3}
               value={form.currency}
@@ -150,6 +153,7 @@ export default function NewExpensePage() {
           <label htmlFor="expense-date" className="block text-sm font-medium mb-1">Date</label>
           <input
             id="expense-date"
+            name="date"
             type="date"
             value={form.date}
             onChange={(e) => setForm((prev) => ({ ...prev, date: e.target.value }))}
@@ -161,6 +165,7 @@ export default function NewExpensePage() {
           <label htmlFor="expense-description" className="block text-sm font-medium mb-1">Description (optional)</label>
           <textarea
             id="expense-description"
+            name="description"
             value={form.description}
             onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
             className="w-full border rounded px-3 py-2 min-h-24"

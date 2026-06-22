@@ -23,17 +23,59 @@
     "title": "Invoices",
     "create_new": "Create New Invoice",
     "invoice_number": "Invoice Number",
-    "status": "Status",
+    "status": {
+      "0": "S",
+      "1": "t",
+      "2": "a",
+      "3": "t",
+      "4": "u",
+      "5": "s",
+      "draft": "Draft",
+      "sent": "Sent",
+      "paid": "Paid",
+      "overdue": "Overdue"
+    },
     "amount": "Amount",
     "due_date": "Due Date",
-    "actions": "Actions",
+    "actions": {
+      "0": "A",
+      "1": "c",
+      "2": "t",
+      "3": "i",
+      "4": "o",
+      "5": "n",
+      "6": "s",
+      "tryAgain": "Try Again",
+      "newInvoice": "New Invoice",
+      "selectPage": "Select page",
+      "unselectPage": "Unselect page"
+    },
     "draft": "Draft",
     "sent": "Sent",
     "paid": "Paid",
     "overdue": "Overdue",
     "send": "Send Invoice",
     "download": "Download PDF",
-    "pay_now": "Pay Now"
+    "pay_now": "Pay Now",
+    "subtitle": "Manage your invoices",
+    "errorLabel": "Error",
+    "errors": {
+      "supabaseInit": "Failed to initialize Supabase client",
+      "loginRequired": "You must be logged in to view invoices.",
+      "failedLoadData": "Failed to load data",
+      "failedSendInvoice": "Failed to send invoice"
+    },
+    "filters": {
+      "allStatuses": "All statuses"
+    },
+    "sort": {
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "dueAsc": "Due date ↑",
+      "dueDesc": "Due date ↓",
+      "amountHighLow": "Amount high → low",
+      "amountLowHigh": "Amount low → high"
+    }
   },
   "clients": {
     "title": "Clients",
@@ -58,7 +100,261 @@
       "label": "Sprache"
     },
     "messages": {
-      "saved": "Einstellungen erfolgreich gespeichert!"
+      "saved": "Einstellungen erfolgreich gespeichert!",
+      "templateSaved": "Template settings saved!",
+      "accountingMappingSaved": "Accounting mapping saved.",
+      "dataExportReady": "Your data export is ready and has been downloaded.",
+      "accountingExportReady": "{format} export is ready and has been downloaded.",
+      "accountDeleted": "Your account and personal data were deleted successfully.",
+      "cookiesEnabled": "Cookie preferences updated: optional cookies enabled.",
+      "cookiesDisabled": "Cookie preferences updated: optional cookies disabled."
+    },
+    "languageOptions": {
+      "en": "English",
+      "es": "Español",
+      "fr": "Français",
+      "de": "Deutsch",
+      "it": "Italiano",
+      "pt": "Português",
+      "tr": "Türkçe",
+      "ar": "العربية"
+    },
+    "fields": {
+      "defaultCurrency": "Default Currency",
+      "theme": "Theme",
+      "enableNotifications": "Enable Notifications"
+    },
+    "themeOptions": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "company": {
+      "title": "Company Information",
+      "nameLabel": "Company Name",
+      "namePlaceholder": "Company Name",
+      "emailLabel": "Company Email",
+      "emailPlaceholder": "Company Email",
+      "phoneLabel": "Company Phone",
+      "phonePlaceholder": "Company Phone",
+      "addressLabel": "Company Address",
+      "addressPlaceholder": "Company Address"
+    },
+    "template": {
+      "title": "Invoice Template Customization",
+      "templateLabel": "Template",
+      "templateOptions": {
+        "classic": "Classic",
+        "modern": "Modern",
+        "minimal": "Minimal"
+      },
+      "accentColor": "Accent Color",
+      "logoUpload": "Logo Upload",
+      "visibility": {
+        "showBusinessDetails": "Show business details",
+        "showClientDetails": "Show client details",
+        "showDueDate": "Show due date",
+        "showNotes": "Show notes",
+        "showStatusBadge": "Show status badge"
+      },
+      "previewTitle": "Template Preview",
+      "invoiceLabel": "Invoice",
+      "logoPreviewAlt": "Invoice logo preview",
+      "previewBusiness": "Business: Acme Studio",
+      "previewClient": "Client: Example Client",
+      "previewDueDate": "Due date: 2026-07-20",
+      "previewStatus": "SENT",
+      "previewNotes": "Notes: Thank you for your business.",
+      "saveButton": "Save template customization"
+    },
+    "actions": {
+      "saving": "Saving...",
+      "saveSettings": "Save Settings",
+      "preparing": "Preparing...",
+      "preparingExport": "Preparing export...",
+      "deletingAccount": "Deleting account..."
+    },
+    "accounting": {
+      "title": "Bank & Accounting Integration",
+      "subtitle": "Configure your accounting mapping and export invoices for QuickBooks, Xero, CSV, or Excel.",
+      "incomeAccount": "Income account",
+      "taxType": "Tax type",
+      "trackingCategory": "Tracking category",
+      "referencePrefix": "Reference prefix",
+      "placeholders": {
+        "incomeAccount": "Sales",
+        "taxType": "TAX001",
+        "trackingCategory": "General",
+        "referencePrefix": "INV"
+      },
+      "saveMapping": "Save mapping",
+      "exportQuickBooks": "Export QuickBooks (CSV)",
+      "exportXero": "Export Xero (CSV)",
+      "exportCsv": "Export CSV",
+      "exportExcel": "Export Excel"
+    },
+    "privacy": {
+      "title": "Privacy & GDPR",
+      "subtitle": "Manage your cookie preference, export your personal data, or permanently delete your account.",
+      "cookieConsent": "Cookie consent:",
+      "cookieState": {
+        "accepted": "accepted",
+        "rejected": "rejected",
+        "notSet": "not set"
+      },
+      "acceptCookies": "Accept optional cookies",
+      "rejectCookies": "Reject optional cookies",
+      "exportData": "Export my data (JSON)",
+      "deleteAccount": "Delete account and all data",
+      "deleteConfirm": "This action permanently deletes your account and all related data. This cannot be undone. Continue?"
+    },
+    "errors": {
+      "supabaseInit": "Failed to initialize Supabase client",
+      "userNotAuthenticated": "User not authenticated",
+      "failedLoadSettings": "Failed to load settings",
+      "failedSaveSettings": "Failed to save settings",
+      "logoImageOnly": "Please upload an image file for the invoice logo.",
+      "failedExportData": "Failed to export data",
+      "failedExportAccountingData": "Failed to export accounting data",
+      "failedDeleteAccountData": "Failed to delete account data"
+    }
+  },
+  "login": {
+    "title": "Welcome Back",
+    "subtitle": "Sign in to your account",
+    "subtitle2fa": "Enter your authenticator code or backup code",
+    "fields": {
+      "email": "Email Address",
+      "password": "Password",
+      "authenticatorCode": "Authenticator or backup code"
+    },
+    "actions": {
+      "forgotPassword": "Forgot password?",
+      "signingIn": "Signing in...",
+      "signIn": "Sign In",
+      "orContinueWith": "Or continue with",
+      "signInWithGoogle": "Sign in with Google",
+      "rememberDevice": "Remember this device for 30 days",
+      "verifying": "Verifying...",
+      "verifyContinue": "Verify & Continue"
+    },
+    "messages": {
+      "welcomeBack": "Welcome back!",
+      "enter2fa": "Enter your 2FA code to continue",
+      "resetEmailSent": "Password reset email sent!"
+    },
+    "errors": {
+      "initAuth": "Failed to initialize authentication",
+      "invalidCode": "Invalid authentication code",
+      "resetEmailFailed": "Something went wrong"
+    },
+    "footer": {
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up"
+    },
+    "reset": {
+      "title": "Reset Password",
+      "subtitle": "Enter your email to receive a reset link",
+      "sending": "Sending...",
+      "sendLink": "Send Reset Link",
+      "backToSignIn": "Back to Sign In"
+    }
+  },
+  "signup": {
+    "title": "Create Account",
+    "subtitle": "Start invoicing in minutes",
+    "fields": {
+      "fullName": "Full Name",
+      "email": "Email Address",
+      "password": "Password",
+      "confirmPassword": "Confirm Password"
+    },
+    "terms": {
+      "prefix": "I agree to the",
+      "termsOfService": "Terms of Service",
+      "privacyPolicy": "Privacy Policy"
+    },
+    "actions": {
+      "creating": "Creating account...",
+      "signUp": "Sign Up"
+    },
+    "footer": {
+      "alreadyHaveAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "messages": {
+      "checkEmail": "Check your email for confirmation link!"
+    },
+    "errors": {
+      "initAuth": "Failed to initialize authentication",
+      "acceptTerms": "You must accept the Terms of Service and Privacy Policy",
+      "passwordMismatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 6 characters"
+    }
+  },
+  "sidebar": {
+    "logout": "Logout",
+    "items": {
+      "dashboard": "Dashboard",
+      "invoices": "Invoices",
+      "clients": "Clients",
+      "projects": "Projects",
+      "expenses": "Expenses",
+      "recurring": "Recurring",
+      "estimates": "Estimates",
+      "time": "Time Tracking",
+      "reports": "Reports",
+      "admin": "Admin",
+      "settings": "Settings"
+    }
+  },
+  "clientsPage": {
+    "title": "Clients",
+    "subtitle": "Manage your client relationships",
+    "newTitle": "New Client",
+    "editTitle": "Edit Client",
+    "loading": "Loading clients...",
+    "loadingSingle": "Loading client...",
+    "errorPrefix": "Error",
+    "clientNotFound": "Client not found",
+    "confirmDelete": "Delete this client? This action cannot be undone.",
+    "fields": {
+      "nameRequired": "Name *",
+      "emailRequired": "Email *",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company",
+      "country": "Country",
+      "address": "Address"
+    },
+    "actions": {
+      "tryAgain": "Try Again",
+      "addClient": "+ Add Client",
+      "edit": "Edit →",
+      "goBack": "Go Back",
+      "backToClients": "← Back to Clients",
+      "editClient": "Edit Client",
+      "delete": "Delete",
+      "deleting": "Deleting...",
+      "saving": "Saving...",
+      "createClient": "Create Client",
+      "saveChanges": "Save Changes",
+      "cancel": "Cancel"
+    },
+    "validation": {
+      "nameRequired": "Client name is required.",
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Please enter a valid email address."
+    },
+    "errors": {
+      "supabaseInit": "Failed to initialize Supabase client",
+      "loginRequiredView": "Please log in to view clients",
+      "loginRequiredViewSingle": "Please log in to view this client",
+      "loginRequiredCreate": "Please log in to create clients",
+      "loginRequiredEdit": "Please log in to edit clients",
+      "loginRequiredDelete": "Please log in to delete this client",
+      "failedLoadClients": "Failed to load clients",
+      "failedLoadClient": "Failed to load client"
     }
   }
 }

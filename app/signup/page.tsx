@@ -9,8 +9,10 @@ import toast, { Toaster } from 'react-hot-toast'
 import Footer from '@/components/Footer'
 // import posthog from 'posthog-js'
 import Logo from '@/components/Logo'
+import { useTranslations } from 'next-intl'
 
 export default function SignupPage() {
+  const t = useTranslations('signup')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -24,22 +26,22 @@ export default function SignupPage() {
     e.preventDefault()
 
     if (!supabase) {
-      toast.error('Failed to initialize authentication')
+      toast.error(t('errors.initAuth'))
       return
     }
     
     if (!acceptedTerms) {
-      toast.error('You must accept the Terms of Service and Privacy Policy')
+      toast.error(t('errors.acceptTerms'))
       return
     }
     
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match')
+      toast.error(t('errors.passwordMismatch'))
       return
     }
     
     if (password.length < 6) {
-      toast.error('Password must be at least 6 characters')
+      toast.error(t('errors.passwordTooShort'))
       return
     }
 
@@ -59,7 +61,7 @@ export default function SignupPage() {
       toast.error(error.message)
     } else {
       // posthog.capture('user_signed_up', { email, has_name: !!name })
-      toast.success('Check your email for confirmation link!')
+      toast.success(t('messages.checkEmail'))
       setTimeout(() => router.push('/login'), 3000)
     }
   }
@@ -75,8 +77,8 @@ export default function SignupPage() {
             <Logo />
           </div>
           
-          <h1 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-2">Create Account</h1>
-          <p className="text-center text-gray-500 dark:text-gray-400 mb-6">Start invoicing in minutes</p>
+          <h1 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-2">{t('title')}</h1>
+          <p className="text-center text-gray-500 dark:text-gray-400 mb-6">{t('subtitle')}</p>
           
           <form onSubmit={handleSignup} className="space-y-4">
             <div>
@@ -84,7 +86,7 @@ export default function SignupPage() {
                 id="full-name"
                 name="fullName"
                 type="text"
-                placeholder="Full Name"
+                placeholder={t('fields.fullName')}
                 value={name}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                 className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl 
@@ -98,7 +100,7 @@ export default function SignupPage() {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="Email Address"
+                placeholder={t('fields.email')}
                 value={email}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                 className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl 
@@ -112,7 +114,7 @@ export default function SignupPage() {
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Password"
+                placeholder={t('fields.password')}
                 value={password}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                 className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl 
@@ -126,7 +128,7 @@ export default function SignupPage() {
                 id="confirm-password"
                 name="confirmPassword"
                 type="password"
-                placeholder="Confirm Password"
+                placeholder={t('fields.confirmPassword')}
                 value={confirmPassword}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                 className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl 
@@ -145,13 +147,13 @@ export default function SignupPage() {
                 className="mt-1 w-4 h-4 text-blue-600 rounded"
               />
               <label htmlFor="terms" className="text-sm text-gray-600 dark:text-gray-400">
-                I agree to the{' '}
+                {t('terms.prefix')}{' '}
                 <Link href="/terms" className="text-blue-600 hover:underline" target="_blank">
-                  Terms of Service
+                  {t('terms.termsOfService')}
                 </Link>
                 {' '}and{' '}
                 <Link href="/privacy" className="text-blue-600 hover:underline" target="_blank">
-                  Privacy Policy
+                  {t('terms.privacyPolicy')}
                 </Link>
               </label>
             </div>
@@ -162,14 +164,14 @@ export default function SignupPage() {
               className="w-full bg-blue-600 text-white py-2.5 rounded-xl font-medium 
                 hover:bg-blue-700 transition-all disabled:opacity-50"
             >
-              {loading ? 'Creating account...' : 'Sign Up'}
+              {loading ? t('actions.creating') : t('actions.signUp')}
             </button>
           </form>
           
           <p className="text-center mt-6 text-sm text-gray-600 dark:text-gray-400">
-            Already have an account?{' '}
+            {t('footer.alreadyHaveAccount')}{' '}
             <Link href="/login" className="text-blue-600 dark:text-blue-400 font-semibold hover:underline">
-              Sign in
+              {t('footer.signIn')}
             </Link>
           </p>
         </div>

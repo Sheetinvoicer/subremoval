@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 interface Client {
   id: string;
@@ -17,6 +18,7 @@ interface Client {
 }
 
 export default function ClientsPage() {
+  const t = useTranslations('clientsPage');
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,14 +33,14 @@ export default function ClientsPage() {
       setError(null);
       const supabase = createClient();
       if (!supabase) {
-        setError('Failed to initialize Supabase client');
+        setError(t('errors.supabaseInit'));
         setLoading(false);
         return;
       }
 
       const { data: authData, error: authError } = await supabase.auth.getUser();
       if (authError || !authData?.user) {
-        setError(authError?.message || 'Please log in to view clients');
+        setError(authError?.message || t('errors.loginRequiredView'));
         setLoading(false);
         return;
       }
@@ -56,7 +58,7 @@ export default function ClientsPage() {
       }
       setClients(data || []);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load clients';
+      const errorMessage = err instanceof Error ? err.message : t('errors.failedLoadClients');
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -64,19 +66,19 @@ export default function ClientsPage() {
   }
 
   if (loading) {
-    return <div className="p-8 text-center text-gray-500 dark:text-gray-400">Loading clients...</div>;
+    return <div className="p-8 text-center text-gray-500 dark:text-gray-400">{t('loading')}</div>;
   }
 
   if (error) {
     return (
       <div className="p-8 text-center">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+          <p className="text-red-600 dark:text-red-400">{t('errorPrefix')}: {error}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-2 text-sm text-blue-600 hover:underline"
           >
-            Try Again
+            {t('actions.tryAgain')}
           </button>
         </div>
       </div>
@@ -87,14 +89,14 @@ export default function ClientsPage() {
     <div className="p-6 md:p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Clients</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">Manage your client relationships</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">{t('subtitle')}</p>
         </div>
         <Link
           href="/dashboard/clients/new"
           className="inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all"
         >
-          + Add Client
+          {t('actions.addClient')}
         </Link>
       </div>
 
@@ -111,7 +113,7 @@ export default function ClientsPage() {
             <div className="flex items-start justify-between mb-4">
               <div className="text-4xl">👤</div>
               <Link href={`/dashboard/clients/${client.id}`} className="text-blue-600 dark:text-blue-400 text-sm">
-                Edit →
+                {t('actions.edit')}
               </Link>
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{client.name}</h3>

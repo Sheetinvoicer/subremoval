@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 type BulkResult = {
   invoiceId: string
@@ -23,6 +24,7 @@ interface Invoice {
 }
 
 export default function InvoicesPage() {
+  const t = useTranslations('invoices');
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [invoices, setInvoices] = useState<Invoice[]>([])
@@ -43,7 +45,7 @@ export default function InvoicesPage() {
     try {
       const supabase = createClient()
       if (!supabase) {
-        setError("Failed to initialize Supabase client")
+        setError(t('errors.supabaseInit'))
         setLoading(false)
         return
       }
@@ -51,7 +53,7 @@ export default function InvoicesPage() {
       const { data: authData } = await supabase.auth.getUser()
       const user = authData?.user
       if (!user) {
-        setError('You must be logged in to view invoices.')
+        setError(t('errors.loginRequired'))
         setLoading(false)
         return
       }
@@ -86,7 +88,7 @@ export default function InvoicesPage() {
       setBulkResults({})
       setBulkProgress({ total: 0, completed: 0, sent: 0, failed: 0 })
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load data"
+      const errorMessage = err instanceof Error ? err.message : t('errors.failedLoadData')
       setError(errorMessage)
     } finally {
       setLoading(false)
@@ -115,7 +117,7 @@ export default function InvoicesPage() {
 
         if (!response.ok) {
           const payload = await response.json().catch(() => ({}))
-          const error = payload?.error || 'Failed to send invoice'
+          const error = payload?.error || t('errors.failedSendInvoice')
           setBulkResults((prev) => ({ ...prev, [invoiceId]: { invoiceId, success: false, error } }))
           setBulkProgress((prev) => ({ ...prev, completed: prev.completed + 1, failed: prev.failed + 1 }))
           continue
@@ -125,7 +127,7 @@ export default function InvoicesPage() {
         setBulkProgress((prev) => ({ ...prev, completed: prev.completed + 1, sent: prev.sent + 1 }))
         setInvoices((prev) => prev.map((invoice) => (invoice.id === invoiceId ? { ...invoice, status: invoice.status === 'paid' ? 'paid' : 'sent' } : invoice)))
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to send invoice'
+        const message = error instanceof Error ? error.message : t('errors.failedSendInvoice')
         setBulkResults((prev) => ({ ...prev, [invoiceId]: { invoiceId, success: false, error: message } }))
         setBulkProgress((prev) => ({ ...prev, completed: prev.completed + 1, failed: prev.failed + 1 }))
       }
@@ -176,12 +178,12 @@ export default function InvoicesPage() {
     return (
       <div className="container mx-auto p-4">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+          <p className="text-red-600 dark:text-red-400">{t('errorLabel')}: {error}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-2 text-sm text-blue-600 hover:underline"
           >
-            Try Again
+            {t('actions.tryAgain')}
           </button>
         </div>
       </div>
@@ -192,36 +194,36 @@ export default function InvoicesPage() {
     <div className="container mx-auto p-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Invoices</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Manage your invoices</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">{t('subtitle')}</p>
         </div>
         <Link href="/dashboard/invoices/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-          + New Invoice
+          + {t('actions.newInvoice')}
         </Link>
       </div>
 
       <div className="flex flex-wrap gap-3 mb-4">
         <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="border rounded px-3 py-2">
-          <option value="all">All statuses</option>
-          <option value="draft">Draft</option>
-          <option value="sent">Sent</option>
-          <option value="paid">Paid</option>
-          <option value="overdue">Overdue</option>
+          <option value="all">{t('filters.allStatuses')}</option>
+          <option value="draft">{t('status.draft')}</option>
+          <option value="sent">{t('status.sent')}</option>
+          <option value="paid">{t('status.paid')}</option>
+          <option value="overdue">{t('status.overdue')}</option>
         </select>
         <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="border rounded px-3 py-2">
-          <option value="created_desc">Newest</option>
-          <option value="created_asc">Oldest</option>
-          <option value="due_asc">Due date ↑</option>
-          <option value="due_desc">Due date ↓</option>
-          <option value="total_desc">Amount high → low</option>
-          <option value="total_asc">Amount low → high</option>
+          <option value="created_desc">{t('sort.newest')}</option>
+          <option value="created_asc">{t('sort.oldest')}</option>
+          <option value="due_asc">{t('sort.dueAsc')}</option>
+          <option value="due_desc">{t('sort.dueDesc')}</option>
+          <option value="total_desc">{t('sort.amountHighLow')}</option>
+          <option value="total_asc">{t('sort.amountLowHigh')}</option>
         </select>
         {invoices.length > 0 && (
           <button
             onClick={togglePageSelection}
             className="border rounded px-3 py-2 text-sm"
           >
-            {allPagedSelected ? 'Unselect page' : 'Select page'}
+            {allPagedSelected ? t('actions.unselectPage') : t('actions.selectPage')}
           </button>
         )}
         <button

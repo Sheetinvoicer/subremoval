@@ -6,12 +6,15 @@ import Footer from '@/components/Footer'
 import SearchBar from '@/components/SearchBar'
 import AIAssistant from '@/components/AIAssistant'
 import { Toaster } from 'react-hot-toast'
+import { useLocale } from 'next-intl'
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const locale = useLocale()
+  const isRtl = locale === 'ar'
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -26,10 +29,10 @@ export default function DashboardLayout({
         <Sidebar />
         <main className="flex-1 p-4 pt-20 md:p-6 lg:p-8 overflow-x-auto">
           <div className="max-w-7xl mx-auto">
-            <div className="mb-4 flex justify-end">
+            <div className={`mb-4 flex ${isRtl ? 'justify-start' : 'justify-end'}`}>
               <SearchBar />
             </div>
-            <Toaster position="top-right" />
+            <Toaster position={isRtl ? 'top-left' : 'top-right'} />
             {children}
           </div>
           <AIAssistant />

@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 
@@ -20,18 +20,6 @@ import {
 } from '@/lib/invoiceTemplate';
 
 const ACCOUNTING_MAPPING_STORAGE_KEY = 'sheetinvoicer_accounting_mapping';
-
-// FIX 1: Changed type to avoid issues
-const languageLabels: Record<string, string> = {
-  en: 'English',
-  es: 'Español',
-  fr: 'Français',
-  de: 'Deutsch',
-  it: 'Italiano',
-  pt: 'Português',
-  tr: 'Türkçe',
-  ar: 'العربية',
-};
 
 interface UserSettings {
   default_currency: string;
@@ -57,6 +45,16 @@ const DEFAULT_SETTINGS: UserSettings = {
 
 export default function SettingsPage() {
   const t = useTranslations('settings');
+  const languageLabels: Record<string, string> = {
+    en: t('languageOptions.en'),
+    es: t('languageOptions.es'),
+    fr: t('languageOptions.fr'),
+    de: t('languageOptions.de'),
+    it: t('languageOptions.it'),
+    pt: t('languageOptions.pt'),
+    tr: t('languageOptions.tr'),
+    ar: t('languageOptions.ar'),
+  };
   const locale = useLocale();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -72,6 +70,8 @@ export default function SettingsPage() {
     useState<InvoiceTemplateSettings>(DEFAULT_INVOICE_TEMPLATE_SETTINGS);
   const [accountingMapping, setAccountingMapping] =
     useState<AccountingMapping>(DEFAULT_ACCOUNTING_MAPPING);
+  const templateSettingsLoadedRef = useRef(false);
+  const accountingMappingLoadedRef = useRef(false);
 
   // ORIGINAL useEffect - unchanged
   useEffect(() => {
@@ -104,32 +104,31 @@ export default function SettingsPage() {
           setAccountingMapping(DEFAULT_ACCOUNTING_MAPPING);
         }
       }
-    }
-  }, []);
 
-  // FIX 2: NEW useEffect - Load template settings from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('templateSettings');
-    if (saved) {
-      try {
-        setInvoiceTemplateSettings(JSON.parse(saved));
-      } catch (e) {
-        console.error('Error loading template settings:', e);
-      }
+      templateSettingsLoadedRef.current = true;
+      accountingMappingLoadedRef.current = true;
     }
   }, []);
 
   // FIX 3: NEW useEffect - Auto-save template settings when they change
   useEffect(() => {
-    if (typeof window !== 'undefined' && invoiceTemplateSettings) {
-      saveTemplateSettings();
+    if (
+      typeof window !== 'undefined' &&
+      templateSettingsLoadedRef.current &&
+      invoiceTemplateSettings
+    ) {
+      saveTemplateSettings(false);
     }
   }, [invoiceTemplateSettings]);
 
   // FIX 4: NEW useEffect - Auto-save accounting mapping when it changes
   useEffect(() => {
-    if (typeof window !== 'undefined' && accountingMapping) {
-      saveAccountingMapping();
+    if (
+      typeof window !== 'undefined' &&
+      accountingMappingLoadedRef.current &&
+      accountingMapping
+    ) {
+      saveAccountingMapping(false);
     }
   }, [accountingMapping]);
 
@@ -158,7 +157,7 @@ export default function SettingsPage() {
     try {
       const supabase = createClient();
       if (!supabase) {
-        setError('Failed to initialize Supabase client');
+        setError(t('errors.supabaseInit'));
         setLoading(false);
         return;
       }
@@ -167,7 +166,7 @@ export default function SettingsPage() {
       const user = userData?.user;
 
       if (userError || !user) {
-        setError('User not authenticated');
+        setError(t('errors.userNotAuthenticated'));
         setLoading(false);
         return;
       }
@@ -204,7 +203,7 @@ export default function SettingsPage() {
         }
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load settings';
+      const errorMessage = err instanceof Error ? err.message : t('errors.failedLoadSettings');
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -220,7 +219,7 @@ export default function SettingsPage() {
       setSaving(true);
       const supabase = createClient();
       if (!supabase) {
-        setError('Failed to initialize Supabase client');
+        setError(t('errors.supabaseInit'));
         return;
       }
 
@@ -228,7 +227,7 @@ export default function SettingsPage() {
       const user = userData?.user;
 
       if (userError || !user) {
-        setError('User not authenticated');
+        setError(t('errors.userNotAuthenticated'));
         return;
       }
 
@@ -252,7 +251,7 @@ export default function SettingsPage() {
       setSuccess(t('messages.saved'));
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to save settings';
+      const errorMessage = err instanceof Error ? err.message : t('errors.failedSaveSettings');
       setError(errorMessage);
     } finally {
       setSaving(false);
@@ -284,7 +283,7 @@ export default function SettingsPage() {
   }
 
   // FIX 5: UPDATED function - Now shows success message
-  function saveTemplateSettings() {
+  function saveTemplateSettings(showToast = true) {
     if (typeof window === 'undefined') return;
     window.localStorage.setItem(
       INVOICE_TEMPLATE_STORAGE_KEY,
@@ -293,8 +292,10 @@ export default function SettingsPage() {
         accentColor: sanitizeAccentColor(invoiceTemplateSettings.accentColor),
       }),
     );
-    setSuccess('Template settings saved!');
-    setTimeout(() => setSuccess(null), 3000);
+    if (showToast) {
+      setSuccess(t('messages.templateSaved'));
+      setTimeout(() => setSuccess(null), 3000);
+    }
   }
 
   function updateAccountingMapping<K extends keyof AccountingMapping>(
@@ -305,21 +306,23 @@ export default function SettingsPage() {
   }
 
   // ORIGINAL function - unchanged (already had success message)
-  function saveAccountingMapping() {
+  function saveAccountingMapping(showToast = true) {
     if (typeof window === 'undefined') return;
     window.localStorage.setItem(
       ACCOUNTING_MAPPING_STORAGE_KEY,
       JSON.stringify(resolveMapping(accountingMapping)),
     );
-    setSuccess('Accounting mapping saved.');
-    setTimeout(() => setSuccess(null), 3000);
+    if (showToast) {
+      setSuccess(t('messages.accountingMappingSaved'));
+      setTimeout(() => setSuccess(null), 3000);
+    }
   }
 
   function handleLogoUpload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-      setError('Please upload an image file for the invoice logo.');
+      setError(t('errors.logoImageOnly'));
       return;
     }
 
@@ -343,7 +346,7 @@ export default function SettingsPage() {
 
       const payload = await response.json();
       if (!response.ok) {
-        setError(payload.error || 'Failed to export data');
+        setError(payload.error || t('errors.failedExportData'));
         return;
       }
 
@@ -357,9 +360,9 @@ export default function SettingsPage() {
       anchor.remove();
       URL.revokeObjectURL(url);
 
-      setSuccess('Your data export is ready and has been downloaded.');
+      setSuccess(t('messages.dataExportReady'));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to export data';
+      const errorMessage = err instanceof Error ? err.message : t('errors.failedExportData');
       setError(errorMessage);
     } finally {
       setExportingData(false);
@@ -385,7 +388,7 @@ export default function SettingsPage() {
 
       if (!response.ok) {
         const payload = await response.json().catch(() => ({}));
-        setError(payload.error || 'Failed to export accounting data');
+        setError(payload.error || t('errors.failedExportAccountingData'));
         return;
       }
 
@@ -400,9 +403,9 @@ export default function SettingsPage() {
       link.remove();
       URL.revokeObjectURL(url);
 
-      setSuccess(`${format.toUpperCase()} export is ready and has been downloaded.`);
+      setSuccess(t('messages.accountingExportReady', { format: format.toUpperCase() }));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to export accounting data';
+      const errorMessage = err instanceof Error ? err.message : t('errors.failedExportAccountingData');
       setError(errorMessage);
     } finally {
       setExportingAccounting(null);
@@ -411,7 +414,7 @@ export default function SettingsPage() {
 
   async function deleteMyAccount() {
     const confirmed = window.confirm(
-      'This action permanently deletes your account and all related data. This cannot be undone. Continue?'
+      t('privacy.deleteConfirm')
     );
 
     if (!confirmed) {
@@ -429,14 +432,14 @@ export default function SettingsPage() {
       const payload = await response.json();
 
       if (!response.ok) {
-        setError(payload.error || 'Failed to delete account data');
+        setError(payload.error || t('errors.failedDeleteAccountData'));
         return;
       }
 
-      setSuccess('Your account and personal data were deleted successfully.');
+      setSuccess(t('messages.accountDeleted'));
       window.location.href = '/';
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete account data';
+      const errorMessage = err instanceof Error ? err.message : t('errors.failedDeleteAccountData');
       setError(errorMessage);
     } finally {
       setDeletingAccount(false);
@@ -448,7 +451,7 @@ export default function SettingsPage() {
     localStorage.setItem('cookieConsent', value);
     setCookieConsent(value);
     window.dispatchEvent(new Event('cookie-consent-updated'));
-    setSuccess(`Cookie preferences updated: ${value === 'accepted' ? 'optional cookies enabled' : 'optional cookies disabled'}.`);
+    setSuccess(t(value === 'accepted' ? 'messages.cookiesEnabled' : 'messages.cookiesDisabled'));
   }
 
   if (loading) {
@@ -481,8 +484,10 @@ export default function SettingsPage() {
       <form onSubmit={saveSettings} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Default Currency</label>
+            <label htmlFor="settings-default-currency" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('fields.defaultCurrency')}</label>
             <select
+              id="settings-default-currency"
+              name="default_currency"
               value={settings.default_currency}
               onChange={(e) => updateField('default_currency', e.target.value)}
               className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
@@ -496,8 +501,10 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('language.label')}</label>
+            <label htmlFor="settings-language" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('language.label')}</label>
             <select
+              id="settings-language"
+              name="language"
               value={settings.language}
               onChange={(e) => updateField('language', e.target.value)}
               className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
@@ -511,85 +518,112 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Theme</label>
+            <label htmlFor="settings-theme" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('fields.theme')}</label>
             <select
+              id="settings-theme"
+              name="theme"
               value={settings.theme}
               onChange={(e) => updateField('theme', e.target.value)}
               className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
             >
-              <option value="system">System</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
+              <option value="system">{t('themeOptions.system')}</option>
+              <option value="light">{t('themeOptions.light')}</option>
+              <option value="dark">{t('themeOptions.dark')}</option>
             </select>
           </div>
 
           <div className="flex items-center gap-3 md:pt-8">
             <input
               id="notifications_enabled"
+              name="notifications_enabled"
               type="checkbox"
               checked={settings.notifications_enabled}
               onChange={(e) => updateField('notifications_enabled', e.target.checked)}
               className="w-5 h-5 accent-blue-600"
             />
             <label htmlFor="notifications_enabled" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Enable Notifications
+              {t('fields.enableNotifications')}
             </label>
           </div>
         </div>
 
         <div className="pt-6 border-t border-gray-200 dark:border-gray-700 space-y-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Company Information</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('company.title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Company Name"
-              value={settings.company_name}
-              onChange={(e) => updateField('company_name', e.target.value)}
-              className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
-            />
-            <input
-              type="email"
-              placeholder="Company Email"
-              value={settings.company_email}
-              onChange={(e) => updateField('company_email', e.target.value)}
-              className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
-            />
-            <input
-              type="text"
-              placeholder="Company Phone"
-              value={settings.company_phone}
-              onChange={(e) => updateField('company_phone', e.target.value)}
-              className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
-            />
-            <input
-              type="text"
-              placeholder="Company Address"
-              value={settings.company_address}
-              onChange={(e) => updateField('company_address', e.target.value)}
-              className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
-            />
+            <div>
+              <label htmlFor="settings-company-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('company.nameLabel')}</label>
+              <input
+                id="settings-company-name"
+                name="company_name"
+                type="text"
+                placeholder={t('company.namePlaceholder')}
+                value={settings.company_name}
+                onChange={(e) => updateField('company_name', e.target.value)}
+                className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
+              />
+            </div>
+            <div>
+              <label htmlFor="settings-company-email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('company.emailLabel')}</label>
+              <input
+                id="settings-company-email"
+                name="company_email"
+                type="email"
+                placeholder={t('company.emailPlaceholder')}
+                value={settings.company_email}
+                onChange={(e) => updateField('company_email', e.target.value)}
+                className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
+              />
+            </div>
+            <div>
+              <label htmlFor="settings-company-phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('company.phoneLabel')}</label>
+              <input
+                id="settings-company-phone"
+                name="company_phone"
+                type="text"
+                placeholder={t('company.phonePlaceholder')}
+                value={settings.company_phone}
+                onChange={(e) => updateField('company_phone', e.target.value)}
+                className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
+              />
+            </div>
+            <div>
+              <label htmlFor="settings-company-address" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('company.addressLabel')}</label>
+              <input
+                id="settings-company-address"
+                name="company_address"
+                type="text"
+                placeholder={t('company.addressPlaceholder')}
+                value={settings.company_address}
+                onChange={(e) => updateField('company_address', e.target.value)}
+                className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
+              />
+            </div>
           </div>
         </div>
 
         <div className="pt-6 border-t border-gray-200 dark:border-gray-700 space-y-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Invoice Template Customization</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('template.title')}</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Template</label>
+              <label htmlFor="template-selection" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('template.templateLabel')}</label>
               <select
+                id="template-selection"
+                name="template"
                 value={invoiceTemplateSettings.template}
                 onChange={(e) => updateTemplateField('template', e.target.value as InvoiceTemplateId)}
                 className="w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white p-3"
               >
-                <option value="classic">Classic</option>
-                <option value="modern">Modern</option>
-                <option value="minimal">Minimal</option>
+                <option value="classic">{t('template.templateOptions.classic')}</option>
+                <option value="modern">{t('template.templateOptions.modern')}</option>
+                <option value="minimal">{t('template.templateOptions.minimal')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Accent Color</label>
+              <label htmlFor="template-accent-color" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('template.accentColor')}</label>
               <input
+                id="template-accent-color"
+                name="accentColor"
                 type="color"
                 value={sanitizeAccentColor(invoiceTemplateSettings.accentColor)}
                 onChange={(e) => updateTemplateField('accentColor', sanitizeAccentColor(e.target.value))}
@@ -597,8 +631,10 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Logo Upload</label>
+              <label htmlFor="template-logo-upload" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('template.logoUpload')}</label>
               <input
+                id="template-logo-upload"
+                name="logo"
                 type="file"
                 accept="image/*"
                 onChange={handleLogoUpload}
@@ -608,90 +644,100 @@ export default function SettingsPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <label htmlFor="template-show-business-details" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
               <input
+                id="template-show-business-details"
+                name="showBusinessDetails"
                 type="checkbox"
                 checked={invoiceTemplateSettings.fields.showBusinessDetails}
                 onChange={(e) => updateTemplateVisibility('showBusinessDetails', e.target.checked)}
                 className="w-4 h-4 accent-blue-600"
               />
-              Show business details
+              {t('template.visibility.showBusinessDetails')}
             </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <label htmlFor="template-show-client-details" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
               <input
+                id="template-show-client-details"
+                name="showClientDetails"
                 type="checkbox"
                 checked={invoiceTemplateSettings.fields.showClientDetails}
                 onChange={(e) => updateTemplateVisibility('showClientDetails', e.target.checked)}
                 className="w-4 h-4 accent-blue-600"
               />
-              Show client details
+              {t('template.visibility.showClientDetails')}
             </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <label htmlFor="template-show-due-date" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
               <input
+                id="template-show-due-date"
+                name="showDueDate"
                 type="checkbox"
                 checked={invoiceTemplateSettings.fields.showDueDate}
                 onChange={(e) => updateTemplateVisibility('showDueDate', e.target.checked)}
                 className="w-4 h-4 accent-blue-600"
               />
-              Show due date
+              {t('template.visibility.showDueDate')}
             </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <label htmlFor="template-show-notes" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
               <input
+                id="template-show-notes"
+                name="showNotes"
                 type="checkbox"
                 checked={invoiceTemplateSettings.fields.showNotes}
                 onChange={(e) => updateTemplateVisibility('showNotes', e.target.checked)}
                 className="w-4 h-4 accent-blue-600"
               />
-              Show notes
+              {t('template.visibility.showNotes')}
             </label>
-            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <label htmlFor="template-show-status-badge" className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
               <input
+                id="template-show-status-badge"
+                name="showStatusBadge"
                 type="checkbox"
                 checked={invoiceTemplateSettings.fields.showStatusBadge}
                 onChange={(e) => updateTemplateVisibility('showStatusBadge', e.target.checked)}
                 className="w-4 h-4 accent-blue-600"
               />
-              Show status badge
+              {t('template.visibility.showStatusBadge')}
             </label>
           </div>
 
           <div className="rounded-xl border border-gray-200 dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-900/30">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Template Preview</h3>
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">{t('template.previewTitle')}</h3>
             <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
               <div
                 className={`px-4 py-3 text-white ${invoiceTemplateSettings.template === 'minimal' ? 'text-sm' : 'text-base'}`}
                 style={{ backgroundColor: sanitizeAccentColor(invoiceTemplateSettings.accentColor) }}
               >
-                {invoiceTemplateSettings.template.toUpperCase()} Invoice
+                {t(`template.templateOptions.${invoiceTemplateSettings.template}`)} {t('template.invoiceLabel')}
               </div>
               <div className="p-4 space-y-3 text-sm text-gray-700">
                 {invoiceTemplateSettings.logoDataUrl && (
                   <img
                     src={invoiceTemplateSettings.logoDataUrl}
-                    alt="Invoice logo preview"
+                    alt={t('template.logoPreviewAlt')}
                     className="h-10 w-auto object-contain"
                   />
                 )}
-                {invoiceTemplateSettings.fields.showBusinessDetails && <p>Business: Acme Studio</p>}
-                {invoiceTemplateSettings.fields.showClientDetails && <p>Client: Example Client</p>}
-                {invoiceTemplateSettings.fields.showDueDate && <p>Due date: 2026-07-20</p>}
+                {invoiceTemplateSettings.fields.showBusinessDetails && <p>{t('template.previewBusiness')}</p>}
+                {invoiceTemplateSettings.fields.showClientDetails && <p>{t('template.previewClient')}</p>}
+                {invoiceTemplateSettings.fields.showDueDate && <p>{t('template.previewDueDate')}</p>}
                 {invoiceTemplateSettings.fields.showStatusBadge && (
                   <span
                     className="inline-flex px-2 py-1 text-xs text-white rounded-full"
                     style={{ backgroundColor: sanitizeAccentColor(invoiceTemplateSettings.accentColor) }}
                   >
-                    SENT
+                    {t('template.previewStatus')}
                   </span>
                 )}
-                {invoiceTemplateSettings.fields.showNotes && <p>Notes: Thank you for your business.</p>}
+                {invoiceTemplateSettings.fields.showNotes && <p>{t('template.previewNotes')}</p>}
               </div>
             </div>
             <button
               type="button"
-              onClick={saveTemplateSettings}
+              onClick={() => saveTemplateSettings()}
               className="mt-4 px-4 py-2 rounded-lg bg-gray-900 text-white text-sm hover:bg-gray-800"
             >
-              Save template customization
+              {t('template.saveButton')}
             </button>
           </div>
         </div>
@@ -702,55 +748,63 @@ export default function SettingsPage() {
             disabled={saving}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-all disabled:opacity-50"
           >
-            {saving ? 'Saving...' : 'Save Settings'}
+            {saving ? t('actions.saving') : t('actions.saveSettings')}
           </button>
         </div>
 
         <div className="pt-6 border-t border-gray-200 dark:border-gray-700 space-y-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Bank & Accounting Integration</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('accounting.title')}</h2>
           <p className="text-sm text-gray-600 dark:text-gray-300">
-            Configure your accounting mapping and export invoices for QuickBooks, Xero, CSV, or Excel.
+            {t('accounting.subtitle')}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Income account</label>
+              <label htmlFor="accounting-income-account" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('accounting.incomeAccount')}</label>
               <input
+                id="accounting-income-account"
+                name="incomeAccount"
                 type="text"
                 value={accountingMapping.incomeAccount}
                 onChange={(e) => updateAccountingMapping('incomeAccount', e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-                placeholder="Sales"
+                placeholder={t('accounting.placeholders.incomeAccount')}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tax type</label>
+              <label htmlFor="accounting-tax-type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('accounting.taxType')}</label>
               <input
+                id="accounting-tax-type"
+                name="taxType"
                 type="text"
                 value={accountingMapping.taxType}
                 onChange={(e) => updateAccountingMapping('taxType', e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-                placeholder="TAX001"
+                placeholder={t('accounting.placeholders.taxType')}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tracking category</label>
+              <label htmlFor="accounting-tracking-category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('accounting.trackingCategory')}</label>
               <input
+                id="accounting-tracking-category"
+                name="trackingCategory"
                 type="text"
                 value={accountingMapping.trackingCategory}
                 onChange={(e) => updateAccountingMapping('trackingCategory', e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-                placeholder="General"
+                placeholder={t('accounting.placeholders.trackingCategory')}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Reference prefix</label>
+              <label htmlFor="accounting-reference-prefix" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('accounting.referencePrefix')}</label>
               <input
+                id="accounting-reference-prefix"
+                name="referencePrefix"
                 type="text"
                 value={accountingMapping.referencePrefix}
                 onChange={(e) => updateAccountingMapping('referencePrefix', e.target.value)}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-                placeholder="INV"
+                placeholder={t('accounting.placeholders.referencePrefix')}
               />
             </div>
           </div>
@@ -758,10 +812,10 @@ export default function SettingsPage() {
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={saveAccountingMapping}
+              onClick={() => saveAccountingMapping()}
               className="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm hover:bg-gray-800"
             >
-              Save mapping
+              {t('accounting.saveMapping')}
             </button>
             <button
               type="button"
@@ -769,7 +823,7 @@ export default function SettingsPage() {
               disabled={!!exportingAccounting}
               className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700 disabled:opacity-50"
             >
-              {exportingAccounting === 'quickbooks' ? 'Preparing...' : 'Export QuickBooks (CSV)'}
+              {exportingAccounting === 'quickbooks' ? t('actions.preparing') : t('accounting.exportQuickBooks')}
             </button>
             <button
               type="button"
@@ -777,7 +831,7 @@ export default function SettingsPage() {
               disabled={!!exportingAccounting}
               className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm hover:bg-indigo-700 disabled:opacity-50"
             >
-              {exportingAccounting === 'xero' ? 'Preparing...' : 'Export Xero (CSV)'}
+              {exportingAccounting === 'xero' ? t('actions.preparing') : t('accounting.exportXero')}
             </button>
             <button
               type="button"
@@ -785,7 +839,7 @@ export default function SettingsPage() {
               disabled={!!exportingAccounting}
               className="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm hover:bg-emerald-700 disabled:opacity-50"
             >
-              {exportingAccounting === 'csv' ? 'Preparing...' : 'Export CSV'}
+              {exportingAccounting === 'csv' ? t('actions.preparing') : t('accounting.exportCsv')}
             </button>
             <button
               type="button"
@@ -793,35 +847,35 @@ export default function SettingsPage() {
               disabled={!!exportingAccounting}
               className="px-4 py-2 rounded-lg bg-amber-600 text-white text-sm hover:bg-amber-700 disabled:opacity-50"
             >
-              {exportingAccounting === 'excel' ? 'Preparing...' : 'Export Excel'}
+              {exportingAccounting === 'excel' ? t('actions.preparing') : t('accounting.exportExcel')}
             </button>
           </div>
         </div>
 
         <div className="pt-6 border-t border-gray-200 dark:border-gray-700 space-y-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Privacy & GDPR</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('privacy.title')}</h2>
           <p className="text-sm text-gray-600 dark:text-gray-300">
-            Manage your cookie preference, export your personal data, or permanently delete your account.
+            {t('privacy.subtitle')}
           </p>
 
           <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-3">
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Cookie consent: {cookieConsent ? cookieConsent : 'not set'}
+                {t('privacy.cookieConsent')} {cookieConsent ? t(`privacy.cookieState.${cookieConsent}`) : t('privacy.cookieState.notSet')}
               </span>
               <button
                 type="button"
                 onClick={() => updateCookieConsent('accepted')}
                 className="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm"
               >
-                Accept optional cookies
+                {t('privacy.acceptCookies')}
               </button>
               <button
                 type="button"
                 onClick={() => updateCookieConsent('rejected')}
                 className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm"
               >
-                Reject optional cookies
+                {t('privacy.rejectCookies')}
               </button>
             </div>
 
@@ -831,7 +885,7 @@ export default function SettingsPage() {
               disabled={exportingData}
               className="w-full sm:w-auto px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50"
             >
-              {exportingData ? 'Preparing export...' : 'Export my data (JSON)'}
+              {exportingData ? t('actions.preparingExport') : t('privacy.exportData')}
             </button>
 
             <button
@@ -840,7 +894,7 @@ export default function SettingsPage() {
               disabled={deletingAccount}
               className="w-full sm:w-auto px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white disabled:opacity-50"
             >
-              {deletingAccount ? 'Deleting account...' : 'Delete account and all data'}
+              {deletingAccount ? t('actions.deletingAccount') : t('privacy.deleteAccount')}
             </button>
           </div>
         </div>

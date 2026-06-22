@@ -93,7 +93,7 @@ export default function DashboardPage() {
     try {
       const supabase = createClient();
       if (!supabase) {
-        setError('Failed to initialize Supabase client');
+        setError(t('errors.supabaseInit'));
         return;
       }
 
@@ -104,7 +104,7 @@ export default function DashboardPage() {
           return;
         }
 
-        setError(authError.message || 'Failed to verify your session. Please try again.');
+        setError(authError.message || t('errors.verifySession'));
         return;
       }
 
@@ -125,7 +125,7 @@ export default function DashboardPage() {
       ]);
 
       if (invoicesRes.error || clientsRes.error || expensesRes.error) {
-        const message = invoicesRes.error?.message || clientsRes.error?.message || expensesRes.error?.message || 'Error loading dashboard data';
+        const message = invoicesRes.error?.message || clientsRes.error?.message || expensesRes.error?.message || t('errors.loadDashboardData');
         setError(message);
         return;
       }
@@ -299,7 +299,7 @@ export default function DashboardPage() {
         ) : (
           // Stats Cards
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <Tooltip content="Total revenue from all paid invoices">
+            <Tooltip content={t('tooltips.totalRevenue')}>
               <div onClick={() => navigateTo('/dashboard/invoices', 'paid')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
                 <div className="flex justify-between">
                   <div>
@@ -311,7 +311,7 @@ export default function DashboardPage() {
               </div>
             </Tooltip>
             
-            <Tooltip content="Revenue minus expenses = your profit">
+            <Tooltip content={t('tooltips.netProfit')}>
               <div onClick={() => navigateTo('/dashboard/reports')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
                 <div className="flex justify-between">
                   <div>
@@ -323,7 +323,7 @@ export default function DashboardPage() {
               </div>
             </Tooltip>
             
-            <Tooltip content="Invoices waiting for payment">
+            <Tooltip content={t('tooltips.pendingInvoices')}>
               <div onClick={() => navigateTo('/dashboard/invoices', 'pending')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
                 <div className="flex justify-between">
                   <div>
@@ -335,7 +335,7 @@ export default function DashboardPage() {
               </div>
             </Tooltip>
             
-            <Tooltip content="All invoices created">
+            <Tooltip content={t('tooltips.allInvoices')}>
               <div onClick={() => navigateTo('/dashboard/invoices')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
                 <div className="flex justify-between">
                   <div>
@@ -347,7 +347,7 @@ export default function DashboardPage() {
               </div>
             </Tooltip>
             
-            <Tooltip content="Invoices that have been paid">
+            <Tooltip content={t('tooltips.paidInvoices')}>
               <div onClick={() => navigateTo('/dashboard/invoices', 'paid')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
                 <div className="flex justify-between">
                   <div>
@@ -359,7 +359,7 @@ export default function DashboardPage() {
               </div>
             </Tooltip>
             
-            <Tooltip content="Total clients in your database">
+            <Tooltip content={t('tooltips.totalClients')}>
               <div onClick={() => navigateTo('/dashboard/clients')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
                 <div className="flex justify-between">
                   <div>
@@ -371,7 +371,7 @@ export default function DashboardPage() {
               </div>
             </Tooltip>
             
-            <Tooltip content="Invoices past due date">
+            <Tooltip content={t('tooltips.overdueInvoices')}>
               <div onClick={() => navigateTo('/dashboard/invoices', 'overdue')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
                 <div className="flex justify-between">
                   <div>
@@ -383,7 +383,7 @@ export default function DashboardPage() {
               </div>
             </Tooltip>
             
-            <Tooltip content="Total business expenses">
+            <Tooltip content={t('tooltips.totalExpenses')}>
               <div onClick={() => navigateTo('/dashboard/expenses')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
                 <div className="flex justify-between">
                   <div>

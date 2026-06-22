@@ -83,19 +83,31 @@ export default function NewProjectPage() {
       {error && <p className="mb-4 text-red-600 dark:text-red-400">{error}</p>}
 
       <form onSubmit={onSubmit} className="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700">
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Project name *" className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2" />
-        <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" rows={4} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2" />
-        <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2">
+        <div>
+          <label htmlFor="project-name" className="block text-sm font-medium mb-1">Project name *</label>
+          <input id="project-name" name="name" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2" />
+        </div>
+        <div>
+          <label htmlFor="project-description" className="block text-sm font-medium mb-1">Description</label>
+          <textarea id="project-description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={4} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2" />
+        </div>
+        <div>
+          <label htmlFor="project-status" className="block text-sm font-medium mb-1">Status</label>
+          <select id="project-status" name="status" value={status} onChange={(e) => setStatus(e.target.value)} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2">
           {statuses.map((item) => (
             <option key={item} value={item}>{item}</option>
           ))}
-        </select>
-        <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2">
-          <option value="">No linked client</option>
-          {clients.map((client) => (
-            <option key={client.id} value={client.id}>{client.name}</option>
-          ))}
-        </select>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="project-client" className="block text-sm font-medium mb-1">Linked client</label>
+          <select id="project-client" name="clientId" value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-transparent px-3 py-2">
+            <option value="">No linked client</option>
+            {clients.map((client) => (
+              <option key={client.id} value={client.id}>{client.name}</option>
+            ))}
+          </select>
+        </div>
 
         <div className="flex gap-3 pt-2">
           <button type="submit" disabled={submitting} className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg disabled:opacity-60">

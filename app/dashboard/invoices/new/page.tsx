@@ -215,8 +215,8 @@ export default function NewInvoicePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Client</label>
-            <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full border rounded px-3 py-2">
+            <label htmlFor="invoice-client" className="block text-sm font-medium mb-1">Client</label>
+            <select id="invoice-client" name="clientId" value={clientId} onChange={(e) => setClientId(e.target.value)} className="w-full border rounded px-3 py-2">
               <option value="">Select a client</option>
               {clients.map((client) => (
                 <option key={client.id} value={client.id}>
@@ -226,8 +226,8 @@ export default function NewInvoicePage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Project</label>
-            <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className="w-full border rounded px-3 py-2">
+            <label htmlFor="invoice-project" className="block text-sm font-medium mb-1">Project</label>
+            <select id="invoice-project" name="projectId" value={projectId} onChange={(e) => setProjectId(e.target.value)} className="w-full border rounded px-3 py-2">
               <option value="">No project</option>
               {projects.map((project) => (
                 <option key={project.id} value={project.id}>
@@ -237,12 +237,12 @@ export default function NewInvoicePage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Due date</label>
-            <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="w-full border rounded px-3 py-2" />
+            <label htmlFor="invoice-due-date" className="block text-sm font-medium mb-1">Due date</label>
+            <input id="invoice-due-date" name="dueDate" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="w-full border rounded px-3 py-2" />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Currency</label>
-            <input type="text" value={currency} onChange={(e) => setCurrency(e.target.value.toUpperCase())} maxLength={3} className="w-full border rounded px-3 py-2" />
+            <label htmlFor="invoice-currency" className="block text-sm font-medium mb-1">Currency</label>
+            <input id="invoice-currency" name="currency" type="text" value={currency} onChange={(e) => setCurrency(e.target.value.toUpperCase())} maxLength={3} className="w-full border rounded px-3 py-2" />
           </div>
         </div>
 
@@ -256,9 +256,12 @@ export default function NewInvoicePage() {
           <div className="space-y-3">
             {items.map((item, index) => (
               <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
-                <input className="md:col-span-6 border rounded px-3 py-2" placeholder="Description" value={item.description} onChange={(e) => updateItem(index, 'description', e.target.value)} />
-                <input className="md:col-span-2 border rounded px-3 py-2" type="number" min="1" step="1" value={item.quantity} onChange={(e) => updateItem(index, 'quantity', e.target.value)} />
-                <input className="md:col-span-2 border rounded px-3 py-2" type="number" min="0" step="0.01" value={item.price} onChange={(e) => updateItem(index, 'price', e.target.value)} />
+                <label htmlFor={`invoice-item-description-${index}`} className="sr-only">Description</label>
+                <input id={`invoice-item-description-${index}`} name={`items[${index}][description]`} className="md:col-span-6 border rounded px-3 py-2" placeholder="Description" value={item.description} onChange={(e) => updateItem(index, 'description', e.target.value)} />
+                <label htmlFor={`invoice-item-quantity-${index}`} className="sr-only">Quantity</label>
+                <input id={`invoice-item-quantity-${index}`} name={`items[${index}][quantity]`} className="md:col-span-2 border rounded px-3 py-2" type="number" min="1" step="1" value={item.quantity} onChange={(e) => updateItem(index, 'quantity', e.target.value)} />
+                <label htmlFor={`invoice-item-price-${index}`} className="sr-only">Price</label>
+                <input id={`invoice-item-price-${index}`} name={`items[${index}][price]`} className="md:col-span-2 border rounded px-3 py-2" type="number" min="0" step="0.01" value={item.price} onChange={(e) => updateItem(index, 'price', e.target.value)} />
                 <div className="md:col-span-1 text-sm text-gray-700">{(item.quantity * item.price).toFixed(2)}</div>
                 <button type="button" onClick={() => removeItem(index)} className="md:col-span-1 text-sm text-red-600 hover:underline">
                   Remove
@@ -270,8 +273,8 @@ export default function NewInvoicePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
           <div>
-            <label className="block text-sm font-medium mb-1">Tax rate (%)</label>
-            <input type="number" min="0" max="100" step="0.01" value={taxRate} onChange={(e) => setTaxRate(Number(e.target.value))} className="w-full border rounded px-3 py-2" />
+            <label htmlFor="invoice-tax-rate" className="block text-sm font-medium mb-1">Tax rate (%)</label>
+            <input id="invoice-tax-rate" name="taxRate" type="number" min="0" max="100" step="0.01" value={taxRate} onChange={(e) => setTaxRate(Number(e.target.value))} className="w-full border rounded px-3 py-2" />
           </div>
           <div className="md:col-span-2 text-sm text-gray-700 dark:text-gray-200 space-y-1">
             <p>Subtotal: {subtotal.toFixed(2)}</p>
@@ -281,8 +284,8 @@ export default function NewInvoicePage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Notes</label>
-          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full border rounded px-3 py-2 min-h-20" />
+          <label htmlFor="invoice-notes" className="block text-sm font-medium mb-1">Notes</label>
+          <textarea id="invoice-notes" name="notes" value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full border rounded px-3 py-2 min-h-20" />
         </div>
 
         <div className="flex justify-end gap-3">
