@@ -276,7 +276,52 @@
     "pending": "قيد الانتظار",
     "totalInvoices": "إجمالي الفواتير",
     "noInvoices": "لا توجد فواتير بعد",
-    "createFirstInvoice": "أنشئ فاتورتك الأولى لبدء تتبع الإيرادات"
+    "createFirstInvoice": "أنشئ فاتورتك الأولى لبدء تتبع الإيرادات",
+    "clients": "العملاء",
+    "expenses": "المصروفات",
+    "paid": "مدفوعة",
+    "overdue": "متأخرة",
+    "revenueTrend": "اتجاه الإيرادات",
+    "invoiceStatus": "حالة الفواتير",
+    "recentInvoices": "أحدث الفواتير",
+    "noInvoicesYet": "لا توجد فواتير بعد",
+    "invoice": "فاتورة",
+    "due": "الاستحقاق",
+    "notAvailable": "غير متاح",
+    "period": {
+      "week": "أسبوع",
+      "month": "شهر",
+      "year": "سنة"
+    },
+    "actions": {
+      "tryAgain": "حاول مرة أخرى",
+      "createInvoice": "إنشاء فاتورة",
+      "viewAll": "عرض الكل",
+      "createFirstInvoice": "أنشئ فاتورتك الأولى"
+    },
+    "status": {
+      "draft": "مسودة",
+      "sent": "مرسلة",
+      "paid": "مدفوعة",
+      "pending": "قيد الانتظار",
+      "overdue": "متأخرة"
+    },
+    "tooltips": {
+      "totalRevenue": "إجمالي الإيرادات من الفواتير المدفوعة",
+      "netProfit": "الإيرادات مطروحًا منها المصروفات",
+      "pendingInvoices": "فواتير بانتظار السداد",
+      "allInvoices": "جميع الفواتير في حسابك",
+      "paidInvoices": "إجمالي الفواتير المدفوعة",
+      "totalClients": "إجمالي العملاء النشطين",
+      "overdueInvoices": "فواتير تجاوزت تاريخ الاستحقاق",
+      "totalExpenses": "إجمالي المصروفات المسجلة"
+    },
+    "errors": {
+      "loadingData": "خطأ أثناء تحميل بيانات لوحة التحكم",
+      "loadingTitle": "خطأ في تحميل لوحة التحكم",
+      "supabaseInit": "فشل تهيئة عميل Supabase",
+      "verifySession": "فشل التحقق من الجلسة"
+    }
   },
   "projects": {
     "title": "المشاريع",
@@ -423,6 +468,267 @@
       "reports": "التقارير",
       "admin": "الإدارة",
       "settings": "الإعدادات"
+    }
+  },
+  "expensesPage": {
+    "title": "المصروفات",
+    "subtitle": "تتبّع مصروفات عملك",
+    "errorPrefix": "خطأ",
+    "actions": {
+      "tryAgain": "حاول مرة أخرى",
+      "addExpense": "إضافة مصروف",
+      "view": "عرض"
+    },
+    "empty": {
+      "title": "لا توجد مصروفات بعد",
+      "cta": "أضف مصروفك الأول"
+    },
+    "stats": {
+      "totalExpenses": "إجمالي المصروفات"
+    },
+    "errors": {
+      "supabaseInit": "فشل تهيئة عميل Supabase",
+      "loginRequired": "يرجى تسجيل الدخول لعرض المصروفات",
+      "loadFailed": "فشل تحميل المصروفات"
+    },
+    "new": {
+      "title": "إضافة مصروف",
+      "fields": {
+        "category": "الفئة",
+        "amount": "المبلغ",
+        "currency": "العملة",
+        "date": "التاريخ",
+        "descriptionOptional": "الوصف (اختياري)"
+      },
+      "actions": {
+        "backToExpenses": "العودة إلى المصروفات",
+        "cancel": "إلغاء",
+        "creating": "جارٍ الإنشاء...",
+        "createExpense": "إنشاء مصروف"
+      },
+      "errors": {
+        "categoryRequired": "الفئة مطلوبة.",
+        "amountInvalid": "يجب أن يكون المبلغ أكبر من 0.",
+        "currencyInvalid": "يجب أن تكون العملة رمزًا من 3 أحرف.",
+        "dateRequired": "التاريخ مطلوب.",
+        "supabaseInit": "فشل تهيئة عميل Supabase.",
+        "loginRequired": "يجب تسجيل الدخول لإنشاء مصروفات."
+      }
+    },
+    "detail": {
+      "title": "تفاصيل المصروف",
+      "loading": "جارٍ التحميل...",
+      "notFound": "المصروف غير موجود.",
+      "fields": {
+        "category": "الفئة",
+        "amount": "المبلغ",
+        "date": "التاريخ",
+        "description": "الوصف"
+      },
+      "actions": {
+        "backToExpenses": "العودة إلى المصروفات",
+        "edit": "تعديل",
+        "delete": "حذف",
+        "deleting": "جارٍ الحذف..."
+      },
+      "errors": {
+        "supabaseInit": "فشل تهيئة عميل Supabase.",
+        "loginView": "يرجى تسجيل الدخول لعرض هذا المصروف.",
+        "loginDelete": "يرجى تسجيل الدخول لحذف هذا المصروف."
+      }
+    }
+  },
+  "projectsPage": {
+    "title": "المشاريع",
+    "subtitle": "إدارة المشاريع وتتبع تقدم التسليم",
+    "addProject": "+ إضافة مشروع",
+    "loading": "جارٍ تحميل المشاريع...",
+    "errorPrefix": "خطأ",
+    "stats": {
+      "total": "الإجمالي",
+      "active": "النشطة",
+      "completed": "المكتملة"
+    },
+    "filters": {
+      "allStatuses": "كل الحالات",
+      "planning": "تخطيط",
+      "active": "نشط",
+      "onHold": "معلّق",
+      "completed": "مكتمل",
+      "archived": "مؤرشف"
+    },
+    "status": {
+      "planning": "تخطيط",
+      "active": "نشط",
+      "on_hold": "معلّق",
+      "completed": "مكتمل",
+      "archived": "مؤرشف"
+    },
+    "card": {
+      "open": "فتح ←",
+      "client": "العميل",
+      "unassigned": "غير مُعيَّن"
+    },
+    "errors": {
+      "supabaseInit": "فشل تهيئة عميل Supabase",
+      "loginRequired": "يرجى تسجيل الدخول لعرض المشاريع",
+      "loadFailed": "فشل تحميل المشاريع"
+    }
+  },
+  "recurringPage": {
+    "title": "الفواتير المتكررة",
+    "subtitle": "إدارة فواتيرك المتكررة",
+    "newRecurring": "+ متكررة جديدة",
+    "errorPrefix": "خطأ",
+    "tryAgain": "حاول مرة أخرى",
+    "empty": {
+      "title": "لا توجد فواتير متكررة بعد",
+      "cta": "أنشئ أول فاتورة متكررة"
+    },
+    "table": {
+      "invoice": "الفاتورة",
+      "client": "العميل",
+      "amount": "المبلغ",
+      "frequency": "التكرار",
+      "nextDate": "التاريخ القادم",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "frequency": {
+      "weekly": "أسبوعي",
+      "biweekly": "كل أسبوعين",
+      "monthly": "شهري",
+      "quarterly": "ربع سنوي",
+      "yearly": "سنوي"
+    },
+    "actions": {
+      "pause": "إيقاف مؤقت",
+      "resume": "استئناف",
+      "delete": "حذف"
+    },
+    "unknownClient": "عميل غير معروف",
+    "errors": {
+      "supabaseInit": "فشل تهيئة عميل Supabase",
+      "loadFailed": "فشل تحميل الفواتير المتكررة",
+      "updateFailed": "فشل تحديث الفاتورة المتكررة",
+      "deleteFailed": "فشل حذف الفاتورة المتكررة"
+    }
+  },
+  "estimatesPage": {
+    "title": "عروض الأسعار",
+    "loading": "جارٍ تحميل عروض الأسعار...",
+    "errorPrefix": "خطأ",
+    "newEstimate": "+ عرض سعر جديد",
+    "empty": "لا توجد عروض أسعار. أنشئ عرضك الأول!",
+    "defaultEstimate": "عرض سعر",
+    "createdLabel": "تاريخ الإنشاء",
+    "validUntilLabel": "صالح حتى"
+  },
+  "timePage": {
+    "title": "تتبع الوقت",
+    "subtitle": "تتبع عملك بمؤقت مباشر أو أضف إدخالات يدوية.",
+    "viewReports": "عرض التقارير",
+    "loading": "جارٍ التحميل...",
+    "stats": {
+      "totalTracked": "إجمالي الوقت المُتتبَّع",
+      "billable": "قابل للفوترة",
+      "nonBillable": "غير قابل للفوترة"
+    },
+    "timer": {
+      "title": "المؤقت",
+      "start": "بدء",
+      "stop": "إيقاف",
+      "reset": "إعادة تعيين"
+    },
+    "form": {
+      "title": "إضافة إدخال وقت",
+      "description": "الوصف",
+      "descriptionPlaceholder": "ماذا عملت؟",
+      "duration": "المدة (بالدقائق)",
+      "date": "التاريخ",
+      "client": "العميل",
+      "invoice": "الفاتورة",
+      "billable": "قابل للفوترة",
+      "unassigned": "غير مُعيَّن",
+      "notLinked": "غير مرتبط",
+      "saving": "جارٍ الحفظ...",
+      "save": "حفظ إدخال الوقت"
+    },
+    "entries": {
+      "title": "الإدخالات الأخيرة",
+      "empty": "لا توجد إدخالات وقت بعد.",
+      "noClient": "لا يوجد عميل",
+      "notInvoiced": "غير مُفوتَر",
+      "invoice": "الفاتورة",
+      "billable": "قابل للفوترة",
+      "nonBillable": "غير قابل للفوترة"
+    },
+    "errors": {
+      "supabaseInit": "فشل تهيئة عميل Supabase.",
+      "loginRequired": "يرجى تسجيل الدخول لعرض تتبع الوقت.",
+      "loginCreate": "يرجى تسجيل الدخول لإنشاء إدخالات الوقت.",
+      "loadFailed": "فشل تحميل بيانات تتبع الوقت.",
+      "descriptionRequired": "الوصف مطلوب.",
+      "durationInvalid": "يجب أن تكون المدة أكثر من 0 دقيقة.",
+      "createFailed": "فشل إنشاء إدخال الوقت."
+    }
+  },
+  "reportsPage": {
+    "title": "التقارير",
+    "subtitle": "نظرة عامة مالية وتحليلات",
+    "errorPrefix": "خطأ",
+    "tryAgain": "حاول مرة أخرى",
+    "period": {
+      "month": "شهر",
+      "quarter": "ربع سنة",
+      "year": "سنة"
+    },
+    "export": {
+      "csv": "تصدير CSV",
+      "pdf": "تصدير PDF",
+      "print": "طباعة"
+    },
+    "stats": {
+      "totalRevenue": "إجمالي الإيرادات",
+      "totalExpenses": "إجمالي المصروفات",
+      "netProfit": "صافي الربح",
+      "invoices": "الفواتير",
+      "clients": "العملاء",
+      "avgInvoice": "متوسط الفاتورة",
+      "trackedTime": "الوقت المُتتبَّع",
+      "billableTime": "الوقت القابل للفوترة",
+      "nonBillableTime": "الوقت غير القابل للفوترة",
+      "linkedInvoices": "الفواتير المرتبطة"
+    },
+    "charts": {
+      "revenueByClient": "الإيرادات حسب العميل",
+      "revenueByStatus": "الإيرادات حسب حالة الفاتورة",
+      "expensesByCategory": "المصروفات حسب الفئة",
+      "expenseTrends": "اتجاهات المصروفات",
+      "profitLoss": "اتجاه الأرباح / الخسائر",
+      "timeByClient": "الوقت حسب العميل",
+      "trackedTimeTrend": "اتجاه الوقت المُتتبَّع",
+      "topClients": "أفضل العملاء حسب الإيرادات",
+      "clientPaymentHistory": "سجل مدفوعات العملاء",
+      "clientAging": "تقرير تقادم العملاء",
+      "invoiceAging": "تقادم الفواتير (30/60/90+)",
+      "invoiceVolume": "اتجاه حجم الفواتير",
+      "aiInsights": "تحليلات بالذكاء الاصطناعي"
+    },
+    "clientHistory": {
+      "paid": "مدفوع",
+      "pending": "قيد الانتظار",
+      "overdue": "متأخر"
+    },
+    "ai": {
+      "generate": "توليد تحليل بالذكاء الاصطناعي",
+      "generating": "جارٍ التوليد..."
+    },
+    "errors": {
+      "supabaseInit": "فشل تهيئة عميل Supabase",
+      "loginRequired": "يرجى تسجيل الدخول لعرض التقارير",
+      "loadFailed": "فشل تحميل التقارير",
+      "insightsFailed": "فشل توليد التحليلات"
     }
   }
 }

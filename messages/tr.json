@@ -1,94 +1,95 @@
 {
   "nav": {
-    "dashboard": "Dashboard",
-    "invoices": "Invoices",
-    "clients": "Clients",
-    "expenses": "Expenses",
-    "estimates": "Estimates",
-    "recurring": "Recurring",
-    "settings": "Settings"
+    "dashboard": "Gösterge Paneli",
+    "invoices": "Faturalar",
+    "clients": "Müşteriler",
+    "expenses": "Giderler",
+    "estimates": "Teklifler",
+    "recurring": "Tekrarlayan",
+    "settings": "Ayarlar"
   },
   "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "view": "View",
-    "loading": "Loading...",
-    "back": "Back",
-    "create": "Create",
-    "search": "Search"
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "view": "Görüntüle",
+    "loading": "Yükleniyor...",
+    "back": "Geri",
+    "create": "Oluştur",
+    "search": "Ara"
   },
   "invoices": {
-    "title": "Invoices",
-    "create_new": "Create New Invoice",
-    "invoice_number": "Invoice Number",
+    "title": "Faturalar",
+    "create_new": "Yeni fatura oluştur",
+    "invoice_number": "Fatura numarası",
     "status": {
-      "0": "S",
-      "1": "t",
-      "2": "a",
-      "3": "t",
-      "4": "u",
-      "5": "s",
-      "draft": "Draft",
-      "sent": "Sent",
-      "paid": "Paid",
-      "overdue": "Overdue"
+      "0": "D",
+      "1": "u",
+      "2": "r",
+      "3": "u",
+      "4": "m",
+      "5": "",
+      "draft": "Taslak",
+      "sent": "Gönderildi",
+      "paid": "Ödendi",
+      "overdue": "Gecikmiş"
     },
-    "amount": "Amount",
-    "due_date": "Due Date",
+    "amount": "Tutar",
+    "due_date": "Son ödeme tarihi",
     "actions": {
-      "0": "A",
-      "1": "c",
-      "2": "t",
-      "3": "i",
-      "4": "o",
-      "5": "n",
-      "6": "s",
-      "tryAgain": "Try Again",
-      "newInvoice": "New Invoice",
-      "selectPage": "Select page",
-      "unselectPage": "Unselect page"
+      "0": "İ",
+      "1": "ş",
+      "2": "l",
+      "3": "e",
+      "4": "m",
+      "5": "l",
+      "6": "e",
+      "7": "r",
+      "tryAgain": "Tekrar dene",
+      "newInvoice": "Yeni fatura",
+      "selectPage": "Sayfayı seç",
+      "unselectPage": "Sayfa seçimini kaldır"
     },
-    "draft": "Draft",
-    "sent": "Sent",
-    "paid": "Paid",
-    "overdue": "Overdue",
-    "send": "Send Invoice",
-    "download": "Download PDF",
-    "pay_now": "Pay Now",
-    "subtitle": "Manage your invoices",
-    "errorLabel": "Error",
+    "draft": "Taslak",
+    "sent": "Gönderildi",
+    "paid": "Ödendi",
+    "overdue": "Gecikmiş",
+    "send": "Fatura gönder",
+    "download": "PDF indir",
+    "pay_now": "Şimdi öde",
+    "subtitle": "Faturalarınızı yönetin",
+    "errorLabel": "Hata",
     "errors": {
-      "supabaseInit": "Failed to initialize Supabase client",
-      "loginRequired": "You must be logged in to view invoices.",
-      "failedLoadData": "Failed to load data",
-      "failedSendInvoice": "Failed to send invoice"
+      "supabaseInit": "Supabase istemcisi başlatılamadı",
+      "loginRequired": "Faturaları görüntülemek için giriş yapmalısınız.",
+      "failedLoadData": "Veriler yüklenemedi",
+      "failedSendInvoice": "Fatura gönderilemedi"
     },
     "filters": {
-      "allStatuses": "All statuses"
+      "allStatuses": "Tüm durumlar"
     },
     "sort": {
-      "newest": "Newest",
-      "oldest": "Oldest",
-      "dueAsc": "Due date ↑",
-      "dueDesc": "Due date ↓",
-      "amountHighLow": "Amount high → low",
-      "amountLowHigh": "Amount low → high"
+      "newest": "En yeni",
+      "oldest": "En eski",
+      "dueAsc": "Son tarih ↑",
+      "dueDesc": "Son tarih ↓",
+      "amountHighLow": "Tutar yüksek → düşük",
+      "amountLowHigh": "Tutar düşük → yüksek"
     }
   },
   "clients": {
-    "title": "Clients",
-    "name": "Name",
-    "email": "Email",
-    "phone": "Phone",
-    "address": "Address",
-    "add_client": "Add Client"
+    "title": "Müşteriler",
+    "name": "Ad",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "address": "Adres",
+    "add_client": "Müşteri ekle"
   },
   "estimates": {
-    "title": "Estimates & Proposals",
-    "new": "New Estimate",
-    "convert": "Convert to Invoice"
+    "title": "Teklifler",
+    "new": "Yeni teklif",
+    "convert": "Faturaya dönüştür"
   },
   "languageSwitcher": {
     "label": "Dil"
@@ -101,13 +102,13 @@
     },
     "messages": {
       "saved": "Ayarlar başarıyla kaydedildi!",
-      "templateSaved": "Template settings saved!",
-      "accountingMappingSaved": "Accounting mapping saved.",
-      "dataExportReady": "Your data export is ready and has been downloaded.",
-      "accountingExportReady": "{format} export is ready and has been downloaded.",
-      "accountDeleted": "Your account and personal data were deleted successfully.",
-      "cookiesEnabled": "Cookie preferences updated: optional cookies enabled.",
-      "cookiesDisabled": "Cookie preferences updated: optional cookies disabled."
+      "templateSaved": "Şablon ayarları kaydedildi!",
+      "accountingMappingSaved": "Muhasebe eşlemesi kaydedildi.",
+      "dataExportReady": "Veri dışa aktarmanız hazır ve indirildi.",
+      "accountingExportReady": "{format} dışa aktarması hazır ve indirildi.",
+      "accountDeleted": "Hesabınız ve kişisel verileriniz başarıyla silindi.",
+      "cookiesEnabled": "Çerez tercihleri güncellendi: isteğe bağlı çerezler etkinleştirildi.",
+      "cookiesDisabled": "Çerez tercihleri güncellendi: isteğe bağlı çerezler devre dışı bırakıldı."
     },
     "languageOptions": {
       "en": "English",
@@ -120,241 +121,557 @@
       "ar": "العربية"
     },
     "fields": {
-      "defaultCurrency": "Default Currency",
-      "theme": "Theme",
-      "enableNotifications": "Enable Notifications"
+      "defaultCurrency": "Varsayılan para birimi",
+      "theme": "Tema",
+      "enableNotifications": "Bildirimleri etkinleştir"
     },
     "themeOptions": {
-      "system": "System",
-      "light": "Light",
-      "dark": "Dark"
+      "system": "Sistem",
+      "light": "Açık",
+      "dark": "Koyu"
     },
     "company": {
-      "title": "Company Information",
-      "nameLabel": "Company Name",
-      "namePlaceholder": "Company Name",
-      "emailLabel": "Company Email",
-      "emailPlaceholder": "Company Email",
-      "phoneLabel": "Company Phone",
-      "phonePlaceholder": "Company Phone",
-      "addressLabel": "Company Address",
-      "addressPlaceholder": "Company Address"
+      "title": "Şirket bilgileri",
+      "nameLabel": "Şirket adı",
+      "namePlaceholder": "Şirket adı",
+      "emailLabel": "Şirket e-postası",
+      "emailPlaceholder": "Şirket e-postası",
+      "phoneLabel": "Şirket telefonu",
+      "phonePlaceholder": "Şirket telefonu",
+      "addressLabel": "Şirket adresi",
+      "addressPlaceholder": "Şirket adresi"
     },
     "template": {
-      "title": "Invoice Template Customization",
-      "templateLabel": "Template",
+      "title": "Fatura şablonu özelleştirme",
+      "templateLabel": "Şablon",
       "templateOptions": {
-        "classic": "Classic",
+        "classic": "Klasik",
         "modern": "Modern",
         "minimal": "Minimal"
       },
-      "accentColor": "Accent Color",
-      "logoUpload": "Logo Upload",
+      "accentColor": "Vurgu rengi",
+      "logoUpload": "Logo yükle",
       "visibility": {
-        "showBusinessDetails": "Show business details",
-        "showClientDetails": "Show client details",
-        "showDueDate": "Show due date",
-        "showNotes": "Show notes",
-        "showStatusBadge": "Show status badge"
+        "showBusinessDetails": "İşletme ayrıntılarını göster",
+        "showClientDetails": "Müşteri ayrıntılarını göster",
+        "showDueDate": "Son ödeme tarihini göster",
+        "showNotes": "Notları göster",
+        "showStatusBadge": "Durum rozetini göster"
       },
-      "previewTitle": "Template Preview",
-      "invoiceLabel": "Invoice",
-      "logoPreviewAlt": "Invoice logo preview",
-      "previewBusiness": "Business: Acme Studio",
-      "previewClient": "Client: Example Client",
-      "previewDueDate": "Due date: 2026-07-20",
-      "previewStatus": "SENT",
-      "previewNotes": "Notes: Thank you for your business.",
-      "saveButton": "Save template customization"
+      "previewTitle": "Şablon önizlemesi",
+      "invoiceLabel": "Fatura",
+      "logoPreviewAlt": "Fatura logo önizlemesi",
+      "previewBusiness": "İşletme: Acme Studio",
+      "previewClient": "Müşteri: Örnek Müşteri",
+      "previewDueDate": "Son tarih: 2026-07-20",
+      "previewStatus": "GÖNDERİLDİ",
+      "previewNotes": "Notlar: İşiniz için teşekkürler.",
+      "saveButton": "Şablon özelleştirmesini kaydet"
     },
     "actions": {
-      "saving": "Saving...",
-      "saveSettings": "Save Settings",
-      "preparing": "Preparing...",
-      "preparingExport": "Preparing export...",
-      "deletingAccount": "Deleting account..."
+      "saving": "Kaydediliyor...",
+      "saveSettings": "Ayarları kaydet",
+      "preparing": "Hazırlanıyor...",
+      "preparingExport": "Dışa aktarma hazırlanıyor...",
+      "deletingAccount": "Hesap siliniyor..."
     },
     "accounting": {
-      "title": "Bank & Accounting Integration",
-      "subtitle": "Configure your accounting mapping and export invoices for QuickBooks, Xero, CSV, or Excel.",
-      "incomeAccount": "Income account",
-      "taxType": "Tax type",
-      "trackingCategory": "Tracking category",
-      "referencePrefix": "Reference prefix",
+      "title": "Banka ve Muhasebe Entegrasyonu",
+      "subtitle": "Muhasebe eşlemenizi yapılandırın ve QuickBooks, Xero, CSV veya Excel için faturaları dışa aktarın.",
+      "incomeAccount": "Gelir hesabı",
+      "taxType": "Vergi türü",
+      "trackingCategory": "İzleme kategorisi",
+      "referencePrefix": "Referans öneki",
       "placeholders": {
-        "incomeAccount": "Sales",
-        "taxType": "TAX001",
-        "trackingCategory": "General",
-        "referencePrefix": "INV"
+        "incomeAccount": "Satışlar",
+        "taxType": "VRG001",
+        "trackingCategory": "Genel",
+        "referencePrefix": "FAT"
       },
-      "saveMapping": "Save mapping",
-      "exportQuickBooks": "Export QuickBooks (CSV)",
-      "exportXero": "Export Xero (CSV)",
-      "exportCsv": "Export CSV",
-      "exportExcel": "Export Excel"
+      "saveMapping": "Eşlemeyi kaydet",
+      "exportQuickBooks": "QuickBooks dışa aktar (CSV)",
+      "exportXero": "Xero dışa aktar (CSV)",
+      "exportCsv": "CSV dışa aktar",
+      "exportExcel": "Excel dışa aktar"
     },
     "privacy": {
-      "title": "Privacy & GDPR",
-      "subtitle": "Manage your cookie preference, export your personal data, or permanently delete your account.",
-      "cookieConsent": "Cookie consent:",
+      "title": "Gizlilik ve KVKK",
+      "subtitle": "Çerez tercihlerinizi yönetin, kişisel verilerinizi dışa aktarın veya hesabınızı kalıcı olarak silin.",
+      "cookieConsent": "Çerez onayı:",
       "cookieState": {
-        "accepted": "accepted",
-        "rejected": "rejected",
-        "notSet": "not set"
+        "accepted": "kabul edildi",
+        "rejected": "reddedildi",
+        "notSet": "ayarlanmadı"
       },
-      "acceptCookies": "Accept optional cookies",
-      "rejectCookies": "Reject optional cookies",
-      "exportData": "Export my data (JSON)",
-      "deleteAccount": "Delete account and all data",
-      "deleteConfirm": "This action permanently deletes your account and all related data. This cannot be undone. Continue?"
+      "acceptCookies": "İsteğe bağlı çerezleri kabul et",
+      "rejectCookies": "İsteğe bağlı çerezleri reddet",
+      "exportData": "Verilerimi dışa aktar (JSON)",
+      "deleteAccount": "Hesabı ve tüm verileri sil",
+      "deleteConfirm": "Bu işlem hesabınızı ve tüm ilgili verileri kalıcı olarak siler. Bu işlem geri alınamaz. Devam edilsin mi?"
     },
     "errors": {
-      "supabaseInit": "Failed to initialize Supabase client",
-      "userNotAuthenticated": "User not authenticated",
-      "failedLoadSettings": "Failed to load settings",
-      "failedSaveSettings": "Failed to save settings",
-      "logoImageOnly": "Please upload an image file for the invoice logo.",
-      "failedExportData": "Failed to export data",
-      "failedExportAccountingData": "Failed to export accounting data",
-      "failedDeleteAccountData": "Failed to delete account data"
+      "supabaseInit": "Supabase istemcisi başlatılamadı",
+      "userNotAuthenticated": "Kullanıcı kimliği doğrulanmadı",
+      "failedLoadSettings": "Ayarlar yüklenemedi",
+      "failedSaveSettings": "Ayarlar kaydedilemedi",
+      "logoImageOnly": "Fatura logosu için lütfen bir resim dosyası yükleyin.",
+      "failedExportData": "Veriler dışa aktarılamadı",
+      "failedExportAccountingData": "Muhasebe verileri dışa aktarılamadı",
+      "failedDeleteAccountData": "Hesap verileri silinemedi"
     }
   },
   "login": {
-    "title": "Welcome Back",
-    "subtitle": "Sign in to your account",
-    "subtitle2fa": "Enter your authenticator code or backup code",
+    "title": "Tekrar Hoş Geldiniz",
+    "subtitle": "Hesabınıza giriş yapın",
+    "subtitle2fa": "Kimlik doğrulayıcı kodunuzu veya yedek kodunuzu girin",
     "fields": {
-      "email": "Email Address",
-      "password": "Password",
-      "authenticatorCode": "Authenticator or backup code"
+      "email": "E-posta adresi",
+      "password": "Şifre",
+      "authenticatorCode": "Kimlik doğrulayıcı veya yedek kod"
     },
     "actions": {
-      "forgotPassword": "Forgot password?",
-      "signingIn": "Signing in...",
-      "signIn": "Sign In",
-      "orContinueWith": "Or continue with",
-      "signInWithGoogle": "Sign in with Google",
-      "rememberDevice": "Remember this device for 30 days",
-      "verifying": "Verifying...",
-      "verifyContinue": "Verify & Continue"
+      "forgotPassword": "Şifrenizi mi unuttunuz?",
+      "signingIn": "Giriş yapılıyor...",
+      "signIn": "Giriş Yap",
+      "orContinueWith": "Veya şununla devam edin",
+      "signInWithGoogle": "Google ile giriş yap",
+      "rememberDevice": "Bu cihazı 30 gün hatırla",
+      "verifying": "Doğrulanıyor...",
+      "verifyContinue": "Doğrula ve devam et"
     },
     "messages": {
-      "welcomeBack": "Welcome back!",
-      "enter2fa": "Enter your 2FA code to continue",
-      "resetEmailSent": "Password reset email sent!"
+      "welcomeBack": "Tekrar hoş geldiniz!",
+      "enter2fa": "Devam etmek için 2FA kodunuzu girin",
+      "resetEmailSent": "Şifre sıfırlama e-postası gönderildi!"
     },
     "errors": {
-      "initAuth": "Failed to initialize authentication",
-      "invalidCode": "Invalid authentication code",
-      "resetEmailFailed": "Something went wrong"
+      "initAuth": "Kimlik doğrulama başlatılamadı",
+      "invalidCode": "Geçersiz kimlik doğrulama kodu",
+      "resetEmailFailed": "Bir şeyler ters gitti"
     },
     "footer": {
-      "noAccount": "Don't have an account?",
-      "signUp": "Sign up"
+      "noAccount": "Hesabınız yok mu?",
+      "signUp": "Kayıt ol"
     },
     "reset": {
-      "title": "Reset Password",
-      "subtitle": "Enter your email to receive a reset link",
-      "sending": "Sending...",
-      "sendLink": "Send Reset Link",
-      "backToSignIn": "Back to Sign In"
+      "title": "Şifre Sıfırla",
+      "subtitle": "Sıfırlama bağlantısı almak için e-postanızı girin",
+      "sending": "Gönderiliyor...",
+      "sendLink": "Sıfırlama Bağlantısı Gönder",
+      "backToSignIn": "Girişe geri dön"
     }
   },
   "signup": {
-    "title": "Create Account",
-    "subtitle": "Start invoicing in minutes",
+    "title": "Hesap Oluştur",
+    "subtitle": "Dakikalar içinde faturalandırmaya başlayın",
     "fields": {
-      "fullName": "Full Name",
-      "email": "Email Address",
-      "password": "Password",
-      "confirmPassword": "Confirm Password"
+      "fullName": "Tam ad",
+      "email": "E-posta adresi",
+      "password": "Şifre",
+      "confirmPassword": "Şifreyi onayla"
     },
     "terms": {
-      "prefix": "I agree to the",
-      "termsOfService": "Terms of Service",
-      "privacyPolicy": "Privacy Policy"
+      "prefix": "Kabul ediyorum",
+      "termsOfService": "Kullanım Koşulları",
+      "privacyPolicy": "Gizlilik Politikası"
     },
     "actions": {
-      "creating": "Creating account...",
-      "signUp": "Sign Up"
+      "creating": "Hesap oluşturuluyor...",
+      "signUp": "Kayıt Ol"
     },
     "footer": {
-      "alreadyHaveAccount": "Already have an account?",
-      "signIn": "Sign in"
+      "alreadyHaveAccount": "Zaten hesabınız var mı?",
+      "signIn": "Giriş yap"
     },
     "messages": {
-      "checkEmail": "Check your email for confirmation link!"
+      "checkEmail": "Onay bağlantısı için e-postanızı kontrol edin!"
     },
     "errors": {
-      "initAuth": "Failed to initialize authentication",
-      "acceptTerms": "You must accept the Terms of Service and Privacy Policy",
-      "passwordMismatch": "Passwords do not match",
-      "passwordTooShort": "Password must be at least 6 characters"
+      "initAuth": "Kimlik doğrulama başlatılamadı",
+      "acceptTerms": "Kullanım Koşulları ve Gizlilik Politikasını kabul etmelisiniz",
+      "passwordMismatch": "Şifreler eşleşmiyor",
+      "passwordTooShort": "Şifre en az 6 karakter olmalıdır"
     }
   },
   "sidebar": {
-    "logout": "Logout",
+    "logout": "Çıkış Yap",
     "items": {
-      "dashboard": "Dashboard",
-      "invoices": "Invoices",
-      "clients": "Clients",
-      "projects": "Projects",
-      "expenses": "Expenses",
-      "recurring": "Recurring",
-      "estimates": "Estimates",
-      "time": "Time Tracking",
-      "reports": "Reports",
+      "dashboard": "Gösterge Paneli",
+      "invoices": "Faturalar",
+      "clients": "Müşteriler",
+      "projects": "Projeler",
+      "expenses": "Giderler",
+      "recurring": "Tekrarlayan",
+      "estimates": "Teklifler",
+      "time": "Zaman Takibi",
+      "reports": "Raporlar",
       "admin": "Admin",
-      "settings": "Settings"
+      "settings": "Ayarlar"
     }
   },
   "clientsPage": {
-    "title": "Clients",
-    "subtitle": "Manage your client relationships",
-    "newTitle": "New Client",
-    "editTitle": "Edit Client",
-    "loading": "Loading clients...",
-    "loadingSingle": "Loading client...",
-    "errorPrefix": "Error",
-    "clientNotFound": "Client not found",
-    "confirmDelete": "Delete this client? This action cannot be undone.",
+    "title": "Müşteriler",
+    "subtitle": "Müşteri ilişkilerinizi yönetin",
+    "newTitle": "Yeni Müşteri",
+    "editTitle": "Müşteriyi Düzenle",
+    "loading": "Müşteriler yükleniyor...",
+    "loadingSingle": "Müşteri yükleniyor...",
+    "errorPrefix": "Hata",
+    "clientNotFound": "Müşteri bulunamadı",
+    "confirmDelete": "Bu müşteriyi sil? Bu işlem geri alınamaz.",
     "fields": {
-      "nameRequired": "Name *",
-      "emailRequired": "Email *",
-      "email": "Email",
-      "phone": "Phone",
-      "company": "Company",
-      "country": "Country",
-      "address": "Address"
+      "nameRequired": "Ad *",
+      "emailRequired": "E-posta *",
+      "email": "E-posta",
+      "phone": "Telefon",
+      "company": "Şirket",
+      "country": "Ülke",
+      "address": "Adres"
     },
     "actions": {
-      "tryAgain": "Try Again",
-      "addClient": "+ Add Client",
-      "edit": "Edit →",
-      "goBack": "Go Back",
-      "backToClients": "← Back to Clients",
-      "editClient": "Edit Client",
-      "delete": "Delete",
-      "deleting": "Deleting...",
-      "saving": "Saving...",
-      "createClient": "Create Client",
-      "saveChanges": "Save Changes",
-      "cancel": "Cancel"
+      "tryAgain": "Tekrar dene",
+      "addClient": "+ Müşteri ekle",
+      "edit": "Düzenle →",
+      "goBack": "Geri git",
+      "backToClients": "← Müşterilere geri dön",
+      "editClient": "Müşteriyi düzenle",
+      "delete": "Sil",
+      "deleting": "Siliniyor...",
+      "saving": "Kaydediliyor...",
+      "createClient": "Müşteri oluştur",
+      "saveChanges": "Değişiklikleri kaydet",
+      "cancel": "İptal"
     },
     "validation": {
-      "nameRequired": "Client name is required.",
-      "emailRequired": "Email is required.",
-      "emailInvalid": "Please enter a valid email address."
+      "nameRequired": "Müşteri adı zorunludur.",
+      "emailRequired": "E-posta zorunludur.",
+      "emailInvalid": "Lütfen geçerli bir e-posta adresi girin."
     },
     "errors": {
-      "supabaseInit": "Failed to initialize Supabase client",
-      "loginRequiredView": "Please log in to view clients",
-      "loginRequiredViewSingle": "Please log in to view this client",
-      "loginRequiredCreate": "Please log in to create clients",
-      "loginRequiredEdit": "Please log in to edit clients",
-      "loginRequiredDelete": "Please log in to delete this client",
-      "failedLoadClients": "Failed to load clients",
-      "failedLoadClient": "Failed to load client"
+      "supabaseInit": "Supabase istemcisi başlatılamadı",
+      "loginRequiredView": "Müşterileri görüntülemek için giriş yapın",
+      "loginRequiredViewSingle": "Bu müşteriyi görüntülemek için giriş yapın",
+      "loginRequiredCreate": "Müşteri oluşturmak için giriş yapın",
+      "loginRequiredEdit": "Müşterileri düzenlemek için giriş yapın",
+      "loginRequiredDelete": "Bu müşteriyi silmek için giriş yapın",
+      "failedLoadClients": "Müşteriler yüklenemedi",
+      "failedLoadClient": "Müşteri yüklenemedi"
+    }
+  },
+  "dashboard": {
+    "title": "Gösterge Paneli",
+    "welcome": "Tekrar hoş geldiniz",
+    "revenue": "Gelir",
+    "netProfit": "Net Kâr",
+    "pending": "Beklemede",
+    "totalInvoices": "Toplam Faturalar",
+    "noInvoices": "Henüz Fatura Yok",
+    "createFirstInvoice": "Geliri takip etmeye başlamak için ilk faturanızı oluşturun",
+    "clients": "Müşteriler",
+    "expenses": "Giderler",
+    "paid": "Ödendi",
+    "overdue": "Gecikmiş",
+    "revenueTrend": "Gelir Trendi",
+    "invoiceStatus": "Fatura Durumu",
+    "recentInvoices": "Son Faturalar",
+    "noInvoicesYet": "Henüz fatura yok",
+    "invoice": "Fatura",
+    "due": "Son Tarih",
+    "notAvailable": "Yok",
+    "period": {
+      "week": "Hafta",
+      "month": "Ay",
+      "year": "Yıl"
+    },
+    "actions": {
+      "tryAgain": "Tekrar dene",
+      "createInvoice": "Fatura oluştur",
+      "viewAll": "Tümünü görüntüle",
+      "createFirstInvoice": "İlk faturanızı oluşturun"
+    },
+    "status": {
+      "draft": "Taslak",
+      "sent": "Gönderildi",
+      "paid": "Ödendi",
+      "pending": "Beklemede",
+      "overdue": "Gecikmiş"
+    },
+    "tooltips": {
+      "totalRevenue": "Ödenen faturalardan toplam gelir",
+      "netProfit": "Gelir eksi giderler",
+      "pendingInvoices": "Ödeme bekleyen faturalar",
+      "allInvoices": "Hesabınızdaki tüm faturalar",
+      "paidInvoices": "Toplam ödenen faturalar",
+      "totalClients": "Toplam aktif müşteriler",
+      "overdueInvoices": "Son tarihini geçmiş faturalar",
+      "totalExpenses": "Toplam kayıtlı giderler"
+    },
+    "errors": {
+      "loadingData": "Gösterge paneli verileri yüklenirken hata",
+      "loadingTitle": "Gösterge Paneli Yüklenirken Hata",
+      "supabaseInit": "Supabase istemcisi başlatılamadı",
+      "verifySession": "Oturum doğrulanamadı"
+    }
+  },
+  "expensesPage": {
+    "title": "Giderler",
+    "subtitle": "İşletme giderlerinizi takip edin",
+    "errorPrefix": "Hata",
+    "actions": {
+      "tryAgain": "Tekrar dene",
+      "addExpense": "Gider ekle",
+      "view": "Görüntüle"
+    },
+    "empty": {
+      "title": "Henüz gider yok",
+      "cta": "İlk giderinizi ekleyin"
+    },
+    "stats": {
+      "totalExpenses": "Toplam Giderler"
+    },
+    "errors": {
+      "supabaseInit": "Supabase istemcisi başlatılamadı",
+      "loginRequired": "Giderleri görüntülemek için giriş yapın",
+      "loadFailed": "Giderler yüklenemedi"
+    },
+    "new": {
+      "title": "Gider ekle",
+      "fields": {
+        "category": "Kategori",
+        "amount": "Tutar",
+        "currency": "Para birimi",
+        "date": "Tarih",
+        "descriptionOptional": "Açıklama (isteğe bağlı)"
+      },
+      "actions": {
+        "backToExpenses": "Giderlere geri dön",
+        "cancel": "İptal",
+        "creating": "Oluşturuluyor...",
+        "createExpense": "Gider oluştur"
+      },
+      "errors": {
+        "categoryRequired": "Kategori zorunludur.",
+        "amountInvalid": "Tutar 0'dan büyük olmalıdır.",
+        "currencyInvalid": "Para birimi 3 harfli bir kod olmalıdır.",
+        "dateRequired": "Tarih zorunludur.",
+        "supabaseInit": "Supabase istemcisi başlatılamadı.",
+        "loginRequired": "Gider oluşturmak için giriş yapmalısınız."
+      }
+    },
+    "detail": {
+      "title": "Gider Detayları",
+      "loading": "Yükleniyor...",
+      "notFound": "Gider bulunamadı.",
+      "fields": {
+        "category": "Kategori",
+        "amount": "Tutar",
+        "date": "Tarih",
+        "description": "Açıklama"
+      },
+      "actions": {
+        "backToExpenses": "Giderlere geri dön",
+        "edit": "Düzenle",
+        "delete": "Sil",
+        "deleting": "Siliniyor..."
+      },
+      "errors": {
+        "supabaseInit": "Supabase istemcisi başlatılamadı.",
+        "loginView": "Bu gideri görüntülemek için giriş yapın.",
+        "loginDelete": "Bu gideri silmek için giriş yapın."
+      }
+    }
+  },
+  "projectsPage": {
+    "title": "Projeler",
+    "subtitle": "Projeleri yönetin ve teslimat ilerlemesini takip edin",
+    "addProject": "+ Proje ekle",
+    "loading": "Projeler yükleniyor...",
+    "errorPrefix": "Hata",
+    "stats": {
+      "total": "Toplam",
+      "active": "Aktif",
+      "completed": "Tamamlandı"
+    },
+    "filters": {
+      "allStatuses": "Tüm durumlar",
+      "planning": "Planlama",
+      "active": "Aktif",
+      "onHold": "Beklemede",
+      "completed": "Tamamlandı",
+      "archived": "Arşivlendi"
+    },
+    "status": {
+      "planning": "Planlama",
+      "active": "Aktif",
+      "on_hold": "Beklemede",
+      "completed": "Tamamlandı",
+      "archived": "Arşivlendi"
+    },
+    "card": {
+      "open": "Aç →",
+      "client": "Müşteri",
+      "unassigned": "Atanmamış"
+    },
+    "errors": {
+      "supabaseInit": "Supabase istemcisi başlatılamadı",
+      "loginRequired": "Projeleri görüntülemek için giriş yapın",
+      "loadFailed": "Projeler yüklenemedi"
+    }
+  },
+  "recurringPage": {
+    "title": "Tekrarlayan Faturalar",
+    "subtitle": "Tekrarlayan faturalarınızı yönetin",
+    "newRecurring": "+ Yeni Tekrarlayan",
+    "errorPrefix": "Hata",
+    "tryAgain": "Tekrar dene",
+    "empty": {
+      "title": "Henüz tekrarlayan fatura yok",
+      "cta": "İlk tekrarlayan faturanızı oluşturun"
+    },
+    "table": {
+      "invoice": "Fatura",
+      "client": "Müşteri",
+      "amount": "Tutar",
+      "frequency": "Sıklık",
+      "nextDate": "Sonraki Tarih",
+      "status": "Durum",
+      "actions": "İşlemler"
+    },
+    "frequency": {
+      "weekly": "Haftalık",
+      "biweekly": "İki Haftada Bir",
+      "monthly": "Aylık",
+      "quarterly": "Üç Aylık",
+      "yearly": "Yıllık"
+    },
+    "actions": {
+      "pause": "Duraklat",
+      "resume": "Devam et",
+      "delete": "Sil"
+    },
+    "unknownClient": "Bilinmeyen Müşteri",
+    "errors": {
+      "supabaseInit": "Supabase istemcisi başlatılamadı",
+      "loadFailed": "Tekrarlayan faturalar yüklenemedi",
+      "updateFailed": "Tekrarlayan fatura güncellenemedi",
+      "deleteFailed": "Tekrarlayan fatura silinemedi"
+    }
+  },
+  "estimatesPage": {
+    "title": "Teklifler",
+    "loading": "Teklifler yükleniyor...",
+    "errorPrefix": "Hata",
+    "newEstimate": "+ Yeni Teklif",
+    "empty": "Teklif bulunamadı. İlk teklifinizi oluşturun!",
+    "defaultEstimate": "Teklif",
+    "createdLabel": "Oluşturuldu",
+    "validUntilLabel": "Geçerlilik tarihi"
+  },
+  "timePage": {
+    "title": "Zaman Takibi",
+    "subtitle": "Canlı zamanlayıcıyla veya manuel girişlerle çalışmanızı takip edin.",
+    "viewReports": "Raporları görüntüle",
+    "loading": "Yükleniyor...",
+    "stats": {
+      "totalTracked": "Toplam Takip Edilen",
+      "billable": "Faturalanabilir",
+      "nonBillable": "Faturalandırılamaz"
+    },
+    "timer": {
+      "title": "Zamanlayıcı",
+      "start": "Başlat",
+      "stop": "Durdur",
+      "reset": "Sıfırla"
+    },
+    "form": {
+      "title": "Zaman Girişi Ekle",
+      "description": "Açıklama",
+      "descriptionPlaceholder": "Ne üzerinde çalıştınız?",
+      "duration": "Süre (dakika)",
+      "date": "Tarih",
+      "client": "Müşteri",
+      "invoice": "Fatura",
+      "billable": "Faturalanabilir",
+      "unassigned": "Atanmamış",
+      "notLinked": "Bağlı değil",
+      "saving": "Kaydediliyor...",
+      "save": "Zaman girişini kaydet"
+    },
+    "entries": {
+      "title": "Son Girişler",
+      "empty": "Henüz zaman girişi yok.",
+      "noClient": "Müşteri yok",
+      "notInvoiced": "Faturalanmadı",
+      "invoice": "Fatura",
+      "billable": "Faturalanabilir",
+      "nonBillable": "Faturalandırılamaz"
+    },
+    "errors": {
+      "supabaseInit": "Supabase istemcisi başlatılamadı.",
+      "loginRequired": "Zaman takibini görüntülemek için giriş yapın.",
+      "loginCreate": "Zaman girişi oluşturmak için giriş yapın.",
+      "loadFailed": "Zaman takibi verileri yüklenemedi.",
+      "descriptionRequired": "Açıklama zorunludur.",
+      "durationInvalid": "Süre 0 dakikadan fazla olmalıdır.",
+      "createFailed": "Zaman girişi oluşturulamadı."
+    }
+  },
+  "reportsPage": {
+    "title": "Raporlar",
+    "subtitle": "Finansal genel bakış ve analizler",
+    "errorPrefix": "Hata",
+    "tryAgain": "Tekrar dene",
+    "period": {
+      "month": "Ay",
+      "quarter": "Çeyrek",
+      "year": "Yıl"
+    },
+    "export": {
+      "csv": "CSV Dışa Aktar",
+      "pdf": "PDF Dışa Aktar",
+      "print": "Yazdır"
+    },
+    "stats": {
+      "totalRevenue": "Toplam Gelir",
+      "totalExpenses": "Toplam Giderler",
+      "netProfit": "Net Kâr",
+      "invoices": "Faturalar",
+      "clients": "Müşteriler",
+      "avgInvoice": "Ort. Fatura",
+      "trackedTime": "Takip Edilen Süre",
+      "billableTime": "Faturalanabilir Süre",
+      "nonBillableTime": "Faturalandırılamaz Süre",
+      "linkedInvoices": "Bağlı Faturalar"
+    },
+    "charts": {
+      "revenueByClient": "Müşteriye Göre Gelir",
+      "revenueByStatus": "Fatura Durumuna Göre Gelir",
+      "expensesByCategory": "Kategoriye Göre Giderler",
+      "expenseTrends": "Gider Eğilimleri",
+      "profitLoss": "Kâr / Zarar Trendi",
+      "timeByClient": "Müşteriye Göre Süre",
+      "trackedTimeTrend": "Takip Edilen Süre Trendi",
+      "topClients": "Gelire Göre En İyi Müşteriler",
+      "clientPaymentHistory": "Müşteri Ödeme Geçmişi",
+      "clientAging": "Müşteri Yaşlandırma Raporu",
+      "invoiceAging": "Fatura Yaşlandırma (30/60/90+)",
+      "invoiceVolume": "Fatura Hacmi Trendi",
+      "aiInsights": "Yapay Zeka Analizleri"
+    },
+    "clientHistory": {
+      "paid": "Ödendi",
+      "pending": "Beklemede",
+      "overdue": "Gecikmiş"
+    },
+    "ai": {
+      "generate": "YZ Analizi Oluştur",
+      "generating": "Oluşturuluyor..."
+    },
+    "errors": {
+      "supabaseInit": "Supabase istemcisi başlatılamadı",
+      "loginRequired": "Raporları görüntülemek için giriş yapın",
+      "loadFailed": "Raporlar yüklenemedi",
+      "insightsFailed": "Analizler oluşturulamadı"
     }
   }
 }

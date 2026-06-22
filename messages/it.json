@@ -1,94 +1,93 @@
 {
   "nav": {
     "dashboard": "Dashboard",
-    "invoices": "Invoices",
-    "clients": "Clients",
-    "expenses": "Expenses",
-    "estimates": "Estimates",
-    "recurring": "Recurring",
-    "settings": "Settings"
+    "invoices": "Fatture",
+    "clients": "Clienti",
+    "expenses": "Spese",
+    "estimates": "Preventivi",
+    "recurring": "Ricorrenti",
+    "settings": "Impostazioni"
   },
   "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "edit": "Edit",
-    "view": "View",
-    "loading": "Loading...",
-    "back": "Back",
-    "create": "Create",
-    "search": "Search"
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "view": "Visualizza",
+    "loading": "Caricamento...",
+    "back": "Indietro",
+    "create": "Crea",
+    "search": "Cerca"
   },
   "invoices": {
-    "title": "Invoices",
-    "create_new": "Create New Invoice",
-    "invoice_number": "Invoice Number",
+    "title": "Fatture",
+    "create_new": "Crea nuova fattura",
+    "invoice_number": "Numero fattura",
     "status": {
       "0": "S",
       "1": "t",
       "2": "a",
       "3": "t",
-      "4": "u",
-      "5": "s",
-      "draft": "Draft",
-      "sent": "Sent",
-      "paid": "Paid",
-      "overdue": "Overdue"
+      "4": "o",
+      "5": "",
+      "draft": "Bozza",
+      "sent": "Inviata",
+      "paid": "Pagata",
+      "overdue": "Scaduta"
     },
-    "amount": "Amount",
-    "due_date": "Due Date",
+    "amount": "Importo",
+    "due_date": "Data di scadenza",
     "actions": {
       "0": "A",
-      "1": "c",
-      "2": "t",
-      "3": "i",
-      "4": "o",
-      "5": "n",
-      "6": "s",
-      "tryAgain": "Try Again",
-      "newInvoice": "New Invoice",
-      "selectPage": "Select page",
-      "unselectPage": "Unselect page"
+      "1": "z",
+      "2": "i",
+      "3": "o",
+      "4": "n",
+      "5": "i",
+      "tryAgain": "Riprova",
+      "newInvoice": "Nuova fattura",
+      "selectPage": "Seleziona pagina",
+      "unselectPage": "Deseleziona pagina"
     },
-    "draft": "Draft",
-    "sent": "Sent",
-    "paid": "Paid",
-    "overdue": "Overdue",
-    "send": "Send Invoice",
-    "download": "Download PDF",
-    "pay_now": "Pay Now",
-    "subtitle": "Manage your invoices",
-    "errorLabel": "Error",
+    "draft": "Bozza",
+    "sent": "Inviata",
+    "paid": "Pagata",
+    "overdue": "Scaduta",
+    "send": "Invia fattura",
+    "download": "Scarica PDF",
+    "pay_now": "Paga ora",
+    "subtitle": "Gestisci le tue fatture",
+    "errorLabel": "Errore",
     "errors": {
-      "supabaseInit": "Failed to initialize Supabase client",
-      "loginRequired": "You must be logged in to view invoices.",
-      "failedLoadData": "Failed to load data",
-      "failedSendInvoice": "Failed to send invoice"
+      "supabaseInit": "Impossibile inizializzare il client Supabase",
+      "loginRequired": "Devi essere connesso per visualizzare le fatture.",
+      "failedLoadData": "Impossibile caricare i dati",
+      "failedSendInvoice": "Impossibile inviare la fattura"
     },
     "filters": {
-      "allStatuses": "All statuses"
+      "allStatuses": "Tutti gli stati"
     },
     "sort": {
-      "newest": "Newest",
-      "oldest": "Oldest",
-      "dueAsc": "Due date ↑",
-      "dueDesc": "Due date ↓",
-      "amountHighLow": "Amount high → low",
-      "amountLowHigh": "Amount low → high"
+      "newest": "Più recente",
+      "oldest": "Più vecchio",
+      "dueAsc": "Scadenza ↑",
+      "dueDesc": "Scadenza ↓",
+      "amountHighLow": "Importo alto → basso",
+      "amountLowHigh": "Importo basso → alto"
     }
   },
   "clients": {
-    "title": "Clients",
-    "name": "Name",
+    "title": "Clienti",
+    "name": "Nome",
     "email": "Email",
-    "phone": "Phone",
-    "address": "Address",
-    "add_client": "Add Client"
+    "phone": "Telefono",
+    "address": "Indirizzo",
+    "add_client": "Aggiungi cliente"
   },
   "estimates": {
-    "title": "Estimates & Proposals",
-    "new": "New Estimate",
-    "convert": "Convert to Invoice"
+    "title": "Preventivi",
+    "new": "Nuovo preventivo",
+    "convert": "Converti in fattura"
   },
   "languageSwitcher": {
     "label": "Lingua"
@@ -101,13 +100,13 @@
     },
     "messages": {
       "saved": "Impostazioni salvate con successo!",
-      "templateSaved": "Template settings saved!",
-      "accountingMappingSaved": "Accounting mapping saved.",
-      "dataExportReady": "Your data export is ready and has been downloaded.",
-      "accountingExportReady": "{format} export is ready and has been downloaded.",
-      "accountDeleted": "Your account and personal data were deleted successfully.",
-      "cookiesEnabled": "Cookie preferences updated: optional cookies enabled.",
-      "cookiesDisabled": "Cookie preferences updated: optional cookies disabled."
+      "templateSaved": "Impostazioni del modello salvate!",
+      "accountingMappingSaved": "Mappatura contabile salvata.",
+      "dataExportReady": "La tua esportazione dati è pronta ed è stata scaricata.",
+      "accountingExportReady": "L'esportazione {format} è pronta ed è stata scaricata.",
+      "accountDeleted": "Il tuo account e i dati personali sono stati eliminati con successo.",
+      "cookiesEnabled": "Preferenze cookie aggiornate: cookie opzionali attivati.",
+      "cookiesDisabled": "Preferenze cookie aggiornate: cookie opzionali disattivati."
     },
     "languageOptions": {
       "en": "English",
@@ -120,241 +119,557 @@
       "ar": "العربية"
     },
     "fields": {
-      "defaultCurrency": "Default Currency",
-      "theme": "Theme",
-      "enableNotifications": "Enable Notifications"
+      "defaultCurrency": "Valuta predefinita",
+      "theme": "Tema",
+      "enableNotifications": "Abilita notifiche"
     },
     "themeOptions": {
-      "system": "System",
-      "light": "Light",
-      "dark": "Dark"
+      "system": "Sistema",
+      "light": "Chiaro",
+      "dark": "Scuro"
     },
     "company": {
-      "title": "Company Information",
-      "nameLabel": "Company Name",
-      "namePlaceholder": "Company Name",
-      "emailLabel": "Company Email",
-      "emailPlaceholder": "Company Email",
-      "phoneLabel": "Company Phone",
-      "phonePlaceholder": "Company Phone",
-      "addressLabel": "Company Address",
-      "addressPlaceholder": "Company Address"
+      "title": "Informazioni aziendali",
+      "nameLabel": "Nome azienda",
+      "namePlaceholder": "Nome azienda",
+      "emailLabel": "Email aziendale",
+      "emailPlaceholder": "Email aziendale",
+      "phoneLabel": "Telefono aziendale",
+      "phonePlaceholder": "Telefono aziendale",
+      "addressLabel": "Indirizzo aziendale",
+      "addressPlaceholder": "Indirizzo aziendale"
     },
     "template": {
-      "title": "Invoice Template Customization",
-      "templateLabel": "Template",
+      "title": "Personalizzazione modello fattura",
+      "templateLabel": "Modello",
       "templateOptions": {
-        "classic": "Classic",
-        "modern": "Modern",
-        "minimal": "Minimal"
+        "classic": "Classico",
+        "modern": "Moderno",
+        "minimal": "Minimale"
       },
-      "accentColor": "Accent Color",
-      "logoUpload": "Logo Upload",
+      "accentColor": "Colore accento",
+      "logoUpload": "Carica logo",
       "visibility": {
-        "showBusinessDetails": "Show business details",
-        "showClientDetails": "Show client details",
-        "showDueDate": "Show due date",
-        "showNotes": "Show notes",
-        "showStatusBadge": "Show status badge"
+        "showBusinessDetails": "Mostra dettagli azienda",
+        "showClientDetails": "Mostra dettagli cliente",
+        "showDueDate": "Mostra data di scadenza",
+        "showNotes": "Mostra note",
+        "showStatusBadge": "Mostra badge stato"
       },
-      "previewTitle": "Template Preview",
-      "invoiceLabel": "Invoice",
-      "logoPreviewAlt": "Invoice logo preview",
-      "previewBusiness": "Business: Acme Studio",
-      "previewClient": "Client: Example Client",
-      "previewDueDate": "Due date: 2026-07-20",
-      "previewStatus": "SENT",
-      "previewNotes": "Notes: Thank you for your business.",
-      "saveButton": "Save template customization"
+      "previewTitle": "Anteprima modello",
+      "invoiceLabel": "Fattura",
+      "logoPreviewAlt": "Anteprima logo fattura",
+      "previewBusiness": "Azienda: Acme Studio",
+      "previewClient": "Cliente: Esempio Cliente",
+      "previewDueDate": "Scadenza: 2026-07-20",
+      "previewStatus": "INVIATA",
+      "previewNotes": "Note: Grazie per la tua fiducia.",
+      "saveButton": "Salva personalizzazione modello"
     },
     "actions": {
-      "saving": "Saving...",
-      "saveSettings": "Save Settings",
-      "preparing": "Preparing...",
-      "preparingExport": "Preparing export...",
-      "deletingAccount": "Deleting account..."
+      "saving": "Salvataggio...",
+      "saveSettings": "Salva impostazioni",
+      "preparing": "Preparazione...",
+      "preparingExport": "Preparazione esportazione...",
+      "deletingAccount": "Eliminazione account..."
     },
     "accounting": {
-      "title": "Bank & Accounting Integration",
-      "subtitle": "Configure your accounting mapping and export invoices for QuickBooks, Xero, CSV, or Excel.",
-      "incomeAccount": "Income account",
-      "taxType": "Tax type",
-      "trackingCategory": "Tracking category",
-      "referencePrefix": "Reference prefix",
+      "title": "Integrazione bancaria e contabile",
+      "subtitle": "Configura la mappatura contabile ed esporta fatture per QuickBooks, Xero, CSV o Excel.",
+      "incomeAccount": "Conto entrate",
+      "taxType": "Tipo imposta",
+      "trackingCategory": "Categoria monitoraggio",
+      "referencePrefix": "Prefisso riferimento",
       "placeholders": {
-        "incomeAccount": "Sales",
-        "taxType": "TAX001",
-        "trackingCategory": "General",
-        "referencePrefix": "INV"
+        "incomeAccount": "Vendite",
+        "taxType": "IVA001",
+        "trackingCategory": "Generale",
+        "referencePrefix": "FAT"
       },
-      "saveMapping": "Save mapping",
-      "exportQuickBooks": "Export QuickBooks (CSV)",
-      "exportXero": "Export Xero (CSV)",
-      "exportCsv": "Export CSV",
-      "exportExcel": "Export Excel"
+      "saveMapping": "Salva mappatura",
+      "exportQuickBooks": "Esporta QuickBooks (CSV)",
+      "exportXero": "Esporta Xero (CSV)",
+      "exportCsv": "Esporta CSV",
+      "exportExcel": "Esporta Excel"
     },
     "privacy": {
-      "title": "Privacy & GDPR",
-      "subtitle": "Manage your cookie preference, export your personal data, or permanently delete your account.",
-      "cookieConsent": "Cookie consent:",
+      "title": "Privacy e GDPR",
+      "subtitle": "Gestisci le tue preferenze cookie, esporta i tuoi dati personali o elimina definitivamente il tuo account.",
+      "cookieConsent": "Consenso cookie:",
       "cookieState": {
-        "accepted": "accepted",
-        "rejected": "rejected",
-        "notSet": "not set"
+        "accepted": "accettato",
+        "rejected": "rifiutato",
+        "notSet": "non impostato"
       },
-      "acceptCookies": "Accept optional cookies",
-      "rejectCookies": "Reject optional cookies",
-      "exportData": "Export my data (JSON)",
-      "deleteAccount": "Delete account and all data",
-      "deleteConfirm": "This action permanently deletes your account and all related data. This cannot be undone. Continue?"
+      "acceptCookies": "Accetta cookie opzionali",
+      "rejectCookies": "Rifiuta cookie opzionali",
+      "exportData": "Esporta i miei dati (JSON)",
+      "deleteAccount": "Elimina account e tutti i dati",
+      "deleteConfirm": "Questa azione elimina definitivamente il tuo account e tutti i dati correlati. Questa operazione non può essere annullata. Continuare?"
     },
     "errors": {
-      "supabaseInit": "Failed to initialize Supabase client",
-      "userNotAuthenticated": "User not authenticated",
-      "failedLoadSettings": "Failed to load settings",
-      "failedSaveSettings": "Failed to save settings",
-      "logoImageOnly": "Please upload an image file for the invoice logo.",
-      "failedExportData": "Failed to export data",
-      "failedExportAccountingData": "Failed to export accounting data",
-      "failedDeleteAccountData": "Failed to delete account data"
+      "supabaseInit": "Impossibile inizializzare il client Supabase",
+      "userNotAuthenticated": "Utente non autenticato",
+      "failedLoadSettings": "Impossibile caricare le impostazioni",
+      "failedSaveSettings": "Impossibile salvare le impostazioni",
+      "logoImageOnly": "Si prega di caricare un file immagine per il logo della fattura.",
+      "failedExportData": "Impossibile esportare i dati",
+      "failedExportAccountingData": "Impossibile esportare i dati contabili",
+      "failedDeleteAccountData": "Impossibile eliminare i dati dell'account"
     }
   },
   "login": {
-    "title": "Welcome Back",
-    "subtitle": "Sign in to your account",
-    "subtitle2fa": "Enter your authenticator code or backup code",
+    "title": "Bentornato",
+    "subtitle": "Accedi al tuo account",
+    "subtitle2fa": "Inserisci il codice dell'autenticatore o il codice di backup",
     "fields": {
-      "email": "Email Address",
+      "email": "Indirizzo email",
       "password": "Password",
-      "authenticatorCode": "Authenticator or backup code"
+      "authenticatorCode": "Codice autenticatore o backup"
     },
     "actions": {
-      "forgotPassword": "Forgot password?",
-      "signingIn": "Signing in...",
-      "signIn": "Sign In",
-      "orContinueWith": "Or continue with",
-      "signInWithGoogle": "Sign in with Google",
-      "rememberDevice": "Remember this device for 30 days",
-      "verifying": "Verifying...",
-      "verifyContinue": "Verify & Continue"
+      "forgotPassword": "Password dimenticata?",
+      "signingIn": "Accesso in corso...",
+      "signIn": "Accedi",
+      "orContinueWith": "O continua con",
+      "signInWithGoogle": "Accedi con Google",
+      "rememberDevice": "Ricorda questo dispositivo per 30 giorni",
+      "verifying": "Verifica...",
+      "verifyContinue": "Verifica e continua"
     },
     "messages": {
-      "welcomeBack": "Welcome back!",
-      "enter2fa": "Enter your 2FA code to continue",
-      "resetEmailSent": "Password reset email sent!"
+      "welcomeBack": "Bentornato!",
+      "enter2fa": "Inserisci il codice 2FA per continuare",
+      "resetEmailSent": "Email di reimpostazione password inviata!"
     },
     "errors": {
-      "initAuth": "Failed to initialize authentication",
-      "invalidCode": "Invalid authentication code",
-      "resetEmailFailed": "Something went wrong"
+      "initAuth": "Impossibile inizializzare l'autenticazione",
+      "invalidCode": "Codice di autenticazione non valido",
+      "resetEmailFailed": "Qualcosa è andato storto"
     },
     "footer": {
-      "noAccount": "Don't have an account?",
-      "signUp": "Sign up"
+      "noAccount": "Non hai un account?",
+      "signUp": "Registrati"
     },
     "reset": {
-      "title": "Reset Password",
-      "subtitle": "Enter your email to receive a reset link",
-      "sending": "Sending...",
-      "sendLink": "Send Reset Link",
-      "backToSignIn": "Back to Sign In"
+      "title": "Reimposta password",
+      "subtitle": "Inserisci la tua email per ricevere un link di reimpostazione",
+      "sending": "Invio in corso...",
+      "sendLink": "Invia link di reimpostazione",
+      "backToSignIn": "Torna all'accesso"
     }
   },
   "signup": {
-    "title": "Create Account",
-    "subtitle": "Start invoicing in minutes",
+    "title": "Crea account",
+    "subtitle": "Inizia a fatturare in pochi minuti",
     "fields": {
-      "fullName": "Full Name",
-      "email": "Email Address",
+      "fullName": "Nome completo",
+      "email": "Indirizzo email",
       "password": "Password",
-      "confirmPassword": "Confirm Password"
+      "confirmPassword": "Conferma password"
     },
     "terms": {
-      "prefix": "I agree to the",
-      "termsOfService": "Terms of Service",
-      "privacyPolicy": "Privacy Policy"
+      "prefix": "Accetto i",
+      "termsOfService": "Termini di servizio",
+      "privacyPolicy": "Informativa sulla privacy"
     },
     "actions": {
-      "creating": "Creating account...",
-      "signUp": "Sign Up"
+      "creating": "Creazione account...",
+      "signUp": "Registrati"
     },
     "footer": {
-      "alreadyHaveAccount": "Already have an account?",
-      "signIn": "Sign in"
+      "alreadyHaveAccount": "Hai già un account?",
+      "signIn": "Accedi"
     },
     "messages": {
-      "checkEmail": "Check your email for confirmation link!"
+      "checkEmail": "Controlla la tua email per il link di conferma!"
     },
     "errors": {
-      "initAuth": "Failed to initialize authentication",
-      "acceptTerms": "You must accept the Terms of Service and Privacy Policy",
-      "passwordMismatch": "Passwords do not match",
-      "passwordTooShort": "Password must be at least 6 characters"
+      "initAuth": "Impossibile inizializzare l'autenticazione",
+      "acceptTerms": "Devi accettare i Termini di servizio e l'Informativa sulla privacy",
+      "passwordMismatch": "Le password non corrispondono",
+      "passwordTooShort": "La password deve essere di almeno 6 caratteri"
     }
   },
   "sidebar": {
-    "logout": "Logout",
+    "logout": "Esci",
     "items": {
       "dashboard": "Dashboard",
-      "invoices": "Invoices",
-      "clients": "Clients",
-      "projects": "Projects",
-      "expenses": "Expenses",
-      "recurring": "Recurring",
-      "estimates": "Estimates",
-      "time": "Time Tracking",
-      "reports": "Reports",
+      "invoices": "Fatture",
+      "clients": "Clienti",
+      "projects": "Progetti",
+      "expenses": "Spese",
+      "recurring": "Ricorrenti",
+      "estimates": "Preventivi",
+      "time": "Monitoraggio tempo",
+      "reports": "Report",
       "admin": "Admin",
-      "settings": "Settings"
+      "settings": "Impostazioni"
     }
   },
   "clientsPage": {
-    "title": "Clients",
-    "subtitle": "Manage your client relationships",
-    "newTitle": "New Client",
-    "editTitle": "Edit Client",
-    "loading": "Loading clients...",
-    "loadingSingle": "Loading client...",
-    "errorPrefix": "Error",
-    "clientNotFound": "Client not found",
-    "confirmDelete": "Delete this client? This action cannot be undone.",
+    "title": "Clienti",
+    "subtitle": "Gestisci le tue relazioni con i clienti",
+    "newTitle": "Nuovo cliente",
+    "editTitle": "Modifica cliente",
+    "loading": "Caricamento clienti...",
+    "loadingSingle": "Caricamento cliente...",
+    "errorPrefix": "Errore",
+    "clientNotFound": "Cliente non trovato",
+    "confirmDelete": "Eliminare questo cliente? Questa azione non può essere annullata.",
     "fields": {
-      "nameRequired": "Name *",
+      "nameRequired": "Nome *",
       "emailRequired": "Email *",
       "email": "Email",
-      "phone": "Phone",
-      "company": "Company",
-      "country": "Country",
-      "address": "Address"
+      "phone": "Telefono",
+      "company": "Azienda",
+      "country": "Paese",
+      "address": "Indirizzo"
     },
     "actions": {
-      "tryAgain": "Try Again",
-      "addClient": "+ Add Client",
-      "edit": "Edit →",
-      "goBack": "Go Back",
-      "backToClients": "← Back to Clients",
-      "editClient": "Edit Client",
-      "delete": "Delete",
-      "deleting": "Deleting...",
-      "saving": "Saving...",
-      "createClient": "Create Client",
-      "saveChanges": "Save Changes",
-      "cancel": "Cancel"
+      "tryAgain": "Riprova",
+      "addClient": "+ Aggiungi cliente",
+      "edit": "Modifica →",
+      "goBack": "Indietro",
+      "backToClients": "← Torna ai clienti",
+      "editClient": "Modifica cliente",
+      "delete": "Elimina",
+      "deleting": "Eliminazione...",
+      "saving": "Salvataggio...",
+      "createClient": "Crea cliente",
+      "saveChanges": "Salva modifiche",
+      "cancel": "Annulla"
     },
     "validation": {
-      "nameRequired": "Client name is required.",
-      "emailRequired": "Email is required.",
-      "emailInvalid": "Please enter a valid email address."
+      "nameRequired": "Il nome del cliente è obbligatorio.",
+      "emailRequired": "L'email è obbligatoria.",
+      "emailInvalid": "Si prega di inserire un indirizzo email valido."
     },
     "errors": {
-      "supabaseInit": "Failed to initialize Supabase client",
-      "loginRequiredView": "Please log in to view clients",
-      "loginRequiredViewSingle": "Please log in to view this client",
-      "loginRequiredCreate": "Please log in to create clients",
-      "loginRequiredEdit": "Please log in to edit clients",
-      "loginRequiredDelete": "Please log in to delete this client",
-      "failedLoadClients": "Failed to load clients",
-      "failedLoadClient": "Failed to load client"
+      "supabaseInit": "Impossibile inizializzare il client Supabase",
+      "loginRequiredView": "Accedi per visualizzare i clienti",
+      "loginRequiredViewSingle": "Accedi per visualizzare questo cliente",
+      "loginRequiredCreate": "Accedi per creare clienti",
+      "loginRequiredEdit": "Accedi per modificare i clienti",
+      "loginRequiredDelete": "Accedi per eliminare questo cliente",
+      "failedLoadClients": "Impossibile caricare i clienti",
+      "failedLoadClient": "Impossibile caricare il cliente"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Bentornato",
+    "revenue": "Ricavi",
+    "netProfit": "Profitto netto",
+    "pending": "In attesa",
+    "totalInvoices": "Totale fatture",
+    "noInvoices": "Nessuna fattura ancora",
+    "createFirstInvoice": "Crea la tua prima fattura per iniziare a monitorare i ricavi",
+    "clients": "Clienti",
+    "expenses": "Spese",
+    "paid": "Pagato",
+    "overdue": "Scaduto",
+    "revenueTrend": "Andamento ricavi",
+    "invoiceStatus": "Stato fatture",
+    "recentInvoices": "Fatture recenti",
+    "noInvoicesYet": "Nessuna fattura ancora",
+    "invoice": "Fattura",
+    "due": "Scadenza",
+    "notAvailable": "N/D",
+    "period": {
+      "week": "Settimana",
+      "month": "Mese",
+      "year": "Anno"
+    },
+    "actions": {
+      "tryAgain": "Riprova",
+      "createInvoice": "Crea fattura",
+      "viewAll": "Visualizza tutto",
+      "createFirstInvoice": "Crea la tua prima fattura"
+    },
+    "status": {
+      "draft": "Bozza",
+      "sent": "Inviata",
+      "paid": "Pagata",
+      "pending": "In attesa",
+      "overdue": "Scaduta"
+    },
+    "tooltips": {
+      "totalRevenue": "Ricavi totali dalle fatture pagate",
+      "netProfit": "Ricavi meno spese",
+      "pendingInvoices": "Fatture in attesa di pagamento",
+      "allInvoices": "Tutte le fatture nel tuo account",
+      "paidInvoices": "Totale fatture pagate",
+      "totalClients": "Totale clienti attivi",
+      "overdueInvoices": "Fatture oltre la data di scadenza",
+      "totalExpenses": "Totale spese registrate"
+    },
+    "errors": {
+      "loadingData": "Errore nel caricamento dei dati del dashboard",
+      "loadingTitle": "Errore di caricamento del dashboard",
+      "supabaseInit": "Impossibile inizializzare il client Supabase",
+      "verifySession": "Impossibile verificare la sessione"
+    }
+  },
+  "expensesPage": {
+    "title": "Spese",
+    "subtitle": "Monitora le tue spese aziendali",
+    "errorPrefix": "Errore",
+    "actions": {
+      "tryAgain": "Riprova",
+      "addExpense": "Aggiungi spesa",
+      "view": "Visualizza"
+    },
+    "empty": {
+      "title": "Nessuna spesa ancora",
+      "cta": "Aggiungi la tua prima spesa"
+    },
+    "stats": {
+      "totalExpenses": "Totale spese"
+    },
+    "errors": {
+      "supabaseInit": "Impossibile inizializzare il client Supabase",
+      "loginRequired": "Accedi per visualizzare le spese",
+      "loadFailed": "Impossibile caricare le spese"
+    },
+    "new": {
+      "title": "Aggiungi spesa",
+      "fields": {
+        "category": "Categoria",
+        "amount": "Importo",
+        "currency": "Valuta",
+        "date": "Data",
+        "descriptionOptional": "Descrizione (opzionale)"
+      },
+      "actions": {
+        "backToExpenses": "Torna alle spese",
+        "cancel": "Annulla",
+        "creating": "Creazione...",
+        "createExpense": "Crea spesa"
+      },
+      "errors": {
+        "categoryRequired": "La categoria è obbligatoria.",
+        "amountInvalid": "L'importo deve essere maggiore di 0.",
+        "currencyInvalid": "La valuta deve essere un codice di 3 lettere.",
+        "dateRequired": "La data è obbligatoria.",
+        "supabaseInit": "Impossibile inizializzare il client Supabase.",
+        "loginRequired": "Devi essere connesso per creare spese."
+      }
+    },
+    "detail": {
+      "title": "Dettagli spesa",
+      "loading": "Caricamento...",
+      "notFound": "Spesa non trovata.",
+      "fields": {
+        "category": "Categoria",
+        "amount": "Importo",
+        "date": "Data",
+        "description": "Descrizione"
+      },
+      "actions": {
+        "backToExpenses": "Torna alle spese",
+        "edit": "Modifica",
+        "delete": "Elimina",
+        "deleting": "Eliminazione..."
+      },
+      "errors": {
+        "supabaseInit": "Impossibile inizializzare il client Supabase.",
+        "loginView": "Accedi per visualizzare questa spesa.",
+        "loginDelete": "Accedi per eliminare questa spesa."
+      }
+    }
+  },
+  "projectsPage": {
+    "title": "Progetti",
+    "subtitle": "Gestisci i progetti e monitora il progresso delle consegne",
+    "addProject": "+ Aggiungi progetto",
+    "loading": "Caricamento progetti...",
+    "errorPrefix": "Errore",
+    "stats": {
+      "total": "Totale",
+      "active": "Attivi",
+      "completed": "Completati"
+    },
+    "filters": {
+      "allStatuses": "Tutti gli stati",
+      "planning": "Pianificazione",
+      "active": "Attivo",
+      "onHold": "In pausa",
+      "completed": "Completato",
+      "archived": "Archiviato"
+    },
+    "status": {
+      "planning": "Pianificazione",
+      "active": "Attivo",
+      "on_hold": "In pausa",
+      "completed": "Completato",
+      "archived": "Archiviato"
+    },
+    "card": {
+      "open": "Apri →",
+      "client": "Cliente",
+      "unassigned": "Non assegnato"
+    },
+    "errors": {
+      "supabaseInit": "Impossibile inizializzare il client Supabase",
+      "loginRequired": "Accedi per visualizzare i progetti",
+      "loadFailed": "Impossibile caricare i progetti"
+    }
+  },
+  "recurringPage": {
+    "title": "Fatture ricorrenti",
+    "subtitle": "Gestisci le tue fatture ricorrenti",
+    "newRecurring": "+ Nuova ricorrente",
+    "errorPrefix": "Errore",
+    "tryAgain": "Riprova",
+    "empty": {
+      "title": "Nessuna fattura ricorrente ancora",
+      "cta": "Crea la tua prima fattura ricorrente"
+    },
+    "table": {
+      "invoice": "Fattura",
+      "client": "Cliente",
+      "amount": "Importo",
+      "frequency": "Frequenza",
+      "nextDate": "Prossima data",
+      "status": "Stato",
+      "actions": "Azioni"
+    },
+    "frequency": {
+      "weekly": "Settimanale",
+      "biweekly": "Bisettimanale",
+      "monthly": "Mensile",
+      "quarterly": "Trimestrale",
+      "yearly": "Annuale"
+    },
+    "actions": {
+      "pause": "Pausa",
+      "resume": "Riprendi",
+      "delete": "Elimina"
+    },
+    "unknownClient": "Cliente sconosciuto",
+    "errors": {
+      "supabaseInit": "Impossibile inizializzare il client Supabase",
+      "loadFailed": "Impossibile caricare le fatture ricorrenti",
+      "updateFailed": "Impossibile aggiornare la fattura ricorrente",
+      "deleteFailed": "Impossibile eliminare la fattura ricorrente"
+    }
+  },
+  "estimatesPage": {
+    "title": "Preventivi",
+    "loading": "Caricamento preventivi...",
+    "errorPrefix": "Errore",
+    "newEstimate": "+ Nuovo preventivo",
+    "empty": "Nessun preventivo trovato. Crea il tuo primo preventivo!",
+    "defaultEstimate": "Preventivo",
+    "createdLabel": "Creato",
+    "validUntilLabel": "Valido fino al"
+  },
+  "timePage": {
+    "title": "Monitoraggio tempo",
+    "subtitle": "Monitora il lavoro con un timer live o aggiungi voci manuali.",
+    "viewReports": "Visualizza report",
+    "loading": "Caricamento...",
+    "stats": {
+      "totalTracked": "Totale monitorato",
+      "billable": "Fatturabile",
+      "nonBillable": "Non fatturabile"
+    },
+    "timer": {
+      "title": "Timer",
+      "start": "Avvia",
+      "stop": "Ferma",
+      "reset": "Reimposta"
+    },
+    "form": {
+      "title": "Aggiungi voce tempo",
+      "description": "Descrizione",
+      "descriptionPlaceholder": "Su cosa hai lavorato?",
+      "duration": "Durata (minuti)",
+      "date": "Data",
+      "client": "Cliente",
+      "invoice": "Fattura",
+      "billable": "Fatturabile",
+      "unassigned": "Non assegnato",
+      "notLinked": "Non collegato",
+      "saving": "Salvataggio...",
+      "save": "Salva voce tempo"
+    },
+    "entries": {
+      "title": "Voci recenti",
+      "empty": "Nessuna voce tempo ancora.",
+      "noClient": "Nessun cliente",
+      "notInvoiced": "Non fatturato",
+      "invoice": "Fattura",
+      "billable": "Fatturabile",
+      "nonBillable": "Non fatturabile"
+    },
+    "errors": {
+      "supabaseInit": "Impossibile inizializzare il client Supabase.",
+      "loginRequired": "Accedi per visualizzare il monitoraggio tempo.",
+      "loginCreate": "Accedi per creare voci tempo.",
+      "loadFailed": "Impossibile caricare i dati di monitoraggio tempo.",
+      "descriptionRequired": "La descrizione è obbligatoria.",
+      "durationInvalid": "La durata deve essere maggiore di 0 minuti.",
+      "createFailed": "Impossibile creare la voce tempo."
+    }
+  },
+  "reportsPage": {
+    "title": "Report",
+    "subtitle": "Panoramica finanziaria e analisi",
+    "errorPrefix": "Errore",
+    "tryAgain": "Riprova",
+    "period": {
+      "month": "Mese",
+      "quarter": "Trimestre",
+      "year": "Anno"
+    },
+    "export": {
+      "csv": "Esporta CSV",
+      "pdf": "Esporta PDF",
+      "print": "Stampa"
+    },
+    "stats": {
+      "totalRevenue": "Ricavi totali",
+      "totalExpenses": "Spese totali",
+      "netProfit": "Profitto netto",
+      "invoices": "Fatture",
+      "clients": "Clienti",
+      "avgInvoice": "Fattura media",
+      "trackedTime": "Tempo monitorato",
+      "billableTime": "Tempo fatturabile",
+      "nonBillableTime": "Tempo non fatturabile",
+      "linkedInvoices": "Fatture collegate"
+    },
+    "charts": {
+      "revenueByClient": "Ricavi per cliente",
+      "revenueByStatus": "Ricavi per stato fattura",
+      "expensesByCategory": "Spese per categoria",
+      "expenseTrends": "Andamento spese",
+      "profitLoss": "Andamento profitti / perdite",
+      "timeByClient": "Tempo per cliente",
+      "trackedTimeTrend": "Andamento tempo monitorato",
+      "topClients": "Migliori clienti per ricavi",
+      "clientPaymentHistory": "Storico pagamenti clienti",
+      "clientAging": "Report anzianità clienti",
+      "invoiceAging": "Anzianità fatture (30/60/90+)",
+      "invoiceVolume": "Andamento volume fatture",
+      "aiInsights": "Analisi con IA"
+    },
+    "clientHistory": {
+      "paid": "Pagato",
+      "pending": "In attesa",
+      "overdue": "Scaduto"
+    },
+    "ai": {
+      "generate": "Genera analisi IA",
+      "generating": "Generazione..."
+    },
+    "errors": {
+      "supabaseInit": "Impossibile inizializzare il client Supabase",
+      "loginRequired": "Accedi per visualizzare i report",
+      "loadFailed": "Impossibile caricare i report",
+      "insightsFailed": "Impossibile generare le analisi"
     }
   }
 }

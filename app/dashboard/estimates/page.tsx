@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 interface Estimate {
   id: string;
@@ -18,6 +19,7 @@ interface Estimate {
 }
 
 export default function EstimatesPage() {
+  const t = useTranslations('estimatesPage');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [estimates, setEstimates] = useState<Estimate[]>([]);
@@ -76,8 +78,8 @@ export default function EstimatesPage() {
   if (loading) {
     return (
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Estimates</h1>
-        <div className="text-gray-500 dark:text-gray-400">Loading estimates...</div>
+        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{t('title')}</h1>
+        <div className="text-gray-500 dark:text-gray-400">{t('loading')}</div>
       </div>
     );
   }
@@ -85,9 +87,9 @@ export default function EstimatesPage() {
   if (error) {
     return (
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Estimates</h1>
+        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{t('title')}</h1>
         <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg">
-          Error: {error}
+          {t('errorPrefix')}: {error}
         </div>
       </div>
     );
@@ -96,18 +98,18 @@ export default function EstimatesPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Estimates</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
         <Link
           href="/dashboard/estimates/new"
           className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
         >
-          + New Estimate
+          {t('newEstimate')}
         </Link>
       </div>
 
       {estimates.length === 0 ? (
         <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
-          <p className="text-gray-500 dark:text-gray-400">No estimates found. Create your first estimate!</p>
+          <p className="text-gray-500 dark:text-gray-400">{t('empty')}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -120,14 +122,14 @@ export default function EstimatesPage() {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="font-medium text-gray-900 dark:text-white">
-                    {est.estimate_number || 'Estimate'}
+                    {est.estimate_number || t('defaultEstimate')}
                   </p>
                   <div className="flex items-center gap-2 mt-1">
                     <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(est.status)}`}>
                       {est.status || 'draft'}
                     </span>
                     <span className="text-sm text-gray-500 dark:text-gray-400">
-                      Created: {new Date(est.created_at).toLocaleDateString()}
+                      {t('createdLabel')}: {new Date(est.created_at).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
@@ -137,7 +139,7 @@ export default function EstimatesPage() {
                   </p>
                   {est.valid_until && (
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Valid until: {new Date(est.valid_until).toLocaleDateString()}
+                      {t('validUntilLabel')}: {new Date(est.valid_until).toLocaleDateString()}
                     </p>
                   )}
                 </div>

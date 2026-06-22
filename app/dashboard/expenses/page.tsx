@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 interface Expense {
   id: string;
@@ -16,6 +17,7 @@ interface Expense {
 }
 
 export default function ExpensesPage() {
+  const t = useTranslations('expensesPage');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -27,14 +29,14 @@ export default function ExpensesPage() {
         setError(null);
         const supabase = createClient();
         if (!supabase) {
-          setError('Failed to initialize Supabase client');
+          setError(t('errors.supabaseInit'));
           setLoading(false);
           return;
         }
 
         const { data: authData, error: authError } = await supabase.auth.getUser();
         if (authError || !authData?.user) {
-          setError(authError?.message || 'Please log in to view expenses');
+          setError(authError?.message || t('errors.loginRequired'));
           setLoading(false);
           return;
         }
@@ -53,7 +55,7 @@ export default function ExpensesPage() {
 
         setExpenses(data || []);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load expenses');
+        setError(err instanceof Error ? err.message : t('errors.loadFailed'));
       } finally {
         setLoading(false);
       }
@@ -93,12 +95,12 @@ export default function ExpensesPage() {
     return (
       <div className="container mx-auto p-4">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+          <p className="text-red-600 dark:text-red-400">{t('errorPrefix')}: {error}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-2 text-sm text-blue-600 hover:underline"
           >
-            Try Again
+            {t('actions.tryAgain')}
           </button>
         </div>
       </div>
@@ -109,25 +111,25 @@ export default function ExpensesPage() {
     <div className="container mx-auto p-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Expenses</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Track your business expenses</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">{t('subtitle')}</p>
         </div>
         <Link href="/dashboard/expenses/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-          + Add Expense
+          + {t('actions.addExpense')}
         </Link>
       </div>
 
       {expenses.length === 0 ? (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
-          <p className="text-gray-500 dark:text-gray-400 mb-4">No expenses yet</p>
+          <p className="text-gray-500 dark:text-gray-400 mb-4">{t('empty.title')}</p>
           <Link href="/dashboard/expenses/new" className="text-blue-600 hover:underline">
-            Add your first expense
+            {t('empty.cta')}
           </Link>
         </div>
       ) : (
         <>
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Total Expenses</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('stats.totalExpenses')}</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">
               ${total.toFixed(2)}
             </p>
@@ -145,7 +147,7 @@ export default function ExpensesPage() {
                 <div className="flex items-start justify-between mb-4">
                   <div className="text-3xl">{getCategoryEmoji(expense.category)}</div>
                   <Link href={`/dashboard/expenses/${expense.id}`} className="text-blue-600 dark:text-blue-400 text-sm">
-                    View →
+                    {t('actions.view')} →
                   </Link>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">

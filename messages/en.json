@@ -356,5 +356,321 @@
       "admin": "Admin",
       "settings": "Settings"
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "revenue": "Revenue",
+    "netProfit": "Net Profit",
+    "pending": "Pending",
+    "totalInvoices": "Total Invoices",
+    "noInvoices": "No Invoices Yet",
+    "createFirstInvoice": "Create your first invoice to start tracking revenue",
+    "clients": "Clients",
+    "expenses": "Expenses",
+    "paid": "Paid",
+    "overdue": "Overdue",
+    "revenueTrend": "Revenue Trend",
+    "invoiceStatus": "Invoice Status",
+    "recentInvoices": "Recent Invoices",
+    "noInvoicesYet": "No invoices yet",
+    "invoice": "Invoice",
+    "due": "Due",
+    "notAvailable": "N/A",
+    "period": {
+      "week": "Week",
+      "month": "Month",
+      "year": "Year"
+    },
+    "actions": {
+      "tryAgain": "Try Again",
+      "createInvoice": "Create Invoice",
+      "viewAll": "View All",
+      "createFirstInvoice": "Create your first invoice"
+    },
+    "status": {
+      "draft": "Draft",
+      "sent": "Sent",
+      "paid": "Paid",
+      "pending": "Pending",
+      "overdue": "Overdue"
+    },
+    "tooltips": {
+      "totalRevenue": "Total revenue from paid invoices",
+      "netProfit": "Revenue minus expenses",
+      "pendingInvoices": "Invoices awaiting payment",
+      "allInvoices": "All invoices in your account",
+      "paidInvoices": "Total paid invoices",
+      "totalClients": "Total active clients",
+      "overdueInvoices": "Invoices past due date",
+      "totalExpenses": "Total recorded expenses"
+    },
+    "errors": {
+      "loadingData": "Error loading dashboard data",
+      "loadingTitle": "Error Loading Dashboard",
+      "supabaseInit": "Failed to initialize Supabase client",
+      "verifySession": "Failed to verify session"
+    }
+  },
+  "expensesPage": {
+    "title": "Expenses",
+    "subtitle": "Track your business expenses",
+    "errorPrefix": "Error",
+    "actions": {
+      "tryAgain": "Try Again",
+      "addExpense": "Add Expense",
+      "view": "View"
+    },
+    "empty": {
+      "title": "No expenses yet",
+      "cta": "Add your first expense"
+    },
+    "stats": {
+      "totalExpenses": "Total Expenses"
+    },
+    "errors": {
+      "supabaseInit": "Failed to initialize Supabase client",
+      "loginRequired": "Please log in to view expenses",
+      "loadFailed": "Failed to load expenses"
+    },
+    "new": {
+      "title": "Add Expense",
+      "fields": {
+        "category": "Category",
+        "amount": "Amount",
+        "currency": "Currency",
+        "date": "Date",
+        "descriptionOptional": "Description (optional)"
+      },
+      "actions": {
+        "backToExpenses": "Back to expenses",
+        "cancel": "Cancel",
+        "creating": "Creating...",
+        "createExpense": "Create Expense"
+      },
+      "errors": {
+        "categoryRequired": "Category is required.",
+        "amountInvalid": "Amount must be greater than 0.",
+        "currencyInvalid": "Currency must be a 3-letter code.",
+        "dateRequired": "Date is required.",
+        "supabaseInit": "Failed to initialize Supabase client.",
+        "loginRequired": "You must be logged in to create expenses."
+      }
+    },
+    "detail": {
+      "title": "Expense Details",
+      "loading": "Loading...",
+      "notFound": "Expense not found.",
+      "fields": {
+        "category": "Category",
+        "amount": "Amount",
+        "date": "Date",
+        "description": "Description"
+      },
+      "actions": {
+        "backToExpenses": "Back to expenses",
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleting": "Deleting..."
+      },
+      "errors": {
+        "supabaseInit": "Failed to initialize Supabase client.",
+        "loginView": "Please log in to view this expense.",
+        "loginDelete": "Please log in to delete this expense."
+      }
+    }
+  },
+  "projectsPage": {
+    "title": "Projects",
+    "subtitle": "Manage projects and track delivery progress",
+    "addProject": "+ Add Project",
+    "loading": "Loading projects...",
+    "errorPrefix": "Error",
+    "stats": {
+      "total": "Total",
+      "active": "Active",
+      "completed": "Completed"
+    },
+    "filters": {
+      "allStatuses": "All statuses",
+      "planning": "Planning",
+      "active": "Active",
+      "onHold": "On Hold",
+      "completed": "Completed",
+      "archived": "Archived"
+    },
+    "status": {
+      "planning": "Planning",
+      "active": "Active",
+      "on_hold": "On Hold",
+      "completed": "Completed",
+      "archived": "Archived"
+    },
+    "card": {
+      "open": "Open →",
+      "client": "Client",
+      "unassigned": "Unassigned"
+    },
+    "errors": {
+      "supabaseInit": "Failed to initialize Supabase client",
+      "loginRequired": "Please log in to view projects",
+      "loadFailed": "Failed to load projects"
+    }
+  },
+  "recurringPage": {
+    "title": "Recurring Invoices",
+    "subtitle": "Manage your recurring invoices",
+    "newRecurring": "+ New Recurring",
+    "errorPrefix": "Error",
+    "tryAgain": "Try Again",
+    "empty": {
+      "title": "No recurring invoices yet",
+      "cta": "Create your first recurring invoice"
+    },
+    "table": {
+      "invoice": "Invoice",
+      "client": "Client",
+      "amount": "Amount",
+      "frequency": "Frequency",
+      "nextDate": "Next Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "frequency": {
+      "weekly": "Weekly",
+      "biweekly": "Bi-Weekly",
+      "monthly": "Monthly",
+      "quarterly": "Quarterly",
+      "yearly": "Yearly"
+    },
+    "actions": {
+      "pause": "Pause",
+      "resume": "Resume",
+      "delete": "Delete"
+    },
+    "unknownClient": "Unknown Client",
+    "errors": {
+      "supabaseInit": "Failed to initialize Supabase client",
+      "loadFailed": "Failed to load recurring invoices",
+      "updateFailed": "Failed to update recurring invoice",
+      "deleteFailed": "Failed to delete recurring invoice"
+    }
+  },
+  "estimatesPage": {
+    "title": "Estimates",
+    "loading": "Loading estimates...",
+    "errorPrefix": "Error",
+    "newEstimate": "+ New Estimate",
+    "empty": "No estimates found. Create your first estimate!",
+    "defaultEstimate": "Estimate",
+    "createdLabel": "Created",
+    "validUntilLabel": "Valid until"
+  },
+  "timePage": {
+    "title": "Time Tracking",
+    "subtitle": "Track work with a live timer or add manual entries.",
+    "viewReports": "View reports",
+    "loading": "Loading...",
+    "stats": {
+      "totalTracked": "Total Tracked",
+      "billable": "Billable",
+      "nonBillable": "Non-billable"
+    },
+    "timer": {
+      "title": "Timer",
+      "start": "Start",
+      "stop": "Stop",
+      "reset": "Reset"
+    },
+    "form": {
+      "title": "Add Time Entry",
+      "description": "Description",
+      "descriptionPlaceholder": "What did you work on?",
+      "duration": "Duration (minutes)",
+      "date": "Date",
+      "client": "Client",
+      "invoice": "Invoice",
+      "billable": "Billable",
+      "unassigned": "Unassigned",
+      "notLinked": "Not linked",
+      "saving": "Saving...",
+      "save": "Save time entry"
+    },
+    "entries": {
+      "title": "Recent Entries",
+      "empty": "No time entries yet.",
+      "noClient": "No client",
+      "notInvoiced": "Not invoiced",
+      "invoice": "Invoice",
+      "billable": "Billable",
+      "nonBillable": "Non-billable"
+    },
+    "errors": {
+      "supabaseInit": "Failed to initialize Supabase client.",
+      "loginRequired": "Please log in to view time tracking.",
+      "loginCreate": "Please log in to create time entries.",
+      "loadFailed": "Failed to load time tracking data.",
+      "descriptionRequired": "Description is required.",
+      "durationInvalid": "Duration must be greater than 0 minutes.",
+      "createFailed": "Failed to create time entry."
+    }
+  },
+  "reportsPage": {
+    "title": "Reports",
+    "subtitle": "Financial overview and analytics",
+    "errorPrefix": "Error",
+    "tryAgain": "Try Again",
+    "period": {
+      "month": "Month",
+      "quarter": "Quarter",
+      "year": "Year"
+    },
+    "export": {
+      "csv": "Export CSV",
+      "pdf": "Export PDF",
+      "print": "Print"
+    },
+    "stats": {
+      "totalRevenue": "Total Revenue",
+      "totalExpenses": "Total Expenses",
+      "netProfit": "Net Profit",
+      "invoices": "Invoices",
+      "clients": "Clients",
+      "avgInvoice": "Avg Invoice",
+      "trackedTime": "Tracked Time",
+      "billableTime": "Billable Time",
+      "nonBillableTime": "Non-billable Time",
+      "linkedInvoices": "Linked Invoices"
+    },
+    "charts": {
+      "revenueByClient": "Revenue by Client",
+      "revenueByStatus": "Revenue by Invoice Status",
+      "expensesByCategory": "Expenses by Category",
+      "expenseTrends": "Expense Trends",
+      "profitLoss": "Profit / Loss Trend",
+      "timeByClient": "Time by Client",
+      "trackedTimeTrend": "Tracked Time Trend",
+      "topClients": "Top Clients by Revenue",
+      "clientPaymentHistory": "Client Payment History",
+      "clientAging": "Client Aging Report",
+      "invoiceAging": "Invoice Aging (30/60/90+)",
+      "invoiceVolume": "Invoice Volume Trend",
+      "aiInsights": "AI-Powered Insights"
+    },
+    "clientHistory": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "overdue": "Overdue"
+    },
+    "ai": {
+      "generate": "Generate AI Analysis",
+      "generating": "Generating..."
+    },
+    "errors": {
+      "supabaseInit": "Failed to initialize Supabase client",
+      "loginRequired": "Please log in to view reports",
+      "loadFailed": "Failed to load reports",
+      "insightsFailed": "Failed to generate insights"
+    }
   }
 }

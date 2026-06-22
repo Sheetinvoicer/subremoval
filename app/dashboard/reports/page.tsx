@@ -13,6 +13,7 @@ import {
   startOfYear,
 } from 'date-fns';
 import { createClient } from '@/lib/supabase/client';
+import { useTranslations } from 'next-intl';
 import {
   Bar,
   BarChart,
@@ -132,6 +133,7 @@ function aggregateByPeriod(items: { date: Date; revenue?: number; expenses?: num
 }
 
 export default function ReportsPage() {
+  const t = useTranslations('reportsPage');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [insightsLoading, setInsightsLoading] = useState(false);
@@ -166,14 +168,14 @@ export default function ReportsPage() {
 
       const supabase = createClient();
       if (!supabase) {
-        setError('Failed to initialize Supabase client');
+        setError(t('errors.supabaseInit'));
         return;
       }
 
       const { data: authData } = await supabase.auth.getUser();
       const user = authData?.user;
       if (!user) {
-        setError('You must be logged in to view reports.');
+        setError(t('errors.loginRequired'));
         return;
       }
 
@@ -375,7 +377,7 @@ export default function ReportsPage() {
       cacheRef.current[cacheKey] = data;
       setReportsData(data);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load reports';
+      const errorMessage = err instanceof Error ? err.message : t('errors.loadFailed');
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -463,11 +465,11 @@ export default function ReportsPage() {
 
       const payload = await res.json();
       if (!res.ok) {
-        throw new Error(payload?.error || 'Failed to generate insights');
+        throw new Error(payload?.error || t('errors.insightsFailed'));
       }
       setInsights(payload?.response || 'No insights returned.');
     } catch (err) {
-      setInsightsError(err instanceof Error ? err.message : 'Failed to generate insights');
+      setInsightsError(err instanceof Error ? err.message : t('errors.insightsFailed'));
     } finally {
       setInsightsLoading(false);
     }
@@ -502,9 +504,9 @@ export default function ReportsPage() {
     return (
       <div className="container mx-auto p-4">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+          <p className="text-red-600 dark:text-red-400">{t('errorPrefix')}: {error}</p>
           <button onClick={loadReports} className="mt-2 text-sm text-blue-600 hover:underline">
-            Try Again
+            {t('tryAgain')}
           </button>
         </div>
       </div>
@@ -517,16 +519,16 @@ export default function ReportsPage() {
     <div className="container mx-auto p-4 space-y-8" id="reports-content">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Reports</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Financial overview and analytics</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">{t('subtitle')}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button onClick={() => applyPresetPeriod('month')} className="px-3 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800">Month</button>
-          <button onClick={() => applyPresetPeriod('quarter')} className="px-3 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800">Quarter</button>
-          <button onClick={() => applyPresetPeriod('year')} className="px-3 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800">Year</button>
-          <button onClick={exportCSV} className="px-3 py-2 text-sm rounded-lg bg-blue-600 text-white">Export CSV</button>
-          <button onClick={exportPDF} className="px-3 py-2 text-sm rounded-lg bg-indigo-600 text-white">Export PDF</button>
-          <button onClick={() => window.print()} className="px-3 py-2 text-sm rounded-lg bg-gray-900 text-white">Print</button>
+          <button onClick={() => applyPresetPeriod('month')} className="px-3 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800">{t('period.month')}</button>
+          <button onClick={() => applyPresetPeriod('quarter')} className="px-3 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800">{t('period.quarter')}</button>
+          <button onClick={() => applyPresetPeriod('year')} className="px-3 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800">{t('period.year')}</button>
+          <button onClick={exportCSV} className="px-3 py-2 text-sm rounded-lg bg-blue-600 text-white">{t('export.csv')}</button>
+          <button onClick={exportPDF} className="px-3 py-2 text-sm rounded-lg bg-indigo-600 text-white">{t('export.pdf')}</button>
+          <button onClick={() => window.print()} className="px-3 py-2 text-sm rounded-lg bg-gray-900 text-white">{t('export.print')}</button>
         </div>
       </div>
 
@@ -536,24 +538,24 @@ export default function ReportsPage() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">Total Revenue</p><p className="text-lg font-bold text-green-600">{currency.format(reportsData.summary.totalRevenue)}</p></div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">Total Expenses</p><p className="text-lg font-bold text-red-600">{currency.format(reportsData.summary.totalExpenses)}</p></div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">Net Profit</p><p className="text-lg font-bold text-blue-600">{currency.format(reportsData.summary.netProfit)}</p></div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">Invoices</p><p className="text-lg font-bold">{reportsData.summary.invoiceCount}</p></div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">Clients</p><p className="text-lg font-bold">{reportsData.summary.clientCount}</p></div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">Avg Invoice</p><p className="text-lg font-bold">{currency.format(reportsData.summary.averageInvoiceValue)}</p></div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">{t('stats.totalRevenue')}</p><p className="text-lg font-bold text-green-600">{currency.format(reportsData.summary.totalRevenue)}</p></div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">{t('stats.totalExpenses')}</p><p className="text-lg font-bold text-red-600">{currency.format(reportsData.summary.totalExpenses)}</p></div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">{t('stats.netProfit')}</p><p className="text-lg font-bold text-blue-600">{currency.format(reportsData.summary.netProfit)}</p></div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">{t('stats.invoices')}</p><p className="text-lg font-bold">{reportsData.summary.invoiceCount}</p></div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">{t('stats.clients')}</p><p className="text-lg font-bold">{reportsData.summary.clientCount}</p></div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">{t('stats.avgInvoice')}</p><p className="text-lg font-bold">{currency.format(reportsData.summary.averageInvoiceValue)}</p></div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">Tracked Time</p><p className="text-lg font-bold">{formatMinutesAsHoursMinutes(reportsData.timeSummary.totalMinutes)}</p></div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">Billable Time</p><p className="text-lg font-bold text-green-600">{formatMinutesAsHoursMinutes(reportsData.timeSummary.billableMinutes)}</p></div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">Non-billable Time</p><p className="text-lg font-bold">{formatMinutesAsHoursMinutes(reportsData.timeSummary.nonBillableMinutes)}</p></div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">Linked Invoices</p><p className="text-lg font-bold">{reportsData.timeSummary.linkedInvoiceCount}</p></div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">{t('stats.trackedTime')}</p><p className="text-lg font-bold">{formatMinutesAsHoursMinutes(reportsData.timeSummary.totalMinutes)}</p></div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">{t('stats.billableTime')}</p><p className="text-lg font-bold text-green-600">{formatMinutesAsHoursMinutes(reportsData.timeSummary.billableMinutes)}</p></div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">{t('stats.nonBillableTime')}</p><p className="text-lg font-bold">{formatMinutesAsHoursMinutes(reportsData.timeSummary.nonBillableMinutes)}</p></div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4"><p className="text-xs text-gray-500">{t('stats.linkedInvoices')}</p><p className="text-lg font-bold">{reportsData.timeSummary.linkedInvoiceCount}</p></div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="font-semibold mb-4">Revenue by Client</h2>
+          <h2 className="font-semibold mb-4">{t('charts.revenueByClient')}</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={reportsData.revenueByClient}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="name" hide /><YAxis /><Tooltip /><Bar dataKey="value" fill="#16a34a" /></BarChart>
@@ -562,7 +564,7 @@ export default function ReportsPage() {
         </section>
 
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="font-semibold mb-4">Revenue by Invoice Status</h2>
+          <h2 className="font-semibold mb-4">{t('charts.revenueByStatus')}</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -577,7 +579,7 @@ export default function ReportsPage() {
         </section>
 
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="font-semibold mb-4">Expenses by Category</h2>
+          <h2 className="font-semibold mb-4">{t('charts.expensesByCategory')}</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={reportsData.expensesByCategory}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="name" hide /><YAxis /><Tooltip /><Bar dataKey="value" fill="#dc2626" /></BarChart>
@@ -586,7 +588,7 @@ export default function ReportsPage() {
         </section>
 
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="font-semibold mb-4">Expense Trends</h2>
+          <h2 className="font-semibold mb-4">{t('charts.expenseTrends')}</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={reportsData.expenseTrend}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="period" /><YAxis /><Tooltip /><Line type="monotone" dataKey="value" stroke="#dc2626" strokeWidth={2} /></LineChart>
@@ -595,7 +597,7 @@ export default function ReportsPage() {
         </section>
 
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 lg:col-span-2">
-          <h2 className="font-semibold mb-4">Profit / Loss Trend</h2>
+          <h2 className="font-semibold mb-4">{t('charts.profitLoss')}</h2>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={reportsData.profitTrend}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="period" /><YAxis /><Tooltip /><Legend /><Line dataKey="revenue" stroke="#16a34a" /><Line dataKey="expenses" stroke="#dc2626" /><Line dataKey="profit" stroke="#2563eb" strokeWidth={3} /></LineChart>
@@ -604,7 +606,7 @@ export default function ReportsPage() {
         </section>
 
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="font-semibold mb-4">Time by Client</h2>
+          <h2 className="font-semibold mb-4">{t('charts.timeByClient')}</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={reportsData.timeByClient}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="name" hide /><YAxis /><Tooltip /><Bar dataKey="value" fill="#0ea5e9" /></BarChart>
@@ -613,7 +615,7 @@ export default function ReportsPage() {
         </section>
 
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="font-semibold mb-4">Tracked Time Trend</h2>
+          <h2 className="font-semibold mb-4">{t('charts.trackedTimeTrend')}</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={reportsData.timeTrend}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="period" /><YAxis /><Tooltip /><Line type="monotone" dataKey="value" stroke="#0ea5e9" strokeWidth={2} /></LineChart>
@@ -624,23 +626,23 @@ export default function ReportsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="font-semibold mb-3">Top Clients by Revenue</h2>
+          <h2 className="font-semibold mb-3">{t('charts.topClients')}</h2>
           <div className="space-y-2">{reportsData.topClients.map((client) => <div key={client.name} className="flex justify-between text-sm"><span>{client.name}</span><span>{currency.format(client.revenue)}</span></div>)}</div>
         </section>
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="font-semibold mb-3">Client Payment History</h2>
-          <div className="space-y-2">{reportsData.clientPaymentHistory.map((row) => <div key={row.client} className="text-sm"><p className="font-medium">{row.client}</p><p className="text-gray-500">Paid: {row.paid} · Pending: {row.pending} · Overdue: {row.overdue}</p></div>)}</div>
+          <h2 className="font-semibold mb-3">{t('charts.clientPaymentHistory')}</h2>
+          <div className="space-y-2">{reportsData.clientPaymentHistory.map((row) => <div key={row.client} className="text-sm"><p className="font-medium">{row.client}</p><p className="text-gray-500">{t('clientHistory.paid')}: {row.paid} · {t('clientHistory.pending')}: {row.pending} · {t('clientHistory.overdue')}: {row.overdue}</p></div>)}</div>
         </section>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="font-semibold mb-4">Client Aging Report</h2>
+          <h2 className="font-semibold mb-4">{t('charts.clientAging')}</h2>
           <div className="space-y-2">{reportsData.clientAging.map((row) => <div key={row.client} className="text-sm flex justify-between"><span>{row.client}</span><span>30: {currency.format(row.d30)} · 60: {currency.format(row.d60)} · 90+: {currency.format(row.d90)}</span></div>)}</div>
         </section>
 
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="font-semibold mb-4">Invoice Aging (30/60/90+)</h2>
+          <h2 className="font-semibold mb-4">{t('charts.invoiceAging')}</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={reportsData.invoiceAging}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="bucket" /><YAxis /><Tooltip /><Bar dataKey="value" fill="#f59e0b" /></BarChart>
@@ -651,7 +653,7 @@ export default function ReportsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="font-semibold mb-4">Invoice Volume Trend</h2>
+          <h2 className="font-semibold mb-4">{t('charts.invoiceVolume')}</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={reportsData.invoiceVolumeTrend}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="period" /><YAxis /><Tooltip /><Line type="monotone" dataKey="invoices" stroke="#7c3aed" strokeWidth={2} /></LineChart>
@@ -659,9 +661,9 @@ export default function ReportsPage() {
           </div>
         </section>
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-          <h2 className="font-semibold mb-4">AI-Powered Insights</h2>
+          <h2 className="font-semibold mb-4">{t('charts.aiInsights')}</h2>
           <button onClick={generateInsights} disabled={insightsLoading} className="px-4 py-2 rounded-lg bg-purple-600 text-white disabled:opacity-70">
-            {insightsLoading ? 'Generating...' : 'Generate AI Analysis'}
+            {insightsLoading ? t('ai.generating') : t('ai.generate')}
           </button>
           {insightsError && <p className="text-sm text-red-500 mt-3">{insightsError}</p>}
           {insights && <pre className="mt-3 whitespace-pre-wrap text-sm bg-gray-50 dark:bg-gray-900 p-3 rounded">{insights}</pre>}

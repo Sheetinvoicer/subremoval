@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { t } from '@/lib/i18n';
+import { useTranslations } from 'next-intl';
 
 interface RecurringInvoice {
   id: string;
@@ -17,6 +17,7 @@ interface RecurringInvoice {
 }
 
 export default function RecurringPage() {
+  const t = useTranslations('recurringPage');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [recurringInvoices, setRecurringInvoices] = useState<RecurringInvoice[]>([]);
@@ -33,7 +34,7 @@ export default function RecurringPage() {
     try {
       const supabase = createClient();
       if (!supabase) {
-        throw new Error('Failed to initialize Supabase client');
+        throw new Error(t('errors.supabaseInit'));
       }
 
       const { data, error: queryError } = await supabase
@@ -49,7 +50,7 @@ export default function RecurringPage() {
     } catch (err) {
       setRecurringInvoices([]);
       const errorMessage =
-        err instanceof Error ? err.message : 'Failed to load recurring invoices';
+        err instanceof Error ? err.message : t('errors.loadFailed');
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -57,14 +58,12 @@ export default function RecurringPage() {
   }
 
   const getFrequencyLabel = (frequency: string) => {
-    const labels: Record<string, string> = {
-      weekly: 'Weekly',
-      biweekly: 'Bi-Weekly',
-      monthly: 'Monthly',
-      quarterly: 'Quarterly',
-      yearly: 'Yearly',
-    };
-    return labels[frequency] || frequency;
+    const key = `frequency.${frequency}` as const;
+    try {
+      return t(key as any);
+    } catch {
+      return frequency;
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -98,7 +97,7 @@ export default function RecurringPage() {
         prev.map((item) => (item.id === invoice.id ? { ...item, status: nextStatus } : item))
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update recurring invoice');
+      setError(err instanceof Error ? err.message : t('errors.updateFailed'));
     }
   };
 
@@ -117,7 +116,7 @@ export default function RecurringPage() {
 
       setRecurringInvoices((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete recurring invoice');
+      setError(err instanceof Error ? err.message : t('errors.deleteFailed'));
     }
   };
 
@@ -133,12 +132,12 @@ export default function RecurringPage() {
     return (
       <div className="container mx-auto p-4">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+          <p className="text-red-600 dark:text-red-400">{t('errorPrefix')}: {error}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-2 text-sm text-blue-600 hover:underline"
           >
-            Try Again
+            {t('tryAgain')}
           </button>
         </div>
       </div>
@@ -150,30 +149,30 @@ export default function RecurringPage() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {t('recurringInvoices') || 'Recurring Invoices'}
+            {t('title')}
           </h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            {t('manageRecurring') || 'Manage your recurring invoices'}
+            {t('subtitle')}
           </p>
         </div>
         <button
           onClick={() => router.push('/dashboard/recurring/new')}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
         >
-          + {t('newRecurring') || 'New Recurring'}
+          {t('newRecurring')}
         </button>
       </div>
 
       {recurringInvoices.length === 0 ? (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
           <p className="text-gray-500 dark:text-gray-400 mb-4">
-            {t('noRecurring') || 'No recurring invoices yet'}
+            {t('empty.title')}
           </p>
           <button
             onClick={() => router.push('/dashboard/recurring/new')}
             className="text-blue-600 hover:underline"
           >
-            {t('createRecurring') || 'Create your first recurring invoice'}
+            {t('empty.cta')}
           </button>
         </div>
       ) : (
@@ -183,25 +182,25 @@ export default function RecurringPage() {
               <thead className="bg-gray-50 dark:bg-gray-900/50">
                 <tr>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
-                    {t('invoice') || 'Invoice'}
+                    {t('table.invoice')}
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
-                    {t('client') || 'Client'}
+                    {t('table.client')}
                   </th>
                   <th className="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400">
-                    {t('amount') || 'Amount'}
+                    {t('table.amount')}
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
-                    {t('frequency') || 'Frequency'}
+                    {t('table.frequency')}
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
-                    {t('nextDate') || 'Next Date'}
+                    {t('table.nextDate')}
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
-                    {t('status') || 'Status'}
+                    {t('table.status')}
                   </th>
                   <th className="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400">
-                    {t('actions') || 'Actions'}
+                    {t('table.actions')}
                   </th>
                 </tr>
               </thead>
@@ -212,7 +211,7 @@ export default function RecurringPage() {
                       {invoice.invoice_number}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
-                      {invoice.client_name || 'Unknown Client'}
+                      {invoice.client_name || t('unknownClient')}
                     </td>
                     <td className="px-6 py-4 text-sm text-right text-gray-900 dark:text-white">
                       {invoice.currency} {invoice.amount.toFixed(2)}
@@ -233,13 +232,13 @@ export default function RecurringPage() {
                         onClick={() => toggleStatus(invoice)}
                         className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm mr-3"
                       >
-                        {invoice.status === 'active' ? 'Pause' : 'Resume'}
+                        {invoice.status === 'active' ? t('actions.pause') : t('actions.resume')}
                       </button>
                       <button
                         onClick={() => deleteTemplate(invoice.id)}
                         className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-sm"
                       >
-                        Delete
+                        {t('actions.delete')}
                       </button>
                     </td>
                   </tr>

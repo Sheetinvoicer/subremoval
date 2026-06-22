@@ -4,6 +4,7 @@ import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useTranslations } from 'next-intl';
 
 const categories = [
   'Office Supplies',
@@ -24,16 +25,17 @@ interface ExpenseFormData {
   date: string;
 }
 
-function validateExpense(form: ExpenseFormData) {
-  if (!form.category.trim()) return 'Category is required.';
+function validateExpense(form: ExpenseFormData, t: ReturnType<typeof useTranslations>) {
+  if (!form.category.trim()) return t('errors.categoryRequired');
   const amount = Number(form.amount);
-  if (!Number.isFinite(amount) || amount <= 0) return 'Amount must be greater than 0.';
-  if (!form.currency.trim() || form.currency.trim().length !== 3) return 'Currency must be a 3-letter code.';
-  if (!form.date) return 'Date is required.';
+  if (!Number.isFinite(amount) || amount <= 0) return t('errors.amountInvalid');
+  if (!form.currency.trim() || form.currency.trim().length !== 3) return t('errors.currencyInvalid');
+  if (!form.date) return t('errors.dateRequired');
   return null;
 }
 
 export default function NewExpensePage() {
+  const t = useTranslations('expensesPage.new');
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +51,7 @@ export default function NewExpensePage() {
     event.preventDefault();
     setError(null);
 
-    const validationError = validateExpense(form);
+    const validationError = validateExpense(form, t);
     if (validationError) {
       setError(validationError);
       return;
@@ -57,14 +59,14 @@ export default function NewExpensePage() {
 
     const supabase = createClient();
     if (!supabase) {
-      setError('Failed to initialize Supabase client.');
+      setError(t('errors.supabaseInit'));
       return;
     }
 
     const { data: userData } = await supabase.auth.getUser();
     const user = userData?.user;
     if (!user) {
-      setError('You must be logged in to create expenses.');
+      setError(t('errors.loginRequired'));
       return;
     }
 
@@ -95,9 +97,9 @@ export default function NewExpensePage() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Add Expense</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
         <Link href="/dashboard/expenses" className="text-sm text-blue-600 hover:underline">
-          Back to expenses
+          {t('actions.backToExpenses')}
         </Link>
       </div>
 
@@ -105,7 +107,7 @@ export default function NewExpensePage() {
         {error && <div className="rounded-md bg-red-50 text-red-700 px-4 py-3 text-sm">{error}</div>}
 
         <div>
-          <label htmlFor="expense-category" className="block text-sm font-medium mb-1">Category</label>
+          <label htmlFor="expense-category" className="block text-sm font-medium mb-1">{t('fields.category')}</label>
           <select
             id="expense-category"
             name="category"
@@ -123,7 +125,7 @@ export default function NewExpensePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="expense-amount" className="block text-sm font-medium mb-1">Amount</label>
+            <label htmlFor="expense-amount" className="block text-sm font-medium mb-1">{t('fields.amount')}</label>
             <input
               id="expense-amount"
               name="amount"
@@ -136,7 +138,7 @@ export default function NewExpensePage() {
             />
           </div>
           <div>
-            <label htmlFor="expense-currency" className="block text-sm font-medium mb-1">Currency</label>
+            <label htmlFor="expense-currency" className="block text-sm font-medium mb-1">{t('fields.currency')}</label>
             <input
               id="expense-currency"
               name="currency"
@@ -150,7 +152,7 @@ export default function NewExpensePage() {
         </div>
 
         <div>
-          <label htmlFor="expense-date" className="block text-sm font-medium mb-1">Date</label>
+          <label htmlFor="expense-date" className="block text-sm font-medium mb-1">{t('fields.date')}</label>
           <input
             id="expense-date"
             name="date"
@@ -162,7 +164,7 @@ export default function NewExpensePage() {
         </div>
 
         <div>
-          <label htmlFor="expense-description" className="block text-sm font-medium mb-1">Description (optional)</label>
+          <label htmlFor="expense-description" className="block text-sm font-medium mb-1">{t('fields.descriptionOptional')}</label>
           <textarea
             id="expense-description"
             name="description"
@@ -174,10 +176,10 @@ export default function NewExpensePage() {
 
         <div className="flex justify-end gap-3">
           <button type="button" onClick={() => router.back()} className="px-4 py-2 border rounded">
-            Cancel
+            {t('actions.cancel')}
           </button>
           <button type="submit" disabled={submitting} className="px-4 py-2 rounded bg-blue-600 text-white disabled:opacity-60">
-            {submitting ? 'Creating...' : 'Create Expense'}
+            {submitting ? t('actions.creating') : t('actions.createExpense')}
           </button>
         </div>
       </form>
