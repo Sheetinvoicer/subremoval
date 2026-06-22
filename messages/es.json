@@ -194,7 +194,8 @@
         "taxRateInvalid": "La tasa de impuesto debe estar entre 0 y 100.",
         "loginToCreate": "Debes iniciar sesión para crear facturas.",
         "createFailed": "Error al crear la factura."
-      }
+      },
+      "csvUploadLabel": "Importar elementos desde CSV (opcional)"
     }
   },
   "clients": {

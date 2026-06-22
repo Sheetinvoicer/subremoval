@@ -193,7 +193,8 @@
         "taxRateInvalid": "Le taux de taxe doit être compris entre 0 et 100.",
         "loginToCreate": "Vous devez être connecté pour créer des factures.",
         "createFailed": "Échec de la création de la facture."
-      }
+      },
+      "csvUploadLabel": "Importer des éléments depuis un CSV (facultatif)"
     }
   },
   "clients": {

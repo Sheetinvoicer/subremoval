@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { generateInvoiceNumber } from '@/lib/invoiceNumber'
 import { useTranslations } from 'next-intl'
+import CSVUploader from '@/components/CSVUploader'
 
 interface ClientItem {
   id: string
@@ -202,6 +203,19 @@ export default function NewInvoicePage() {
     return <div className="p-6">{t('new.loading')}</div>
   }
 
+  const handleCSVData = (data: Record<string, string>[]) => {
+    const parsed = data
+      .map((row) => ({
+        description: row['description'] || row['Description'] || row['name'] || row['Name'] || '',
+        quantity: Number(row['quantity'] || row['Quantity'] || row['qty'] || row['Qty'] || 1),
+        price: Number(row['price'] || row['Price'] || row['rate'] || row['Rate'] || row['amount'] || row['Amount'] || 0),
+      }))
+      .filter((item) => item.description.trim() !== '')
+    if (parsed.length > 0) {
+      setItems(parsed)
+    }
+  }
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
@@ -209,6 +223,11 @@ export default function NewInvoicePage() {
         <Link href="/dashboard/invoices" className="text-sm text-blue-600 hover:underline">
           {t('new.backToInvoices')}
         </Link>
+      </div>
+
+      <div className="mb-6">
+        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('new.csvUploadLabel')}</p>
+        <CSVUploader onDataLoaded={handleCSVData} />
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">

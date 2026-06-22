@@ -193,7 +193,8 @@
         "taxRateInvalid": "Tax rate must be between 0 and 100.",
         "loginToCreate": "You must be logged in to create invoices.",
         "createFailed": "Failed to create invoice."
-      }
+      },
+      "csvUploadLabel": "Import items from CSV (optional)"
     }
   },
   "clients": {

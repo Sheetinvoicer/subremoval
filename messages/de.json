@@ -96,6 +96,64 @@
     "pagination": {
       "prev": "Zurück",
       "next": "Weiter"
+    },
+    "new": {
+      "newInvoice": "Create Invoice",
+      "createInvoice": "Create Invoice",
+      "backToInvoices": "Back to invoices",
+      "client": "Client",
+      "selectClient": "Select a client",
+      "selectClientPlaceholder": "Select a client",
+      "project": "Project",
+      "noProject": "No project",
+      "invoiceDate": "Invoice Date",
+      "dueDate": "Due date",
+      "items": "Line items",
+      "description": "Description",
+      "quantity": "Quantity",
+      "rate": "Rate",
+      "amount": "Amount",
+      "subtotal": "Subtotal",
+      "tax": "Tax",
+      "discount": "Discount",
+      "total": "Total",
+      "currency": "Currency",
+      "notes": "Notes",
+      "saveDraft": "Save Draft",
+      "sendInvoice": "Send Invoice",
+      "cancel": "Cancel",
+      "addItem": "+ Add item",
+      "removeItem": "Remove",
+      "noItems": "No items added yet.",
+      "itemDescription": "Description",
+      "itemQuantity": "Quantity",
+      "itemRate": "Price",
+      "itemAmount": "Amount",
+      "taxRate": "Tax rate (%)",
+      "discountPercent": "Discount (%)",
+      "subtotalLabel": "Subtotal:",
+      "taxLabel": "Tax:",
+      "discountLabel": "Discount:",
+      "totalLabel": "Total:",
+      "creating": "Creating...",
+      "loading": "Loading...",
+      "successCreated": "Invoice {number} created successfully.",
+      "errors": {
+        "supabaseInit": "Failed to initialize Supabase client.",
+        "loginRequired": "Please log in to create invoices.",
+        "loadDependencies": "Failed to load invoice dependencies",
+        "selectClient": "Please select a client.",
+        "dueDateRequired": "Due date is required.",
+        "itemRequired": "At least one invoice item is required.",
+        "itemDescriptionRequired": "Each line item must have a description.",
+        "itemQuantityInvalid": "Item quantity must be greater than 0.",
+        "itemPriceNegative": "Item price cannot be negative.",
+        "subtotalInvalid": "Invoice subtotal must be greater than 0.",
+        "taxRateInvalid": "Tax rate must be between 0 and 100.",
+        "loginToCreate": "You must be logged in to create invoices.",
+        "createFailed": "Failed to create invoice."
+      },
+      "csvUploadLabel": "Elemente aus CSV importieren (optional)"
     }
   },
   "clients": {
@@ -693,5 +751,13 @@
       "loadFailed": "Berichte konnten nicht geladen werden",
       "insightsFailed": "Analysen konnten nicht generiert werden"
     }
+  },
+  "csvUploader": {
+    "clickToUpload": "Klicken Sie, um eine CSV-Datei hochzuladen",
+    "supports": "Unterstützt .csv-Dateien mit Kopfzeilen",
+    "processing": "Verarbeitung...",
+    "loadedRows": "{count} Zeilen geladen",
+    "noData": "Keine Daten in der CSV-Datei gefunden",
+    "parseError": "Fehler beim Parsen der CSV-Datei: {message}"
   }
 }
