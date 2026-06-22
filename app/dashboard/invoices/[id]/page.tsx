@@ -13,6 +13,7 @@ import {
   sanitizeInvoiceTemplateSettings,
 } from '@/lib/invoiceTemplate';
 import { formatMinutesAsHoursMinutes } from '@/lib/timeTracking';
+import { useTranslations } from 'next-intl';
 
 interface Invoice {
   id: string
@@ -54,6 +55,7 @@ function getStatusColor(status: string): string {
 }
 
 export default function InvoiceDetailPage() {
+  const t = useTranslations('invoices')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [invoice, setInvoice] = useState<Invoice | null>(null)
@@ -71,14 +73,14 @@ export default function InvoiceDetailPage() {
       const supabase = createClient()
 
       if (!supabase) {
-        setError('Failed to connect to database')
+        setError(t('detail.failedConnect'))
         return
       }
 
       const { data: userData } = await supabase.auth.getUser()
       const user = userData?.user
       if (!user) {
-        setError('Please login to view invoice details.')
+        setError(t('detail.loginRequired'))
         setLoading(false)
         return
       }
@@ -147,7 +149,7 @@ export default function InvoiceDetailPage() {
     if (!invoice) return
     const supabase = createClient()
     if (!supabase) {
-      toast.error('Failed to initialize Supabase client.')
+      toast.error(t('detail.supabaseInit'))
       return
     }
 
@@ -165,7 +167,7 @@ export default function InvoiceDetailPage() {
     }
 
     setInvoice({ ...invoice, status })
-    toast.success(`Invoice status updated to ${status}.`)
+    toast.success(t('detail.statusUpdated', { status: t(`status.${status}`) }))
   }
 
   const handleSendInvoice = async () => {
@@ -180,14 +182,14 @@ export default function InvoiceDetailPage() {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to send invoice');
+        throw new Error(t('detail.failedSend'));
       }
 
-      toast.success('Invoice sent successfully!');
+      toast.success(t('detail.sendSuccess'));
       
       await updateStatus('sent')
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to send invoice'
+      const errorMessage = err instanceof Error ? err.message : t('detail.failedSend')
       toast.error(errorMessage)
     } finally {
       setSending(false)
@@ -206,12 +208,12 @@ export default function InvoiceDetailPage() {
     return (
       <div className="container mx-auto p-4">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+          <p className="text-red-600 dark:text-red-400">{t('detail.errorPrefix')} {error}</p>
           <button
             onClick={() => router.back()}
             className="mt-2 text-sm text-blue-600 hover:underline"
           >
-            Go Back
+            {t('detail.goBack')}
           </button>
         </div>
       </div>
@@ -222,12 +224,12 @@ export default function InvoiceDetailPage() {
     return (
       <div className="container mx-auto p-4">
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-          <p className="text-yellow-600 dark:text-yellow-400">Invoice not found</p>
+          <p className="text-yellow-600 dark:text-yellow-400">{t('detail.invoiceNotFound')}</p>
           <Link
             href="/dashboard/invoices"
             className="mt-2 inline-block text-sm text-blue-600 hover:underline"
           >
-            Back to Invoices
+            {t('detail.backToInvoices')}
           </Link>
         </div>
       </div>
@@ -242,10 +244,10 @@ export default function InvoiceDetailPage() {
         <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Invoice #{invoice.invoice_number}
+              {t('detail.invoiceNumber', { number: invoice.invoice_number })}
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1">
-              Created: {new Date(invoice.created_at).toLocaleDateString()}
+              {t('detail.createdLabel')} {new Date(invoice.created_at).toLocaleDateString()}
             </p>
           </div>
           {templateSettings.fields.showStatusBadge && (
@@ -253,7 +255,7 @@ export default function InvoiceDetailPage() {
               className="px-3 py-1 rounded-full text-xs text-white"
               style={{ backgroundColor: sanitizeAccentColor(templateSettings.accentColor) }}
             >
-              {templateSettings.template.toUpperCase()} TEMPLATE
+              {templateSettings.template.toUpperCase()} {t('detail.templateSuffix')}
             </span>
           )}
           <div className="flex flex-wrap gap-2">
@@ -264,9 +266,9 @@ export default function InvoiceDetailPage() {
                   disabled={sending}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50"
                 >
-                  {sending ? 'Sending...' : 'Send Invoice'}
+                  {sending ? t('detail.sending') : t('detail.sendInvoice')}
                 </button>
-                <Link href={`/dashboard/invoices/${invoice.id}/edit`} className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Edit</Link>
+                <Link href={`/dashboard/invoices/${invoice.id}/edit`} className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">{t('detail.edit')}</Link>
               </>
             )}
             {['draft', 'sent', 'paid', 'overdue'].map((statusOption) => (
@@ -276,14 +278,14 @@ export default function InvoiceDetailPage() {
                 disabled={updatingStatus || invoice.status === statusOption}
                 className="px-3 py-2 border rounded-lg text-xs disabled:opacity-50"
               >
-                {statusOption}
+                {t(`status.${statusOption}`)}
               </button>
             ))}
             <button
               onClick={() => router.back()}
               className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
             >
-              Back
+              {t('detail.back')}
             </button>
           </div>
         </div>
@@ -291,26 +293,26 @@ export default function InvoiceDetailPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {templateSettings.fields.showClientDetails && (
             <div>
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Client</h3>
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('detail.client')}</h3>
               <p className="text-gray-900 dark:text-white">{invoice.clients?.name || '-'}</p>
               <p className="text-gray-600 dark:text-gray-300">{invoice.clients?.email || '-'}</p>
             </div>
           )}
           <div>
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Amount</h3>
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('detail.amount')}</h3>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
               <CurrencyDisplay amount={invoice.total} sourceCurrency={invoice.currency} displayCurrency={displayCurrency} />
             </p>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</h3>
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('detail.status')}</h3>
             <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(invoice.status)}`}>
-              {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+              {t(`status.${invoice.status}`)}
             </span>
           </div>
           {templateSettings.fields.showDueDate && (
             <div>
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Due Date</h3>
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('detail.dueDate')}</h3>
               <p className="text-gray-900 dark:text-white">
                 {new Date(invoice.due_date).toLocaleDateString()}
               </p>
@@ -320,15 +322,15 @@ export default function InvoiceDetailPage() {
 
         {invoice.items && invoice.items.length > 0 && (
           <div className="mt-6">
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Items</h3>
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{t('detail.items')}</h3>
             <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-gray-900/50">
                   <tr>
-                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-400">Description</th>
-                    <th className="px-4 py-2 text-right text-sm font-medium text-gray-500 dark:text-gray-400">Quantity</th>
-                    <th className="px-4 py-2 text-right text-sm font-medium text-gray-500 dark:text-gray-400">Price</th>
-                    <th className="px-4 py-2 text-right text-sm font-medium text-gray-500 dark:text-gray-400">Total</th>
+                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-500 dark:text-gray-400">{t('detail.description')}</th>
+                    <th className="px-4 py-2 text-right text-sm font-medium text-gray-500 dark:text-gray-400">{t('detail.quantity')}</th>
+                    <th className="px-4 py-2 text-right text-sm font-medium text-gray-500 dark:text-gray-400">{t('detail.price')}</th>
+                    <th className="px-4 py-2 text-right text-sm font-medium text-gray-500 dark:text-gray-400">{t('detail.total')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -349,7 +351,7 @@ export default function InvoiceDetailPage() {
                   <tfoot className="bg-gray-50 dark:bg-gray-900/50">
                     <tr>
                       <td colSpan={3} className="px-4 py-2 text-right font-medium text-gray-700 dark:text-gray-300">
-                        Tax ({invoice.tax_rate_percentage}%)
+                        {t('detail.tax', { rate: invoice.tax_rate_percentage })}
                       </td>
                       <td className="px-4 py-2 text-right font-medium text-gray-900 dark:text-white">
                         <CurrencyDisplay amount={invoice.tax_amount || 0} sourceCurrency={invoice.currency} displayCurrency={displayCurrency} />
@@ -357,7 +359,7 @@ export default function InvoiceDetailPage() {
                     </tr>
                     <tr>
                       <td colSpan={3} className="px-4 py-2 text-right font-bold text-gray-900 dark:text-white">
-                        Total
+                        {t('detail.total')}
                       </td>
                       <td className="px-4 py-2 text-right font-bold text-gray-900 dark:text-white">
                         <CurrencyDisplay
@@ -376,13 +378,13 @@ export default function InvoiceDetailPage() {
 
         <div className="mt-6">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Linked Time Entries</h3>
-            <Link href="/dashboard/time" className="text-sm text-blue-600 hover:underline">Manage time entries</Link>
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('detail.linkedTimeEntries')}</h3>
+            <Link href="/dashboard/time" className="text-sm text-blue-600 hover:underline">{t('detail.manageTimeEntries')}</Link>
           </div>
           <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-            <p className="text-sm text-gray-500 mb-3">Total tracked: <span className="font-semibold text-gray-900 dark:text-white">{formatMinutesAsHoursMinutes(totalTrackedMinutes)}</span></p>
+            <p className="text-sm text-gray-500 mb-3">{t('detail.totalTracked')} <span className="font-semibold text-gray-900 dark:text-white">{formatMinutesAsHoursMinutes(totalTrackedMinutes)}</span></p>
             {timeEntries.length === 0 ? (
-              <p className="text-sm text-gray-500">No time entries linked to this invoice yet.</p>
+              <p className="text-sm text-gray-500">{t('detail.noTimeEntries')}</p>
             ) : (
               <div className="space-y-2">
                 {timeEntries.map((entry) => (
@@ -398,7 +400,7 @@ export default function InvoiceDetailPage() {
 
         {invoice.notes && templateSettings.fields.showNotes && (
           <div className="mt-6">
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Notes</h3>
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('detail.notes')}</h3>
             <p className="text-gray-700 dark:text-gray-300 mt-1 whitespace-pre-wrap">{invoice.notes}</p>
           </div>
         )}

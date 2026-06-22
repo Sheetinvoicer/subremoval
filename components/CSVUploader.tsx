@@ -4,6 +4,7 @@ import type { ChangeEvent } from 'react'
 import { useState } from 'react'
 import Papa from 'papaparse'
 import toast from 'react-hot-toast'
+import { useTranslations } from 'next-intl'
 
 type CsvRow = Record<string, string>
 
@@ -12,6 +13,7 @@ type Props = {
 }
 
 export default function CSVUploader({ onDataLoaded }: Props) {
+  const t = useTranslations('csvUploader')
   const [loading, setLoading] = useState(false)
   const [fileName, setFileName] = useState('')
 
@@ -31,14 +33,14 @@ export default function CSVUploader({ onDataLoaded }: Props) {
       complete: (results) => {
         if (results.data && results.data.length > 0) {
           onDataLoaded(results.data, results.meta.fields)
-          toast.success(`Loaded ${results.data.length} rows`)
+          toast.success(t('loadedRows', { count: results.data.length }))
         } else {
-          toast.error('No data found in CSV')
+          toast.error(t('noData'))
         }
         setLoading(false)
       },
       error: (error) => {
-        toast.error('Error parsing CSV: ' + error.message)
+        toast.error(t('parseError', { message: error.message }))
         setLoading(false)
       }
     })
@@ -59,13 +61,13 @@ export default function CSVUploader({ onDataLoaded }: Props) {
       >
         <span className="text-5xl mb-3">📊</span>
         <span className="text-gray-700 font-medium mb-1">
-          {fileName || 'Click to upload CSV file'}
+          {fileName || t('clickToUpload')}
         </span>
         <span className="text-gray-500 text-sm">
-          Supports .csv files with headers
+          {t('supports')}
         </span>
         {loading && (
-          <div className="mt-3 text-blue-500">Processing...</div>
+          <div className="mt-3 text-blue-500">{t('processing')}</div>
         )}
       </label>
     </div>
