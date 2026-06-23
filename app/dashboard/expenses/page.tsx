@@ -2,7 +2,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
 interface Expense {
@@ -136,12 +135,9 @@ export default function ExpensesPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {expenses.map((expense, idx) => (
-              <motion.div
+            {expenses.map((expense) => (
+              <div
                 key={expense.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 }}
                 className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6"
               >
                 <div className="flex items-start justify-between mb-4">
@@ -164,7 +160,7 @@ export default function ExpensesPage() {
                 <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
                   {new Date(expense.date).toLocaleDateString()}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </>

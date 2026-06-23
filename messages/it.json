@@ -1,4 +1,17 @@
 {
+  "subscription": {
+    "title": "Abbonamento",
+    "subtitle": "Gestisci il tuo piano e la fatturazione",
+    "manageTitle": "Gestisci abbonamento",
+    "manageDescription": "Puoi annullare il tuo abbonamento in qualsiasi momento. Manterrai l'accesso fino alla fine del periodo di fatturazione corrente.",
+    "cancelButton": "Annulla abbonamento",
+    "canceling": "Annullamento…",
+    "cancelConfirm": "Sei sicuro di voler annullare il tuo abbonamento?",
+    "cancelSuccess": "Il tuo abbonamento è stato annullato e terminerà al termine del periodo di fatturazione corrente.",
+    "cancelError": "Impossibile annullare l'abbonamento",
+    "cancelScheduled": "Il tuo abbonamento verrà annullato al termine del periodo di fatturazione corrente.",
+    "cancelScheduledUntil": "Il tuo abbonamento rimarrà attivo fino al {date}."
+  },
   "nav": {
     "dashboard": "Dashboard",
     "invoices": "Fatture",

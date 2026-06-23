@@ -1,4 +1,17 @@
 {
+  "subscription": {
+    "title": "Abonelik",
+    "subtitle": "Planınızı ve faturalandırmanızı yönetin",
+    "manageTitle": "Aboneliği yönet",
+    "manageDescription": "Aboneliğinizi istediğiniz zaman iptal edebilirsiniz. Mevcut faturalandırma döneminin sonuna kadar erişiminiz devam eder.",
+    "cancelButton": "Aboneliği iptal et",
+    "canceling": "İptal ediliyor…",
+    "cancelConfirm": "Aboneliğinizi iptal etmek istediğinizden emin misiniz?",
+    "cancelSuccess": "Aboneliğiniz iptal edildi ve mevcut faturalandırma döneminin sonunda sona erecek.",
+    "cancelError": "Abonelik iptal edilemedi",
+    "cancelScheduled": "Aboneliğiniz mevcut faturalandırma döneminin sonunda iptal edilecek şekilde planlandı.",
+    "cancelScheduledUntil": "Aboneliğiniz {date} tarihine kadar etkin kalacak."
+  },
   "nav": {
     "dashboard": "Gösterge Paneli",
     "invoices": "Faturalar",

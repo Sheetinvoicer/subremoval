@@ -1,4 +1,17 @@
 {
+  "subscription": {
+    "title": "Abonnement",
+    "subtitle": "Gérez votre forfait et votre facturation",
+    "manageTitle": "Gérer l'abonnement",
+    "manageDescription": "Vous pouvez annuler votre abonnement à tout moment. Vous conserverez l'accès jusqu'à la fin de la période de facturation en cours.",
+    "cancelButton": "Annuler l'abonnement",
+    "canceling": "Annulation…",
+    "cancelConfirm": "Êtes-vous sûr de vouloir annuler votre abonnement ?",
+    "cancelSuccess": "Votre abonnement a été annulé et prendra fin à la clôture de la période de facturation en cours.",
+    "cancelError": "Échec de l'annulation de l'abonnement",
+    "cancelScheduled": "Votre abonnement sera annulé à la fin de la période de facturation en cours.",
+    "cancelScheduledUntil": "Votre abonnement restera actif jusqu'au {date}."
+  },
   "nav": {
     "dashboard": "Tableau de bord",
     "invoices": "Factures",

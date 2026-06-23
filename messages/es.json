@@ -1,4 +1,17 @@
 {
+  "subscription": {
+    "title": "Suscripción",
+    "subtitle": "Gestiona tu plan y facturación",
+    "manageTitle": "Gestionar suscripción",
+    "manageDescription": "Puedes cancelar tu suscripción en cualquier momento. Mantendrás el acceso hasta el final del periodo de facturación actual.",
+    "cancelButton": "Cancelar suscripción",
+    "canceling": "Cancelando…",
+    "cancelConfirm": "¿Seguro que quieres cancelar tu suscripción?",
+    "cancelSuccess": "Tu suscripción ha sido cancelada y finalizará al término del periodo de facturación actual.",
+    "cancelError": "No se pudo cancelar la suscripción",
+    "cancelScheduled": "Tu suscripción está programada para cancelarse al final del periodo de facturación actual.",
+    "cancelScheduledUntil": "Tu suscripción permanecerá activa hasta el {date}."
+  },
   "nav": {
     "dashboard": "Panel",
     "invoices": "Facturas",

@@ -1,14 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import Sidebar from '@/components/Sidebar'
 import DashboardHeader from '@/components/DashboardHeader'
 import Footer from '@/components/Footer'
 import SearchBar from '@/components/SearchBar'
-import AIAssistant from '@/components/AIAssistant'
-import OnboardingTour from '@/components/OnboardingTour'
 import { Toaster } from 'react-hot-toast'
 import { useLocale } from 'next-intl'
+
+// Lazy-load non-critical widgets so they don't block dashboard page transitions
+const AIAssistant = dynamic(() => import('@/components/AIAssistant'), { ssr: false })
+const OnboardingTour = dynamic(() => import('@/components/OnboardingTour'), { ssr: false })
 
 export default function DashboardLayout({
   children,

@@ -1,9 +1,7 @@
 'use client';
-'use client';
 import React from 'react';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 
 export default function RemindersPage() {
   const [reminders, setReminders] = useState({

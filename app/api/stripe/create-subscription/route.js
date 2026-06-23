@@ -26,7 +26,7 @@ function resolvePriceId(planName) {
 export async function POST(request) {
   try {
     const body = await request.json().catch(() => ({}))
-    const { plan, priceId: rawPriceId, customerEmail, successUrl, cancelUrl } = body || {}
+    const { plan, priceId: rawPriceId, customerEmail, userId, successUrl, cancelUrl } = body || {}
 
     const priceId = rawPriceId || resolvePriceId(plan)
 
@@ -58,6 +58,15 @@ export async function POST(request) {
       ],
       metadata: {
         plan: plan || '',
+        userId: userId || '',
+      },
+      // Propagate identifiers onto the created subscription so webhook events
+      // (renewals, cancellations) can be linked back to the user.
+      subscription_data: {
+        metadata: {
+          plan: plan || '',
+          userId: userId || '',
+        },
       },
     })
 

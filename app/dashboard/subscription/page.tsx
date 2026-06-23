@@ -1,8 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 interface Plan {
   name: string;
@@ -14,6 +13,7 @@ interface Plan {
 
 interface User {
   id: string;
+  email?: string;
 }
 
 const plans: Plan[] = [
@@ -23,14 +23,45 @@ const plans: Plan[] = [
 ];
 
 export default function SubscriptionPage() {
+  const t = useTranslations('subscription');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
   const [upgrading, setUpgrading] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [cancelAtPeriodEnd, setCancelAtPeriodEnd] = useState<boolean>(false);
+  const [periodEnd, setPeriodEnd] = useState<string | null>(null);
+  const [canceling, setCanceling] = useState(false);
+  const [cancelMessage, setCancelMessage] = useState<string | null>(null);
 
   useEffect(() => {
     loadSubscription();
   }, []);
+
+  async function handleCancel() {
+    if (!window.confirm(t('cancelConfirm'))) return;
+    setCancelMessage(null);
+    setError(null);
+    setCanceling(true);
+    try {
+      const res = await fetch('/api/stripe/cancel-subscription', { method: 'POST' });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setCancelAtPeriodEnd(true);
+        if (data.currentPeriodEnd) {
+          setPeriodEnd(data.currentPeriodEnd);
+        }
+        setCancelMessage(t('cancelSuccess'));
+      } else {
+        setError(data.error || t('cancelError'));
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('cancelError'));
+    } finally {
+      setCanceling(false);
+    }
+  }
 
   async function handleUpgrade(planName: string) {
     if (planName === 'Free' || currentPlan === planName) return;
@@ -42,6 +73,8 @@ export default function SubscriptionPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           plan: planName,
+          userId: userId || undefined,
+          customerEmail: userEmail || undefined,
           successUrl: window.location.origin + '/dashboard?subscription=success',
           cancelUrl: window.location.href,
         }),
@@ -79,18 +112,24 @@ export default function SubscriptionPage() {
 
       if (data?.user) {
         const user: User = data.user;
+        setUserId(user.id);
+        setUserEmail(data.user.email ?? null);
         const { data: subscriptionData, error: subscriptionError } = await supabase
           .from('subscriptions')
-          .select('plan')
+          .select('plan, cancel_at_period_end, current_period_end')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
-        if (subscriptionError) {
+        // A missing subscription row is expected for users on the Free plan and
+        // must NOT be treated as a fatal error (which would hide all plans).
+        if (subscriptionError && subscriptionError.code !== 'PGRST116') {
           throw subscriptionError;
         }
 
         if (subscriptionData) {
           setCurrentPlan(subscriptionData.plan);
+          setCancelAtPeriodEnd(Boolean(subscriptionData.cancel_at_period_end));
+          setPeriodEnd(subscriptionData.current_period_end ?? null);
         }
       }
     } catch (err) {
@@ -109,10 +148,15 @@ export default function SubscriptionPage() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="container mx-auto p-4">
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+  return (
+    <div className="p-6 md:p-8">
+      <div className="mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Subscription</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-2">Manage your plan and billing</p>
+      </div>
+
+      {error && (
+        <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
           <p className="text-red-600 dark:text-red-400">Error: {error}</p>
           <button
             onClick={() => window.location.reload()}
@@ -121,26 +165,13 @@ export default function SubscriptionPage() {
             Try Again
           </button>
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="p-6 md:p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Subscription</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">Manage your plan and billing</p>
-      </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {plans.map((plan, idx) => (
-          <motion.div
+        {plans.map((plan) => (
+          <div
             key={plan.name}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.1 }}
-            whileHover={{ y: -5 }}
-            className={`relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 p-6 ${
+            className={`relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 p-6 transition-transform duration-150 hover:-translate-y-1 ${
               currentPlan === plan.name
                 ? 'border-blue-500 dark:border-blue-400'
                 : 'border-gray-200 dark:border-gray-700'
@@ -182,9 +213,38 @@ export default function SubscriptionPage() {
                     ? 'Redirecting…'
                     : `Upgrade to ${plan.name}`}
             </button>
-          </motion.div>
+          </div>
         ))}
       </div>
+
+      {currentPlan && currentPlan !== 'Free' && (
+        <div className="mt-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            {t('manageTitle')}
+          </h2>
+          {cancelAtPeriodEnd ? (
+            <p className="text-gray-600 dark:text-gray-300">
+              {periodEnd
+                ? t('cancelScheduledUntil', { date: periodEnd })
+                : t('cancelScheduled')}
+            </p>
+          ) : (
+            <>
+              <p className="text-gray-600 dark:text-gray-300 mb-4">{t('manageDescription')}</p>
+              <button
+                onClick={handleCancel}
+                disabled={canceling}
+                className="px-5 py-3 rounded-xl font-medium bg-red-600 hover:bg-red-700 text-white transition-all disabled:opacity-60"
+              >
+                {canceling ? t('canceling') : t('cancelButton')}
+              </button>
+            </>
+          )}
+          {cancelMessage && (
+            <p className="mt-3 text-sm text-green-600 dark:text-green-400">{cancelMessage}</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

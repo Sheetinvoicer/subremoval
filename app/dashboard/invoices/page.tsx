@@ -2,7 +2,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import toast from 'react-hot-toast';
 import Card from '@/components/ui/Card';
@@ -377,13 +376,8 @@ export default function InvoicesPage() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {pagedInvoices.map((invoice, idx) => (
-            <motion.div
-              key={invoice.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.05 }}
-            >
+          {pagedInvoices.map((invoice) => (
+            <div key={invoice.id}>
               <Card id={`invoice-card-${invoice.id}`} className="group h-full">
                 <div className="mb-3 flex items-center justify-between">
                   <label className="inline-flex items-center gap-2 text-sm text-text-secondary">
@@ -457,7 +451,7 @@ export default function InvoicesPage() {
                   </button>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
       )}

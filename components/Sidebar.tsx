@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import {
   Menu,
   X,
@@ -48,7 +48,7 @@ function getInitials(name?: string | null, email?: string | null): string {
   return (parts[0][0] + parts[1][0]).toUpperCase();
 }
 
-export default function Sidebar() {
+function Sidebar() {
   const t = useTranslations('sidebar');
   const locale = useLocale();
   const isRtl = locale === 'ar';
@@ -129,7 +129,7 @@ export default function Sidebar() {
         <button
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle navigation"
-          className={`fixed top-4 z-50 bg-accent text-white p-2 rounded-button shadow-glow transition-all duration-250 hover:bg-accent/90 ${
+          className={`fixed top-4 z-50 bg-accent text-white p-2 rounded-button shadow-glow transition-colors duration-150 hover:bg-accent/90 ${
             isRtl ? 'right-4' : 'left-4'
           }`}
         >
@@ -174,7 +174,7 @@ export default function Sidebar() {
                   key={item.key}
                   href={item.href}
                   onClick={() => isMobile && setIsOpen(false)}
-                  className={`group relative flex items-center gap-3 px-4 py-2.5 rounded-button text-sm transition-all duration-250 ${
+                  className={`group relative flex items-center gap-3 px-4 py-2.5 rounded-button text-sm transition-colors duration-150 ${
                     isRtl ? 'flex-row-reverse text-right' : ''
                   } ${
                     active
@@ -184,7 +184,7 @@ export default function Sidebar() {
                 >
                   {/* Left accent border (active or hover) */}
                   <span
-                    className={`absolute top-1.5 bottom-1.5 w-0.5 rounded-full transition-all duration-250 ${
+                    className={`absolute top-1.5 bottom-1.5 w-0.5 rounded-full transition-opacity duration-150 ${
                       isRtl ? 'right-0' : 'left-0'
                     } ${
                       active
@@ -231,7 +231,7 @@ export default function Sidebar() {
                 href="/dashboard/settings"
                 onClick={() => isMobile && setIsOpen(false)}
                 aria-label={t('items.settings')}
-                className="p-2 rounded-button text-text-secondary hover:text-white hover:bg-white/5 transition-all duration-250"
+                className="p-2 rounded-button text-text-secondary hover:text-white hover:bg-white/5 transition-colors duration-150"
               >
                 <Settings size={18} />
               </Link>
@@ -239,7 +239,7 @@ export default function Sidebar() {
 
             <button
               onClick={handleLogout}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-button text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all duration-250 ${
+              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-button text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors duration-150 ${
                 isRtl ? 'flex-row-reverse text-right' : ''
               }`}
             >
@@ -255,3 +255,5 @@ export default function Sidebar() {
     </>
   );
 }
+
+export default memo(Sidebar);

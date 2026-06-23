@@ -1,4 +1,17 @@
 {
+  "subscription": {
+    "title": "Abonnement",
+    "subtitle": "Verwalten Sie Ihren Tarif und Ihre Abrechnung",
+    "manageTitle": "Abonnement verwalten",
+    "manageDescription": "Sie können Ihr Abonnement jederzeit kündigen. Sie behalten den Zugriff bis zum Ende des aktuellen Abrechnungszeitraums.",
+    "cancelButton": "Abonnement kündigen",
+    "canceling": "Wird gekündigt…",
+    "cancelConfirm": "Möchten Sie Ihr Abonnement wirklich kündigen?",
+    "cancelSuccess": "Ihr Abonnement wurde gekündigt und endet am Ende des aktuellen Abrechnungszeitraums.",
+    "cancelError": "Kündigung des Abonnements fehlgeschlagen",
+    "cancelScheduled": "Ihr Abonnement wird am Ende des aktuellen Abrechnungszeitraums gekündigt.",
+    "cancelScheduledUntil": "Ihr Abonnement bleibt bis zum {date} aktiv."
+  },
   "nav": {
     "dashboard": "Dashboard",
     "invoices": "Rechnungen",

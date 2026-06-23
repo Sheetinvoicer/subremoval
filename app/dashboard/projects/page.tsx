@@ -3,7 +3,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
 interface Project {
@@ -111,14 +110,10 @@ export default function ProjectsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project, idx) => (
-          <motion.div
+        {projects.map((project) => (
+          <div
             key={project.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.05 }}
-            whileHover={{ y: -5 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6"
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-transform duration-150 hover:-translate-y-1"
           >
             <div className="flex justify-between items-start mb-3">
               <span className="text-xs px-2 py-1 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
@@ -131,7 +126,7 @@ export default function ProjectsPage() {
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{project.name}</h3>
             {project.description && <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-3">{project.description}</p>}
             <p className="text-sm text-gray-500 dark:text-gray-400">{t('card.client')}: {project.clients?.name || t('card.unassigned')}</p>
-          </motion.div>
+          </div>
         ))}
       </div>
     </div>

@@ -1,4 +1,17 @@
 {
+  "subscription": {
+    "title": "Assinatura",
+    "subtitle": "Gerencie seu plano e faturamento",
+    "manageTitle": "Gerenciar assinatura",
+    "manageDescription": "Você pode cancelar sua assinatura a qualquer momento. Você manterá o acesso até o fim do período de faturamento atual.",
+    "cancelButton": "Cancelar assinatura",
+    "canceling": "Cancelando…",
+    "cancelConfirm": "Tem certeza de que deseja cancelar sua assinatura?",
+    "cancelSuccess": "Sua assinatura foi cancelada e terminará no fim do período de faturamento atual.",
+    "cancelError": "Falha ao cancelar a assinatura",
+    "cancelScheduled": "Sua assinatura está agendada para ser cancelada no fim do período de faturamento atual.",
+    "cancelScheduledUntil": "Sua assinatura permanecerá ativa até {date}."
+  },
   "nav": {
     "dashboard": "Painel",
     "invoices": "Faturas",

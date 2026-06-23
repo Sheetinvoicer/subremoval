@@ -1,4 +1,17 @@
 {
+  "subscription": {
+    "title": "Subscription",
+    "subtitle": "Manage your plan and billing",
+    "manageTitle": "Manage subscription",
+    "manageDescription": "You can cancel your subscription at any time. You will keep access until the end of your current billing period.",
+    "cancelButton": "Cancel Subscription",
+    "canceling": "Canceling…",
+    "cancelConfirm": "Are you sure you want to cancel your subscription?",
+    "cancelSuccess": "Your subscription has been canceled and will end at the close of the current billing period.",
+    "cancelError": "Failed to cancel subscription",
+    "cancelScheduled": "Your subscription is scheduled to be canceled at the end of the current billing period.",
+    "cancelScheduledUntil": "Your subscription will remain active until {date}."
+  },
   "nav": {
     "dashboard": "Dashboard",
     "invoices": "Invoices",

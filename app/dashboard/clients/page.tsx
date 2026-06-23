@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
-import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
 interface Client {
@@ -104,14 +103,10 @@ export default function ClientsPage() {
         <p className="text-gray-500 dark:text-gray-400">{t('noClients')}</p>
       ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {clients.map((client, idx) => (
-          <motion.div
+        {clients.map((client) => (
+          <div
             key={client.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.05 }}
-            whileHover={{ y: -5 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6"
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-transform duration-150 hover:-translate-y-1"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="text-4xl">👤</div>
@@ -123,7 +118,7 @@ export default function ClientsPage() {
             <p className="text-gray-500 dark:text-gray-400 mb-1">{client.email}</p>
             {client.phone && <p className="text-gray-500 dark:text-gray-400 text-sm">{client.phone}</p>}
             {client.country && <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">📍 {client.country}</p>}
-          </motion.div>
+          </div>
         ))}
       </div>
       )}
