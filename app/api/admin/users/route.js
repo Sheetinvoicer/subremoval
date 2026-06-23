@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { requireRole, ROLES, normalizeRole } from '@/lib/auth/roles'
+import { requireRole, ROLES, normalizeRole } from '@/lib/auth/roles-server'
 
 export const dynamic = 'force-dynamic'
 

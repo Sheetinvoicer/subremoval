@@ -22,7 +22,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'invoiceId or invoiceIds is required' }, { status: 400 })
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
     const resend = new Resend(resendApiKey)
     const results = []

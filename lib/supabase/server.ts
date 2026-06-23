@@ -1,57 +1,50 @@
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { createServerClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { cookies } from 'next/headers'
 
-export function createClient(accessToken?: string) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  
-  if (!supabaseUrl || !supabaseKey) {
-    console.warn('Missing Supabase credentials, using mock client');
-    // Return mock client for build time
-    return {
-      auth: {
-        getUser: async () => ({ data: { user: { id: 'mock-user-id' } }, error: null })
-      },
-      from: (table: string) => {
-        const mockQuery = {
-          select: (fields: string) => {
-            const query = {
-              eq: (field: string, value: any) => {
-                const query2 = {
-                  eq: (field2: string, value2: any) => {
-                    return {
-                      then: (callback: any) => callback({ data: [], error: null }),
-                      catch: (callback: any) => callback(null)
-                    };
-                  },
-                  then: (callback: any) => callback({ data: [], error: null }),
-                  catch: (callback: any) => callback(null)
-                };
-                return query2;
-              },
-              then: (callback: any) => callback({ data: [], error: null }),
-              catch: (callback: any) => callback(null)
-            };
-            return query;
-          },
-          insert: (data: any) => Promise.resolve({ data, error: null }),
-          update: (data: any) => Promise.resolve({ data, error: null }),
-          eq: (field: string, value: any) => ({
-            single: () => Promise.resolve({ data: null, error: null })
-          })
-        };
-        return mockQuery;
-      }
-    };
+/**
+ * Creates a Supabase client for server-side use.
+ *
+ * - With no arguments it returns a cookie-bound SSR client (via `@supabase/ssr`)
+ *   so the user's browser session is shared with Route Handlers, Server
+ *   Components and Server Actions. This is what makes `auth.getUser()` resolve
+ *   the logged-in user (and is required for `/api/auth/role`, role guards, etc).
+ * - When an `accessToken` is supplied (e.g. extracted from an `Authorization:
+ *   Bearer` header) it returns a token-scoped client so PostgREST/RLS queries
+ *   run as that user instead of relying on cookies.
+ */
+export async function createClient(accessToken?: string) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase environment variables')
   }
-  
-  // When an access token is supplied (e.g. from a bearer Authorization header),
-  // attach it so PostgREST/RLS queries run as the authenticated user instead of
-  // the anonymous role.
-  return createSupabaseClient(
-    supabaseUrl,
-    supabaseKey,
-    accessToken
-      ? { global: { headers: { Authorization: `Bearer ${accessToken}` } } }
-      : undefined,
-  );
+
+  if (accessToken) {
+    return createSupabaseClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: `Bearer ${accessToken}` } },
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
+  }
+
+  const cookieStore = await cookies()
+
+  return createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll()
+      },
+      setAll(cookiesToSet) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options)
+          )
+        } catch {
+          // `setAll` was called from a Server Component where the cookie store
+          // is read-only. This can be ignored when Proxy refreshes the session.
+        }
+      },
+    },
+  })
 }

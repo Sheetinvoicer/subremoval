@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { requireRole, ROLES } from '@/lib/auth/roles'
+import { requireRole, ROLES } from '@/lib/auth/roles-server'
 import { createBackup, pruneExpiredBackups } from '@/lib/backup/manager'
 
 export async function GET(req) {

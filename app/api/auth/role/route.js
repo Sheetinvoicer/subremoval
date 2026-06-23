@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getCurrentUserRole } from '@/lib/auth/roles'
+import { getCurrentUserRole } from '@/lib/auth/roles-server'
 
 export const dynamic = 'force-dynamic'
 

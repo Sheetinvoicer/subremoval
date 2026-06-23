@@ -30,7 +30,7 @@ export async function DELETE(request: Request) {
       ? authHeader.slice(7).trim()
       : undefined
 
-    const authClient = createClient(accessToken)
+    const authClient = await createClient(accessToken)
     const {
       data: { user },
       error: userError,

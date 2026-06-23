@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { requireRole, ROLES } from '@/lib/auth/roles'
+import { requireRole, ROLES } from '@/lib/auth/roles-server'
 import { restoreBackup } from '@/lib/backup/manager'
 
 export async function POST(req) {

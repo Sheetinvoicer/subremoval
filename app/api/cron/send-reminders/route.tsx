@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
     const today = new Date().toISOString().split('T')[0];
     
     // Use type assertion to handle both real and mock client

@@ -27,7 +27,7 @@ export async function GET(request) {
     }
 
     const today = new Date().toISOString().split('T')[0]
-    const supabase = createClient()
+    const supabase = await createClient()
 
     const { data: templates, error: templatesError } = await supabase
       .from('recurring_invoices')

@@ -27,7 +27,7 @@ export async function GET(request: Request) {
       ? authHeader.slice(7).trim()
       : undefined
 
-    const supabase = createClient(accessToken)
+    const supabase = await createClient(accessToken)
     const {
       data: { user },
       error: userError,

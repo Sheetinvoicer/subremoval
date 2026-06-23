@@ -22,7 +22,7 @@ jest.mock('@/lib/backup/manager', () => ({
   restoreBackup: (...args) => restoreBackupMock(...args),
 }))
 
-jest.mock('@/lib/auth/roles', () => ({
+jest.mock('@/lib/auth/roles-server', () => ({
   ROLES: { ADMIN: 'admin' },
   requireRole: (...args) => requireRoleMock(...args),
 }))

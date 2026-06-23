@@ -14,7 +14,7 @@ import {
 const REMEMBER_COOKIE = 'remember_2fa_device'
 
 async function getCurrentUser() {
-  const supabase = createClient()
+  const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
