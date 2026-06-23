@@ -1,18 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Run on the Node.js runtime and always evaluate at request time so that
+// environment variables (e.g. RESEND_API_KEY) are read at runtime instead of
+// being evaluated during the build.
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+      console.error('Welcome email error: missing RESEND_API_KEY');
+      return NextResponse.json(
+        { error: 'Missing RESEND_API_KEY' },
+        { status: 500 }
+      );
+    }
+
     const { email, name } = await request.json();
-    
+
     if (!email) {
       return NextResponse.json(
         { error: 'Email is required' },
         { status: 400 }
       );
     }
+
+    const resend = new Resend(resendApiKey);
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
     const { data, error } = await resend.emails.send({
       from: 'SheetInvoicer <noreply@sheetinvoicer.com>',
@@ -30,7 +46,7 @@ export async function POST(request: NextRequest) {
             <li>Set up your payment methods</li>
           </ul>
           <p>
-            <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" 
+            <a href="${appUrl}/dashboard" 
                style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
               Get Started
             </a>
@@ -45,7 +61,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('Resend error:', error);
       return NextResponse.json(
-        { error: 'Failed to send welcome email' },
+        { error: error.message || 'Failed to send welcome email' },
         { status: 500 }
       );
     }
@@ -54,7 +70,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Welcome email error:', error);
     return NextResponse.json(
-      { error: 'Failed to process request' },
+      { error: error instanceof Error ? error.message : 'Failed to process request' },
       { status: 500 }
     );
   }

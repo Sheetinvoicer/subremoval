@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,6 +14,16 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
+
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+      return NextResponse.json(
+        { error: 'Missing RESEND_API_KEY' },
+        { status: 500 }
+      );
+    }
+    const resend = new Resend(resendApiKey);
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
     const supabase = await createClient();
     const today = new Date().toISOString().split('T')[0];
@@ -49,7 +60,7 @@ export async function GET(request: NextRequest) {
               <p>Dear ${invoice.clients.name},</p>
               <p>Your invoice <strong>${invoice.invoice_number}</strong> is due today.</p>
               <p>Amount: ${invoice.currency} ${invoice.amount}</p>
-              <a href="${process.env.NEXT_PUBLIC_APP_URL}/pay/${invoice.id}" 
+              <a href="${appUrl}/pay/${invoice.id}" 
                  style="background-color: #4F46E5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">
                 Pay Now
               </a>

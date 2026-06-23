@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 const frequencyToDays = {
   weekly: 7,
   biweekly: 14,
@@ -28,6 +26,9 @@ export async function GET(request) {
 
     const today = new Date().toISOString().split('T')[0]
     const supabase = await createClient()
+    const resendApiKey = process.env.RESEND_API_KEY
+    const resend = resendApiKey ? new Resend(resendApiKey) : null
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
     const { data: templates, error: templatesError } = await supabase
       .from('recurring_invoices')
@@ -80,13 +81,13 @@ export async function GET(request) {
         continue
       }
 
-      if (template.clients?.email && process.env.RESEND_API_KEY) {
+      if (template.clients?.email && resend) {
         try {
           await resend.emails.send({
             from: 'SheetInvoicer <noreply@sheetinvoicer.com>',
             to: [template.clients.email],
             subject: `New invoice ${createdInvoice.invoice_number}`,
-            html: `<div style="font-family: Arial, sans-serif; max-width: 600px;"><h2>New Invoice Created</h2><p>Hi ${template.clients.name || 'there'}, your recurring invoice <strong>${createdInvoice.invoice_number}</strong> has been generated.</p><p>Amount: ${template.currency || 'USD'} ${Number(template.amount || 0).toFixed(2)}</p><a href="${process.env.NEXT_PUBLIC_APP_URL}/pay/${createdInvoice.id}" style="background-color: #4F46E5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">View Invoice</a></div>`,
+            html: `<div style="font-family: Arial, sans-serif; max-width: 600px;"><h2>New Invoice Created</h2><p>Hi ${template.clients.name || 'there'}, your recurring invoice <strong>${createdInvoice.invoice_number}</strong> has been generated.</p><p>Amount: ${template.currency || 'USD'} ${Number(template.amount || 0).toFixed(2)}</p><a href="${appUrl}/pay/${createdInvoice.id}" style="background-color: #4F46E5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">View Invoice</a></div>`,
           })
         } catch (emailError) {
           console.error('Recurring invoice email error:', emailError)
