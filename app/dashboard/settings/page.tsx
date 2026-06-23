@@ -387,8 +387,23 @@ export default function SettingsPage() {
     setExportingData(true);
 
     try {
+      // The GDPR API authenticates via the bearer token because the server
+      // Supabase client does not read auth cookies. Attach the active session's
+      // access token so the request is authorized.
+      const supabase = createClient();
+      const headers: Record<string, string> = {};
+      if (supabase) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          headers.Authorization = `Bearer ${session.access_token}`;
+        }
+      }
+
       const response = await fetch('/api/gdpr/export', {
         method: 'GET',
+        headers,
       });
 
       const payload = await response.json();
@@ -422,11 +437,25 @@ export default function SettingsPage() {
     setExportingAccounting(format);
 
     try {
+      // The export API authenticates via the bearer token because the server
+      // Supabase client does not read auth cookies. Attach the active session's
+      // access token so the request is authorized.
+      const supabase = createClient();
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (supabase) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          headers.Authorization = `Bearer ${session.access_token}`;
+        }
+      }
+
       const response = await fetch('/api/accounting/export', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({
           format,
           mapping: resolveMapping(accountingMapping),
@@ -473,8 +502,22 @@ export default function SettingsPage() {
     setDeletingAccount(true);
 
     try {
+      // Attach the active session's access token so the delete request is
+      // authorized (the server client does not read auth cookies).
+      const supabase = createClient();
+      const headers: Record<string, string> = {};
+      if (supabase) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          headers.Authorization = `Bearer ${session.access_token}`;
+        }
+      }
+
       const response = await fetch('/api/gdpr/delete', {
         method: 'DELETE',
+        headers,
       });
       const payload = await response.json();
 

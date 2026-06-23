@@ -28,11 +28,25 @@ function sanitizeFormat(format?: string): ExportFormat {
 
 export async function POST(request: Request) {
   try {
-    const supabase = createClient()
+    // The server Supabase client is created with the anon key and does not
+    // read auth cookies, so we authenticate the request via the bearer token
+    // the browser sends from its active session. The token is also attached to
+    // the client so the subsequent invoice query runs as the authenticated
+    // user under RLS rather than the anonymous role.
+    const authHeader =
+      request.headers.get('authorization') || request.headers.get('Authorization')
+    const accessToken = authHeader?.toLowerCase().startsWith('bearer ')
+      ? authHeader.slice(7).trim()
+      : undefined
+
+    const supabase = createClient(accessToken)
+
     const {
       data: { user },
       error: userError,
-    } = await supabase.auth.getUser()
+    } = accessToken
+      ? await supabase.auth.getUser(accessToken)
+      : await supabase.auth.getUser()
 
     if (userError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

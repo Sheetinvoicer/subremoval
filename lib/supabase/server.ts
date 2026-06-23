@@ -1,6 +1,6 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
-export function createClient() {
+export function createClient(accessToken?: string) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   
@@ -44,5 +44,14 @@ export function createClient() {
     };
   }
   
-  return createSupabaseClient(supabaseUrl, supabaseKey);
+  // When an access token is supplied (e.g. from a bearer Authorization header),
+  // attach it so PostgREST/RLS queries run as the authenticated user instead of
+  // the anonymous role.
+  return createSupabaseClient(
+    supabaseUrl,
+    supabaseKey,
+    accessToken
+      ? { global: { headers: { Authorization: `Bearer ${accessToken}` } } }
+      : undefined,
+  );
 }
