@@ -5,6 +5,7 @@ import {
   buildQuickBooksRows,
   buildXeroRows,
   toCsv,
+  toExcelHtml,
   type AccountingInvoice,
   type AccountingMapping,
 } from '@/lib/accountingExport'
@@ -69,15 +70,15 @@ export async function POST(request: Request) {
           ? buildXeroRows(invoices, body.mapping)
           : buildInvoiceExportRows(invoices)
 
-    const csv = toCsv(rows)
-    const extension = format === 'excel' ? 'xls' : 'csv'
-    const contentType =
-      format === 'excel'
-        ? 'application/vnd.ms-excel; charset=utf-8'
-        : 'text/csv; charset=utf-8'
+    const isExcel = format === 'excel'
+    const payload = isExcel ? toExcelHtml(rows) : toCsv(rows)
+    const extension = isExcel ? 'xls' : 'csv'
+    const contentType = isExcel
+      ? 'application/vnd.ms-excel; charset=utf-8'
+      : 'text/csv; charset=utf-8'
     const timestamp = new Date().toISOString().slice(0, 10)
 
-    return new Response(csv, {
+    return new Response(payload, {
       status: 200,
       headers: {
         'Content-Type': contentType,

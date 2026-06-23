@@ -201,6 +201,12 @@ export default function SettingsPage() {
         if (data.language && data.language !== locale) {
           await persistLocale(data.language, false);
         }
+
+        // Supabase is the source of truth for the accounting mapping; fall
+        // back to the locally cached value when the column is empty.
+        if (data.accounting_mapping) {
+          setAccountingMapping(resolveMapping(data.accounting_mapping));
+        }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : t('errors.failedLoadSettings');
@@ -305,16 +311,57 @@ export default function SettingsPage() {
     setAccountingMapping((prev) => ({ ...prev, [key]: value }));
   }
 
-  // ORIGINAL function - unchanged (already had success message)
-  function saveAccountingMapping(showToast = true) {
-    if (typeof window === 'undefined') return;
-    window.localStorage.setItem(
-      ACCOUNTING_MAPPING_STORAGE_KEY,
-      JSON.stringify(resolveMapping(accountingMapping)),
-    );
-    if (showToast) {
+  // Persist the mapping. Auto-saves (showToast=false) only cache to
+  // localStorage; explicit saves also upsert to Supabase so the mapping
+  // follows the user across devices.
+  async function saveAccountingMapping(showToast = true) {
+    const resolved = resolveMapping(accountingMapping);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(
+        ACCOUNTING_MAPPING_STORAGE_KEY,
+        JSON.stringify(resolved),
+      );
+    }
+
+    if (!showToast) return;
+
+    setError(null);
+    try {
+      const supabase = createClient();
+      if (!supabase) {
+        setError(t('errors.supabaseInit'));
+        return;
+      }
+
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const user = userData?.user;
+      if (userError || !user) {
+        setError(t('errors.userNotAuthenticated'));
+        return;
+      }
+
+      const { error: upsertError } = await supabase
+        .from('user_settings')
+        .upsert(
+          {
+            user_id: user.id,
+            accounting_mapping: resolved,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'user_id' },
+        );
+
+      if (upsertError) {
+        setError(upsertError.message);
+        return;
+      }
+
       setSuccess(t('messages.accountingMappingSaved'));
       setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : t('errors.failedSaveSettings');
+      setError(errorMessage);
     }
   }
 
@@ -812,7 +859,7 @@ export default function SettingsPage() {
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={() => saveAccountingMapping()}
+              onClick={() => void saveAccountingMapping()}
               className="px-4 py-2 rounded-lg bg-gray-900 text-white text-sm hover:bg-gray-800"
             >
               {t('accounting.saveMapping')}

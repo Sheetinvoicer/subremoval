@@ -26,10 +26,38 @@ export default function SubscriptionPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
+  const [upgrading, setUpgrading] = useState<string | null>(null);
 
   useEffect(() => {
     loadSubscription();
   }, []);
+
+  async function handleUpgrade(planName: string) {
+    if (planName === 'Free' || currentPlan === planName) return;
+    setError(null);
+    setUpgrading(planName);
+    try {
+      const res = await fetch('/api/stripe/create-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          plan: planName,
+          successUrl: window.location.origin + '/dashboard?subscription=success',
+          cancelUrl: window.location.href,
+        }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.error || 'Failed to start checkout');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to start checkout');
+    } finally {
+      setUpgrading(null);
+    }
+  }
 
   async function loadSubscription() {
     try {
@@ -138,14 +166,21 @@ export default function SubscriptionPage() {
               ))}
             </ul>
             <button
-              disabled={currentPlan === plan.name}
+              onClick={() => handleUpgrade(plan.name)}
+              disabled={currentPlan === plan.name || plan.name === 'Free' || upgrading !== null}
               className={`w-full py-3 rounded-xl font-medium transition-all ${
-                currentPlan === plan.name
+                currentPlan === plan.name || plan.name === 'Free'
                   ? 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                  : `bg-${plan.color}-600 hover:bg-${plan.color}-700 text-white`
+                  : `bg-${plan.color}-600 hover:bg-${plan.color}-700 text-white disabled:opacity-60`
               }`}
             >
-              {currentPlan === plan.name ? 'Current Plan' : `Upgrade to ${plan.name}`}
+              {currentPlan === plan.name
+                ? 'Current Plan'
+                : plan.name === 'Free'
+                  ? 'Free Plan'
+                  : upgrading === plan.name
+                    ? 'Redirecting…'
+                    : `Upgrade to ${plan.name}`}
             </button>
           </motion.div>
         ))}

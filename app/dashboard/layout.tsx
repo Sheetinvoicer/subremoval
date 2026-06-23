@@ -5,6 +5,7 @@ import Sidebar from '@/components/Sidebar'
 import Footer from '@/components/Footer'
 import SearchBar from '@/components/SearchBar'
 import AIAssistant from '@/components/AIAssistant'
+import OnboardingTour from '@/components/OnboardingTour'
 import { Toaster } from 'react-hot-toast'
 import { useLocale } from 'next-intl'
 
@@ -36,6 +37,7 @@ export default function DashboardLayout({
             {children}
           </div>
           <AIAssistant />
+          <OnboardingTour />
         </main>
       </div>
       <Footer />

@@ -61,6 +61,12 @@ export default function SignupPage() {
       toast.error(error.message)
     } else {
       // posthog.capture('user_signed_up', { email, has_name: !!name })
+      // Fire-and-forget welcome email; never block signup UX on email infra.
+      void fetch('/api/auth/welcome-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name }),
+      }).catch(() => {})
       toast.success(t('messages.checkEmail'))
       setTimeout(() => router.push('/login'), 3000)
     }
