@@ -16,36 +16,17 @@ create index if not exists backup_history_created_at_idx on public.backup_histor
 
 alter table public.backup_history enable row level security;
 
-create policy if not exists "Admins can read backup history"
-on public.backup_history
-for select
-to authenticated
-using (
-  exists (
-    select 1
-    from public.users admin_user
-    where admin_user.id = auth.uid()
-      and admin_user.role = 'admin'
-  )
-);
-
-create policy if not exists "Admins can modify backup history"
-on public.backup_history
-for all
-to authenticated
-using (
-  exists (
-    select 1
-    from public.users admin_user
-    where admin_user.id = auth.uid()
-      and admin_user.role = 'admin'
-  )
-)
-with check (
-  exists (
-    select 1
-    from public.users admin_user
-    where admin_user.id = auth.uid()
-      and admin_user.role = 'admin'
-  )
-);
+-- NOTE: originally used `create policy if not exists` (invalid PostgreSQL),
+-- which aborted this migration. Replaced with DO-guarded creation that relies on
+-- the public.is_admin() helper to avoid duplicating the admin lookup.
+do $$
+begin
+  if not exists (select 1 from pg_policies where schemaname = 'public' and tablename = 'backup_history' and policyname = 'Admins can read backup history') then
+    create policy "Admins can read backup history" on public.backup_history
+      for select to authenticated using (public.is_admin());
+  end if;
+  if not exists (select 1 from pg_policies where schemaname = 'public' and tablename = 'backup_history' and policyname = 'Admins can modify backup history') then
+    create policy "Admins can modify backup history" on public.backup_history
+      for all to authenticated using (public.is_admin()) with check (public.is_admin());
+  end if;
+end $$;

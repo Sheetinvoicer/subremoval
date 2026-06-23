@@ -246,7 +246,7 @@ export default function DashboardPage() {
       const [invoicesRes, clientsRes, expensesRes] = await Promise.all([
         supabase
           .from('invoices')
-          .select('*')
+          .select('id, invoice_number, status, total, currency, due_date, created_at')
           .eq('user_id', userId)
           .order('created_at', { ascending: false }),
         supabase.from('clients').select('id').eq('user_id', userId),

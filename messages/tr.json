@@ -10,7 +10,19 @@
     "cancelSuccess": "Aboneliğiniz iptal edildi ve mevcut faturalandırma döneminin sonunda sona erecek.",
     "cancelError": "Abonelik iptal edilemedi",
     "cancelScheduled": "Aboneliğiniz mevcut faturalandırma döneminin sonunda iptal edilecek şekilde planlandı.",
-    "cancelScheduledUntil": "Aboneliğiniz {date} tarihine kadar etkin kalacak."
+    "cancelScheduledUntil": "Aboneliğiniz {date} tarihine kadar etkin kalacak.",
+    "errorLabel": "Hata",
+    "tryAgain": "Tekrar dene",
+    "mostPopular": "En popüler",
+    "currentPlanBadge": "Mevcut plan",
+    "perMonth": "/ay",
+    "currentPlanButton": "Mevcut plan",
+    "freePlanButton": "Ücretsiz plan",
+    "redirecting": "Yönlendiriliyor…",
+    "upgradeTo": "{plan} planına yükselt",
+    "checkoutError": "Ödeme başlatılamadı",
+    "supabaseInitError": "Supabase istemcisi başlatılamadı",
+    "loadError": "Abonelik yüklenemedi"
   },
   "nav": {
     "dashboard": "Gösterge Paneli",
@@ -443,6 +455,7 @@
       "estimates": "Teklifler",
       "time": "Zaman Takibi",
       "reports": "Raporlar",
+      "subscription": "Abonelik",
       "admin": "Admin",
       "settings": "Ayarlar"
     },

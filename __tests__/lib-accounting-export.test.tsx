@@ -24,14 +24,14 @@ describe('accounting export helpers', () => {
 
   it('builds quickbooks rows using mapping', () => {
     const rows = buildQuickBooksRows(invoices, { incomeAccount: '4000', referencePrefix: 'QB' });
-    expect(rows[0]).toEqual(expect.arrayContaining(['TxnType', 'DocNumber', 'IncomeAccount']));
-    expect(rows[1]).toEqual(expect.arrayContaining(['Invoice', 'INV-1001', '4000', 'QB-INV-1001']));
+    expect(rows[0]).toEqual(expect.arrayContaining(['InvoiceNo', 'Customer', 'ItemAmount']));
+    expect(rows[1]).toEqual(expect.arrayContaining(['INV-1001', 'Acme Corp', '4000', 'QB-INV-1001']));
   });
 
   it('builds xero rows using defaults and explicit mapping', () => {
     const rows = buildXeroRows(invoices, { taxType: 'OUTPUT2', trackingCategory: 'Region-US' });
-    expect(rows[0]).toEqual(expect.arrayContaining(['Type', 'TaxType', 'TrackingName']));
-    expect(rows[1]).toEqual(expect.arrayContaining(['ACCREC', 'OUTPUT2', 'Region-US']));
+    expect(rows[0]).toEqual(expect.arrayContaining(['ContactName', 'InvoiceNumber', 'TaxType', 'TrackingName1']));
+    expect(rows[1]).toEqual(expect.arrayContaining(['Acme Corp', 'INV-1001', 'OUTPUT2', 'Region-US']));
   });
 
   it('builds generic invoice export rows and CSV output', () => {

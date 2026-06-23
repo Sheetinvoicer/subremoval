@@ -50,7 +50,7 @@ describe('Dashboard Settings page', () => {
     await waitFor(() => {
       expect(eq).toHaveBeenCalledWith('user_id', 'user-123');
       expect(screen.getByDisplayValue('EUR')).toBeInTheDocument();
-      expect(screen.getByDisplayValue('French')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Français')).toBeInTheDocument();
       expect(screen.getByDisplayValue('Dark')).toBeInTheDocument();
       expect(screen.getByDisplayValue('Acme Corp')).toBeInTheDocument();
     });
@@ -92,7 +92,8 @@ describe('Dashboard Settings page', () => {
           language: 'en',
           theme: 'system',
           notifications_enabled: true,
-        })
+        }),
+        expect.objectContaining({ onConflict: 'user_id' })
       );
     });
   });
@@ -110,6 +111,7 @@ describe('Dashboard Settings page', () => {
     createClient.mockReturnValue({
       auth: {
         getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'user-123' } }, error: null }),
+        getSession: jest.fn().mockResolvedValue({ data: { session: { access_token: 'token-abc' } } }),
       },
       from,
     });
@@ -133,7 +135,7 @@ describe('Dashboard Settings page', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Export my data (JSON)' }));
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('/api/gdpr/export', { method: 'GET' });
+      expect(global.fetch).toHaveBeenCalledWith('/api/gdpr/export', expect.objectContaining({ method: 'GET' }));
       expect(screen.getByText('Your data export is ready and has been downloaded.')).toBeInTheDocument();
     });
   });
@@ -151,6 +153,7 @@ describe('Dashboard Settings page', () => {
     createClient.mockReturnValue({
       auth: {
         getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'user-123' } }, error: null }),
+        getSession: jest.fn().mockResolvedValue({ data: { session: { access_token: 'token-abc' } } }),
       },
       from,
     });

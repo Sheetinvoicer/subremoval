@@ -10,7 +10,19 @@
     "cancelSuccess": "Tu suscripción ha sido cancelada y finalizará al término del periodo de facturación actual.",
     "cancelError": "No se pudo cancelar la suscripción",
     "cancelScheduled": "Tu suscripción está programada para cancelarse al final del periodo de facturación actual.",
-    "cancelScheduledUntil": "Tu suscripción permanecerá activa hasta el {date}."
+    "cancelScheduledUntil": "Tu suscripción permanecerá activa hasta el {date}.",
+    "errorLabel": "Error",
+    "tryAgain": "Intentar de nuevo",
+    "mostPopular": "Más popular",
+    "currentPlanBadge": "Plan actual",
+    "perMonth": "/mes",
+    "currentPlanButton": "Plan actual",
+    "freePlanButton": "Plan gratuito",
+    "redirecting": "Redirigiendo…",
+    "upgradeTo": "Mejorar a {plan}",
+    "checkoutError": "No se pudo iniciar el pago",
+    "supabaseInitError": "No se pudo inicializar el cliente de Supabase",
+    "loadError": "No se pudo cargar la suscripción"
   },
   "nav": {
     "dashboard": "Panel",
@@ -451,6 +463,7 @@
       "estimates": "Presupuestos",
       "time": "Control de Tiempo",
       "reports": "Informes",
+      "subscription": "Suscripción",
       "admin": "Admin",
       "settings": "Configuración"
     },

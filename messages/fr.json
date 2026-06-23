@@ -10,7 +10,19 @@
     "cancelSuccess": "Votre abonnement a été annulé et prendra fin à la clôture de la période de facturation en cours.",
     "cancelError": "Échec de l'annulation de l'abonnement",
     "cancelScheduled": "Votre abonnement sera annulé à la fin de la période de facturation en cours.",
-    "cancelScheduledUntil": "Votre abonnement restera actif jusqu'au {date}."
+    "cancelScheduledUntil": "Votre abonnement restera actif jusqu'au {date}.",
+    "errorLabel": "Erreur",
+    "tryAgain": "Réessayer",
+    "mostPopular": "Le plus populaire",
+    "currentPlanBadge": "Forfait actuel",
+    "perMonth": "/mois",
+    "currentPlanButton": "Forfait actuel",
+    "freePlanButton": "Forfait gratuit",
+    "redirecting": "Redirection…",
+    "upgradeTo": "Passer à {plan}",
+    "checkoutError": "Échec du démarrage du paiement",
+    "supabaseInitError": "Échec de l'initialisation du client Supabase",
+    "loadError": "Échec du chargement de l'abonnement"
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -451,6 +463,7 @@
       "estimates": "Devis",
       "time": "Suivi du temps",
       "reports": "Rapports",
+      "subscription": "Abonnement",
       "admin": "Admin",
       "settings": "Paramètres"
     },

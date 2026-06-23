@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { useDebounce } from '@/hooks/useDebounce';
 import { useTranslations } from 'next-intl';
 import toast from 'react-hot-toast';
 import Card from '@/components/ui/Card';
@@ -51,6 +52,8 @@ export default function InvoicesPage() {
   const [bulkProgress, setBulkProgress] = useState({ total: 0, completed: 0, sent: 0, failed: 0 })
   const [exportingId, setExportingId] = useState<string | null>(null)
   const pageSize = 9
+  // Debounce the search box so filtering large lists does not re-run on every keystroke.
+  const debouncedSearch = useDebounce(searchQuery, 300)
 
   useEffect(() => {
     loadInvoices()
@@ -114,7 +117,7 @@ export default function InvoicesPage() {
     invoice.status !== 'paid' && invoice.due_date && new Date(invoice.due_date) < new Date()
 
   const filteredInvoices = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase()
+    const q = debouncedSearch.trim().toLowerCase()
     return invoices.filter((invoice) => {
       // Status filter buttons.
       if (activeFilter === 'paid' && invoice.status !== 'paid') return false
@@ -129,11 +132,11 @@ export default function InvoicesPage() {
       }
       return true
     })
-  }, [invoices, activeFilter, searchQuery])
+  }, [invoices, activeFilter, debouncedSearch])
 
   useEffect(() => {
     setPage(1)
-  }, [activeFilter, searchQuery])
+  }, [activeFilter, debouncedSearch])
 
   const totalPages = Math.max(1, Math.ceil(filteredInvoices.length / pageSize))
   const pagedInvoices = useMemo(

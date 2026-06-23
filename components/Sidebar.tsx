@@ -19,6 +19,7 @@ import {
   Clock,
   TrendingUp,
   Shield,
+  CreditCard,
   type LucideIcon,
 } from 'lucide-react';
 import { hasRequiredRole, normalizeRole, ROLES } from '@/lib/auth/roles';
@@ -35,6 +36,7 @@ const navItems: { key: string; href: string; Icon: LucideIcon }[] = [
   { key: 'estimates', href: '/dashboard/estimates', Icon: ClipboardList },
   { key: 'time', href: '/dashboard/time', Icon: Clock },
   { key: 'reports', href: '/dashboard/reports', Icon: TrendingUp },
+  { key: 'subscription', href: '/dashboard/subscription', Icon: CreditCard },
   { key: 'admin', href: '/dashboard/admin', Icon: Shield },
   { key: 'settings', href: '/dashboard/settings', Icon: Settings },
 ];

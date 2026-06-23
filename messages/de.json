@@ -10,7 +10,19 @@
     "cancelSuccess": "Ihr Abonnement wurde gekündigt und endet am Ende des aktuellen Abrechnungszeitraums.",
     "cancelError": "Kündigung des Abonnements fehlgeschlagen",
     "cancelScheduled": "Ihr Abonnement wird am Ende des aktuellen Abrechnungszeitraums gekündigt.",
-    "cancelScheduledUntil": "Ihr Abonnement bleibt bis zum {date} aktiv."
+    "cancelScheduledUntil": "Ihr Abonnement bleibt bis zum {date} aktiv.",
+    "errorLabel": "Fehler",
+    "tryAgain": "Erneut versuchen",
+    "mostPopular": "Am beliebtesten",
+    "currentPlanBadge": "Aktueller Plan",
+    "perMonth": "/Monat",
+    "currentPlanButton": "Aktueller Plan",
+    "freePlanButton": "Kostenloser Plan",
+    "redirecting": "Weiterleitung…",
+    "upgradeTo": "Upgrade auf {plan}",
+    "checkoutError": "Bezahlvorgang konnte nicht gestartet werden",
+    "supabaseInitError": "Supabase-Client konnte nicht initialisiert werden",
+    "loadError": "Abonnement konnte nicht geladen werden"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -443,6 +455,7 @@
       "estimates": "Angebote",
       "time": "Zeiterfassung",
       "reports": "Berichte",
+      "subscription": "Abonnement",
       "admin": "Admin",
       "settings": "Einstellungen"
     },

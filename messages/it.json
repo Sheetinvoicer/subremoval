@@ -10,7 +10,19 @@
     "cancelSuccess": "Il tuo abbonamento è stato annullato e terminerà al termine del periodo di fatturazione corrente.",
     "cancelError": "Impossibile annullare l'abbonamento",
     "cancelScheduled": "Il tuo abbonamento verrà annullato al termine del periodo di fatturazione corrente.",
-    "cancelScheduledUntil": "Il tuo abbonamento rimarrà attivo fino al {date}."
+    "cancelScheduledUntil": "Il tuo abbonamento rimarrà attivo fino al {date}.",
+    "errorLabel": "Errore",
+    "tryAgain": "Riprova",
+    "mostPopular": "Più popolare",
+    "currentPlanBadge": "Piano attuale",
+    "perMonth": "/mese",
+    "currentPlanButton": "Piano attuale",
+    "freePlanButton": "Piano gratuito",
+    "redirecting": "Reindirizzamento…",
+    "upgradeTo": "Passa a {plan}",
+    "checkoutError": "Impossibile avviare il pagamento",
+    "supabaseInitError": "Impossibile inizializzare il client Supabase",
+    "loadError": "Impossibile caricare l'abbonamento"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -443,6 +455,7 @@
       "estimates": "Preventivi",
       "time": "Monitoraggio tempo",
       "reports": "Report",
+      "subscription": "Abbonamento",
       "admin": "Admin",
       "settings": "Impostazioni"
     },

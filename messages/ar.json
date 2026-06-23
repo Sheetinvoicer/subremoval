@@ -10,7 +10,19 @@
     "cancelSuccess": "تم إلغاء اشتراكك وسينتهي في نهاية فترة الفوترة الحالية.",
     "cancelError": "فشل إلغاء الاشتراك",
     "cancelScheduled": "من المقرر إلغاء اشتراكك في نهاية فترة الفوترة الحالية.",
-    "cancelScheduledUntil": "سيبقى اشتراكك نشطًا حتى {date}."
+    "cancelScheduledUntil": "سيبقى اشتراكك نشطًا حتى {date}.",
+    "errorLabel": "خطأ",
+    "tryAgain": "حاول مرة أخرى",
+    "mostPopular": "الأكثر شيوعًا",
+    "currentPlanBadge": "الخطة الحالية",
+    "perMonth": "/شهريًا",
+    "currentPlanButton": "الخطة الحالية",
+    "freePlanButton": "الخطة المجانية",
+    "redirecting": "جارٍ التحويل…",
+    "upgradeTo": "الترقية إلى {plan}",
+    "checkoutError": "تعذّر بدء عملية الدفع",
+    "supabaseInitError": "فشل في تهيئة عميل Supabase",
+    "loadError": "فشل تحميل الاشتراك"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -629,6 +641,7 @@
       "estimates": "عروض الأسعار",
       "time": "تتبع الوقت",
       "reports": "التقارير",
+      "subscription": "الاشتراك",
       "admin": "الإدارة",
       "settings": "الإعدادات"
     },

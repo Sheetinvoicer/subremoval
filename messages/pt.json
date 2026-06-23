@@ -10,7 +10,19 @@
     "cancelSuccess": "Sua assinatura foi cancelada e terminará no fim do período de faturamento atual.",
     "cancelError": "Falha ao cancelar a assinatura",
     "cancelScheduled": "Sua assinatura está agendada para ser cancelada no fim do período de faturamento atual.",
-    "cancelScheduledUntil": "Sua assinatura permanecerá ativa até {date}."
+    "cancelScheduledUntil": "Sua assinatura permanecerá ativa até {date}.",
+    "errorLabel": "Erro",
+    "tryAgain": "Tentar novamente",
+    "mostPopular": "Mais popular",
+    "currentPlanBadge": "Plano atual",
+    "perMonth": "/mês",
+    "currentPlanButton": "Plano atual",
+    "freePlanButton": "Plano gratuito",
+    "redirecting": "Redirecionando…",
+    "upgradeTo": "Fazer upgrade para {plan}",
+    "checkoutError": "Falha ao iniciar o pagamento",
+    "supabaseInitError": "Falha ao inicializar o cliente Supabase",
+    "loadError": "Falha ao carregar a assinatura"
   },
   "nav": {
     "dashboard": "Painel",
@@ -443,6 +455,7 @@
       "estimates": "Orçamentos",
       "time": "Controle de tempo",
       "reports": "Relatórios",
+      "subscription": "Assinatura",
       "admin": "Admin",
       "settings": "Configurações"
     },

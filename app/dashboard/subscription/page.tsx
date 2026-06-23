@@ -83,10 +83,10 @@ export default function SubscriptionPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setError(data.error || 'Failed to start checkout');
+        setError(data.error || t('checkoutError'));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to start checkout');
+      setError(err instanceof Error ? err.message : t('checkoutError'));
     } finally {
       setUpgrading(null);
     }
@@ -99,7 +99,7 @@ export default function SubscriptionPage() {
 
       const supabase = createClient();
       if (!supabase) {
-        setError("Failed to initialize Supabase client");
+        setError(t('supabaseInitError'));
         setLoading(false);
         return;
       }
@@ -133,7 +133,7 @@ export default function SubscriptionPage() {
         }
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load subscription';
+      const errorMessage = err instanceof Error ? err.message : t('loadError');
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -151,18 +151,18 @@ export default function SubscriptionPage() {
   return (
     <div className="p-6 md:p-8">
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Subscription</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">Manage your plan and billing</p>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
+        <p className="text-gray-500 dark:text-gray-400 mt-2">{t('subtitle')}</p>
       </div>
 
       {error && (
         <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Error: {error}</p>
+          <p className="text-red-600 dark:text-red-400">{t('errorLabel')}: {error}</p>
           <button
             onClick={() => window.location.reload()}
             className="mt-2 text-sm text-blue-600 hover:underline"
           >
-            Try Again
+            {t('tryAgain')}
           </button>
         </div>
       )}
@@ -179,16 +179,16 @@ export default function SubscriptionPage() {
           >
             {plan.popular && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                Most Popular
+                {t('mostPopular')}
               </div>
             )}
             {currentPlan === plan.name && (
               <div className="absolute top-4 right-4 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-1 rounded-full text-xs">
-                Current Plan
+                {t('currentPlanBadge')}
               </div>
             )}
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{plan.name}</h2>
-            <div className="text-4xl font-bold text-gray-900 dark:text-white mb-4">{plan.price}<span className="text-lg font-normal text-gray-500 dark:text-gray-400">/month</span></div>
+            <div className="text-4xl font-bold text-gray-900 dark:text-white mb-4">{plan.price}<span className="text-lg font-normal text-gray-500 dark:text-gray-400">{t('perMonth')}</span></div>
             <ul className="space-y-2 mb-6">
               {plan.features.map((feature, i) => (
                 <li key={i} className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
@@ -206,12 +206,12 @@ export default function SubscriptionPage() {
               }`}
             >
               {currentPlan === plan.name
-                ? 'Current Plan'
+                ? t('currentPlanButton')
                 : plan.name === 'Free'
-                  ? 'Free Plan'
+                  ? t('freePlanButton')
                   : upgrading === plan.name
-                    ? 'Redirecting…'
-                    : `Upgrade to ${plan.name}`}
+                    ? t('redirecting')
+                    : t('upgradeTo', { plan: plan.name })}
             </button>
           </div>
         ))}
