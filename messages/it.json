@@ -516,7 +516,10 @@
       "tryAgain": "Riprova",
       "createInvoice": "Crea fattura",
       "viewAll": "Visualizza tutto",
-      "createFirstInvoice": "Crea la tua prima fattura"
+      "createFirstInvoice": "Crea la tua prima fattura",
+      "downloadDashboard": "Scarica report dashboard",
+      "downloadingDashboard": "Preparazione...",
+      "dashboardDownloaded": "Dashboard scaricata!"
     },
     "status": {
       "draft": "Bozza",
@@ -537,6 +540,7 @@
     },
     "errors": {
       "loadingData": "Errore nel caricamento dei dati del dashboard",
+      "downloadFailed": "Impossibile scaricare la dashboard",
       "loadingTitle": "Errore di caricamento del dashboard",
       "supabaseInit": "Impossibile inizializzare il client Supabase",
       "verifySession": "Impossibile verificare la sessione"
@@ -916,7 +920,10 @@
     },
     "ai": {
       "generate": "Genera analisi IA",
-      "generating": "Generazione..."
+      "generating": "Generazione...",
+      "copy": "Copia",
+      "copied": "Copiato negli appunti!",
+      "copyFailed": "Copia non riuscita"
     },
     "errors": {
       "supabaseInit": "Impossibile inizializzare il client Supabase",

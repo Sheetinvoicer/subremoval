@@ -524,7 +524,10 @@
       "tryAgain": "Réessayer",
       "createInvoice": "Créer une facture",
       "viewAll": "Voir tout",
-      "createFirstInvoice": "Créez votre première facture"
+      "createFirstInvoice": "Créez votre première facture",
+      "downloadDashboard": "Télécharger le rapport du tableau de bord",
+      "downloadingDashboard": "Préparation...",
+      "dashboardDownloaded": "Tableau de bord téléchargé !"
     },
     "status": {
       "draft": "Brouillon",
@@ -545,6 +548,7 @@
     },
     "errors": {
       "loadingData": "Erreur lors du chargement des données du tableau de bord",
+      "downloadFailed": "Échec du téléchargement du tableau de bord",
       "loadingTitle": "Erreur de chargement du tableau de bord",
       "supabaseInit": "Échec de l'initialisation du client Supabase",
       "verifySession": "Échec de la vérification de la session"
@@ -924,7 +928,10 @@
     },
     "ai": {
       "generate": "Générer une analyse IA",
-      "generating": "Génération..."
+      "generating": "Génération...",
+      "copy": "Copier",
+      "copied": "Copié dans le presse-papiers !",
+      "copyFailed": "Échec de la copie"
     },
     "errors": {
       "supabaseInit": "Échec de l'initialisation du client Supabase",

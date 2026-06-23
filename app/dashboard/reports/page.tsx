@@ -14,6 +14,7 @@ import {
 } from 'date-fns';
 import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
+import toast from 'react-hot-toast';
 import {
   Bar,
   BarChart,
@@ -475,6 +476,16 @@ export default function ReportsPage() {
     }
   }, [endDate, period, reportsData, startDate]);
 
+  const copyInsights = useCallback(async () => {
+    if (!insights) return;
+    try {
+      await navigator.clipboard.writeText(insights);
+      toast.success(t('ai.copied'));
+    } catch {
+      toast.error(t('ai.copyFailed'));
+    }
+  }, [insights, t]);
+
   const applyPresetPeriod = (value: Period) => {
     const now = new Date();
     setPeriod(value);
@@ -662,9 +673,16 @@ export default function ReportsPage() {
         </section>
         <section className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
           <h2 className="font-semibold mb-4">{t('charts.aiInsights')}</h2>
-          <button onClick={generateInsights} disabled={insightsLoading} className="px-4 py-2 rounded-lg bg-purple-600 text-white disabled:opacity-70">
-            {insightsLoading ? t('ai.generating') : t('ai.generate')}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={generateInsights} disabled={insightsLoading} className="px-4 py-2 rounded-lg bg-purple-600 text-white disabled:opacity-70">
+              {insightsLoading ? t('ai.generating') : t('ai.generate')}
+            </button>
+            {insights && (
+              <button onClick={copyInsights} className="px-4 py-2 rounded-lg bg-gray-700 text-white">
+                {t('ai.copy')}
+              </button>
+            )}
+          </div>
           {insightsError && <p className="text-sm text-red-500 mt-3">{insightsError}</p>}
           {insights && <pre className="mt-3 whitespace-pre-wrap text-sm bg-gray-50 dark:bg-gray-900 p-3 rounded">{insights}</pre>}
         </section>

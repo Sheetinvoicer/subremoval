@@ -516,7 +516,10 @@
       "tryAgain": "Tekrar dene",
       "createInvoice": "Fatura oluştur",
       "viewAll": "Tümünü görüntüle",
-      "createFirstInvoice": "İlk faturanızı oluşturun"
+      "createFirstInvoice": "İlk faturanızı oluşturun",
+      "downloadDashboard": "Gösterge paneli raporunu indir",
+      "downloadingDashboard": "Hazırlanıyor...",
+      "dashboardDownloaded": "Gösterge paneli indirildi!"
     },
     "status": {
       "draft": "Taslak",
@@ -537,6 +540,7 @@
     },
     "errors": {
       "loadingData": "Gösterge paneli verileri yüklenirken hata",
+      "downloadFailed": "Gösterge paneli indirilemedi",
       "loadingTitle": "Gösterge Paneli Yüklenirken Hata",
       "supabaseInit": "Supabase istemcisi başlatılamadı",
       "verifySession": "Oturum doğrulanamadı"
@@ -916,7 +920,10 @@
     },
     "ai": {
       "generate": "YZ Analizi Oluştur",
-      "generating": "Oluşturuluyor..."
+      "generating": "Oluşturuluyor...",
+      "copy": "Kopyala",
+      "copied": "Panoya kopyalandı!",
+      "copyFailed": "Kopyalama başarısız"
     },
     "errors": {
       "supabaseInit": "Supabase istemcisi başlatılamadı",

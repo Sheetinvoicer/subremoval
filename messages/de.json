@@ -516,7 +516,10 @@
       "tryAgain": "Erneut versuchen",
       "createInvoice": "Rechnung erstellen",
       "viewAll": "Alle anzeigen",
-      "createFirstInvoice": "Erste Rechnung erstellen"
+      "createFirstInvoice": "Erste Rechnung erstellen",
+      "downloadDashboard": "Dashboard-Bericht herunterladen",
+      "downloadingDashboard": "Wird vorbereitet...",
+      "dashboardDownloaded": "Dashboard heruntergeladen!"
     },
     "status": {
       "draft": "Entwurf",
@@ -537,6 +540,7 @@
     },
     "errors": {
       "loadingData": "Fehler beim Laden der Dashboard-Daten",
+      "downloadFailed": "Dashboard konnte nicht heruntergeladen werden",
       "loadingTitle": "Fehler beim Laden des Dashboards",
       "supabaseInit": "Supabase-Client konnte nicht initialisiert werden",
       "verifySession": "Sitzung konnte nicht überprüft werden"
@@ -916,7 +920,10 @@
     },
     "ai": {
       "generate": "KI-Analyse generieren",
-      "generating": "Generieren..."
+      "generating": "Generieren...",
+      "copy": "Kopieren",
+      "copied": "In die Zwischenablage kopiert!",
+      "copyFailed": "Kopieren fehlgeschlagen"
     },
     "errors": {
       "supabaseInit": "Supabase-Client konnte nicht initialisiert werden",

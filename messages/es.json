@@ -524,7 +524,10 @@
       "tryAgain": "Intentar de nuevo",
       "createInvoice": "Crear Factura",
       "viewAll": "Ver Todo",
-      "createFirstInvoice": "Crea tu primera factura"
+      "createFirstInvoice": "Crea tu primera factura",
+      "downloadDashboard": "Descargar informe del panel",
+      "downloadingDashboard": "Preparando...",
+      "dashboardDownloaded": "¡Panel descargado!"
     },
     "status": {
       "draft": "Borrador",
@@ -545,6 +548,7 @@
     },
     "errors": {
       "loadingData": "Error al cargar datos del panel",
+      "downloadFailed": "Error al descargar el panel",
       "loadingTitle": "Error al Cargar el Panel",
       "supabaseInit": "Error al inicializar el cliente Supabase",
       "verifySession": "Error al verificar la sesión"
@@ -924,7 +928,10 @@
     },
     "ai": {
       "generate": "Generar Análisis con IA",
-      "generating": "Generando..."
+      "generating": "Generando...",
+      "copy": "Copiar",
+      "copied": "¡Copiado al portapapeles!",
+      "copyFailed": "Error al copiar"
     },
     "errors": {
       "supabaseInit": "Error al inicializar el cliente Supabase",

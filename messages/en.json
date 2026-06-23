@@ -524,7 +524,10 @@
       "tryAgain": "Try Again",
       "createInvoice": "Create Invoice",
       "viewAll": "View All",
-      "createFirstInvoice": "Create your first invoice"
+      "createFirstInvoice": "Create your first invoice",
+      "downloadDashboard": "Download Dashboard Report",
+      "downloadingDashboard": "Preparing...",
+      "dashboardDownloaded": "Dashboard downloaded!"
     },
     "status": {
       "draft": "Draft",
@@ -545,6 +548,7 @@
     },
     "errors": {
       "loadingData": "Error loading dashboard data",
+      "downloadFailed": "Failed to download dashboard",
       "loadingTitle": "Error Loading Dashboard",
       "supabaseInit": "Failed to initialize Supabase client",
       "verifySession": "Failed to verify session"
@@ -924,7 +928,10 @@
     },
     "ai": {
       "generate": "Generate AI Analysis",
-      "generating": "Generating..."
+      "generating": "Generating...",
+      "copy": "Copy",
+      "copied": "Copied to clipboard!",
+      "copyFailed": "Failed to copy"
     },
     "errors": {
       "supabaseInit": "Failed to initialize Supabase client",

@@ -435,7 +435,10 @@
       "tryAgain": "حاول مرة أخرى",
       "createInvoice": "إنشاء فاتورة",
       "viewAll": "عرض الكل",
-      "createFirstInvoice": "أنشئ فاتورتك الأولى"
+      "createFirstInvoice": "أنشئ فاتورتك الأولى",
+      "downloadDashboard": "تنزيل تقرير لوحة التحكم",
+      "downloadingDashboard": "جارٍ التحضير...",
+      "dashboardDownloaded": "تم تنزيل لوحة التحكم!"
     },
     "status": {
       "draft": "مسودة",
@@ -456,6 +459,7 @@
     },
     "errors": {
       "loadingData": "خطأ أثناء تحميل بيانات لوحة التحكم",
+      "downloadFailed": "فشل تنزيل لوحة التحكم",
       "loadingTitle": "خطأ في تحميل لوحة التحكم",
       "supabaseInit": "فشل تهيئة عميل Supabase",
       "verifySession": "فشل التحقق من الجلسة"
@@ -964,7 +968,10 @@
     },
     "ai": {
       "generate": "توليد تحليل بالذكاء الاصطناعي",
-      "generating": "جارٍ التوليد..."
+      "generating": "جارٍ التوليد...",
+      "copy": "نسخ",
+      "copied": "تم النسخ إلى الحافظة!",
+      "copyFailed": "فشل النسخ"
     },
     "errors": {
       "supabaseInit": "فشل تهيئة عميل Supabase",

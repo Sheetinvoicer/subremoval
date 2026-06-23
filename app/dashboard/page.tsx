@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
+import toast from 'react-hot-toast';
 import { Tooltip, TooltipProvider } from '@/components/Tooltip';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
@@ -70,6 +71,39 @@ export default function DashboardPage() {
   const [recentInvoices, setRecentInvoices] = useState<Invoice[]>([]);
   const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
   const [statusData, setStatusData] = useState<StatusDataPoint[]>([]);
+  const [downloading, setDownloading] = useState(false);
+  const dashboardRef = useRef<HTMLDivElement>(null);
+
+  const downloadDashboard = useCallback(async () => {
+    const node = dashboardRef.current;
+    if (!node) return;
+    try {
+      setDownloading(true);
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf'),
+      ]);
+      const canvas = await html2canvas(node, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: getComputedStyle(node).backgroundColor || '#ffffff',
+      });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height],
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.save(`dashboard-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
+      toast.success(t('actions.dashboardDownloaded'));
+    } catch (err) {
+      toast.error(t('errors.downloadFailed'));
+      console.error(err);
+    } finally {
+      setDownloading(false);
+    }
+  }, [t]);
 
   const isUnauthenticatedError = (message?: string | null) => {
     if (!message) return false;
@@ -259,10 +293,21 @@ export default function DashboardPage() {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 md:p-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">{t('welcome')}</p>
+      <div ref={dashboardRef} className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 md:p-8">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-2">{t('welcome')}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{new Date().toLocaleDateString()}</p>
+          </div>
+          <button
+            data-html2canvas-ignore="true"
+            onClick={downloadDashboard}
+            disabled={downloading}
+            className="self-start bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors shadow-md disabled:opacity-70"
+          >
+            {downloading ? t('actions.downloadingDashboard') : `⬇ ${t('actions.downloadDashboard')}`}
+          </button>
         </div>
 
         {/* Period Selector */}

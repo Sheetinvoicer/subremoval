@@ -516,7 +516,10 @@
       "tryAgain": "Tentar novamente",
       "createInvoice": "Criar fatura",
       "viewAll": "Ver tudo",
-      "createFirstInvoice": "Crie sua primeira fatura"
+      "createFirstInvoice": "Crie sua primeira fatura",
+      "downloadDashboard": "Baixar relatório do painel",
+      "downloadingDashboard": "Preparando...",
+      "dashboardDownloaded": "Painel baixado!"
     },
     "status": {
       "draft": "Rascunho",
@@ -537,6 +540,7 @@
     },
     "errors": {
       "loadingData": "Erro ao carregar dados do painel",
+      "downloadFailed": "Falha ao baixar o painel",
       "loadingTitle": "Erro ao carregar o painel",
       "supabaseInit": "Falha ao inicializar o cliente Supabase",
       "verifySession": "Falha ao verificar a sessão"
@@ -916,7 +920,10 @@
     },
     "ai": {
       "generate": "Gerar análise com IA",
-      "generating": "Gerando..."
+      "generating": "Gerando...",
+      "copy": "Copiar",
+      "copied": "Copiado para a área de transferência!",
+      "copyFailed": "Falha ao copiar"
     },
     "errors": {
       "supabaseInit": "Falha ao inicializar o cliente Supabase",
