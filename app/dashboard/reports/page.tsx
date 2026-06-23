@@ -140,7 +140,9 @@ export default function ReportsPage() {
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [insightsError, setInsightsError] = useState<string | null>(null);
   const [insights, setInsights] = useState<string>('');
+  const [downloadingReport, setDownloadingReport] = useState(false);
   const cacheRef = useRef<Record<string, ReportsData>>({});
+  const reportRef = useRef<HTMLDivElement>(null);
 
   const [period, setPeriod] = useState<Period>('month');
   const [startDate, setStartDate] = useState(format(startOfMonth(subMonths(new Date(), 2)), 'yyyy-MM-dd'));
@@ -486,6 +488,37 @@ export default function ReportsPage() {
     }
   }, [insights, t]);
 
+  const downloadFullReport = useCallback(async () => {
+    const node = reportRef.current;
+    if (!node) return;
+    try {
+      setDownloadingReport(true);
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf'),
+      ]);
+      const canvas = await html2canvas(node, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: getComputedStyle(node).backgroundColor || '#ffffff',
+      });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height],
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.save(`full-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
+      toast.success(t('fullReport.downloaded'));
+    } catch (err) {
+      console.error('Failed to download full report', err);
+      toast.error(t('fullReport.failed'));
+    } finally {
+      setDownloadingReport(false);
+    }
+  }, [t]);
+
   const applyPresetPeriod = (value: Period) => {
     const now = new Date();
     setPeriod(value);
@@ -527,7 +560,7 @@ export default function ReportsPage() {
   if (!reportsData) return null;
 
   return (
-    <div className="container mx-auto p-4 space-y-8" id="reports-content">
+    <div className="container mx-auto p-4 space-y-8" id="reports-content" ref={reportRef}>
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
@@ -540,6 +573,14 @@ export default function ReportsPage() {
           <button onClick={exportCSV} className="px-3 py-2 text-sm rounded-lg bg-blue-600 text-white">{t('export.csv')}</button>
           <button onClick={exportPDF} className="px-3 py-2 text-sm rounded-lg bg-indigo-600 text-white">{t('export.pdf')}</button>
           <button onClick={() => window.print()} className="px-3 py-2 text-sm rounded-lg bg-gray-900 text-white">{t('export.print')}</button>
+          <button
+            data-html2canvas-ignore="true"
+            onClick={downloadFullReport}
+            disabled={downloadingReport}
+            className="px-3 py-2 text-sm rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors disabled:opacity-70"
+          >
+            {downloadingReport ? t('fullReport.downloading') : `⬇ ${t('fullReport.download')}`}
+          </button>
         </div>
       </div>
 

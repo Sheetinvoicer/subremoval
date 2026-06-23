@@ -886,6 +886,12 @@
       "pdf": "Esporta PDF",
       "print": "Stampa"
     },
+    "fullReport": {
+      "download": "Scarica report completo",
+      "downloading": "Generazione PDF...",
+      "downloaded": "Report completo scaricato!",
+      "failed": "Impossibile scaricare il report"
+    },
     "stats": {
       "totalRevenue": "Ricavi totali",
       "totalExpenses": "Spese totali",

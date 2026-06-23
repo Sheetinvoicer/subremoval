@@ -886,6 +886,12 @@
       "pdf": "PDF Dışa Aktar",
       "print": "Yazdır"
     },
+    "fullReport": {
+      "download": "Tam raporu indir",
+      "downloading": "PDF oluşturuluyor...",
+      "downloaded": "Tam rapor indirildi!",
+      "failed": "Rapor indirilemedi"
+    },
     "stats": {
       "totalRevenue": "Toplam Gelir",
       "totalExpenses": "Toplam Giderler",

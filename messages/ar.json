@@ -934,6 +934,12 @@
       "pdf": "تصدير PDF",
       "print": "طباعة"
     },
+    "fullReport": {
+      "download": "تنزيل التقرير الكامل",
+      "downloading": "جارٍ إنشاء PDF...",
+      "downloaded": "تم تنزيل التقرير الكامل!",
+      "failed": "فشل تنزيل التقرير"
+    },
     "stats": {
       "totalRevenue": "إجمالي الإيرادات",
       "totalExpenses": "إجمالي المصروفات",

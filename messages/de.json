@@ -886,6 +886,12 @@
       "pdf": "PDF exportieren",
       "print": "Drucken"
     },
+    "fullReport": {
+      "download": "Vollständigen Bericht herunterladen",
+      "downloading": "PDF wird erstellt...",
+      "downloaded": "Vollständiger Bericht heruntergeladen!",
+      "failed": "Bericht konnte nicht heruntergeladen werden"
+    },
     "stats": {
       "totalRevenue": "Gesamtumsatz",
       "totalExpenses": "Gesamtausgaben",
