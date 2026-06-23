@@ -50,7 +50,13 @@
       "newInvoice": "Yeni fatura",
       "selectPage": "Sayfayı seç",
       "unselectPage": "Sayfa seçimini kaldır",
-      "view": "Görüntüle →"
+      "view": "Görüntüle →",
+      "viewLabel": "Görüntüle",
+      "edit": "Düzenle",
+      "export": "Dışa aktar",
+      "exporting": "Dışa aktarılıyor...",
+      "exported": "Fatura dışa aktarıldı",
+      "exportFailed": "Fatura dışa aktarılamadı"
     },
     "draft": "Taslak",
     "sent": "Gönderildi",
@@ -68,7 +74,11 @@
       "failedSendInvoice": "Fatura gönderilemedi"
     },
     "filters": {
-      "allStatuses": "Tüm durumlar"
+      "allStatuses": "Tüm durumlar",
+      "all": "Tümü",
+      "paid": "Ödendi",
+      "pending": "Beklemede",
+      "overdue": "Gecikmiş"
     },
     "sort": {
       "newest": "En yeni",
@@ -91,7 +101,8 @@
       "bulkSending": "Gönderiliyor {completed}/{total}...",
       "sendSelected": "Seçilenleri gönder ({count})",
       "progress": "İlerleme: {completed}/{total} • Gönderildi: {sent} • Başarısız: {failed}",
-      "page": "Sayfa {page} / {total}"
+      "page": "Sayfa {page} / {total}",
+      "noResults": "Aramanızla eşleşen fatura yok"
     },
     "pagination": {
       "prev": "Önceki",
@@ -153,7 +164,8 @@
         "loginToCreate": "You must be logged in to create invoices.",
         "createFailed": "Failed to create invoice."
       },
-      "csvUploadLabel": "CSV'den öğeleri içe aktar (isteğe bağlı)"
+      "csvUploadLabel": "CSV'den öğeleri içe aktar (isteğe bağlı)",
+      "successAnimation": "Fatura oluşturuldu!"
     },
     "detail": {
       "createdLabel": "Created:",
@@ -188,7 +200,8 @@
       "failedConnect": "Failed to connect to database",
       "loginRequired": "Please login to view invoice details.",
       "supabaseInit": "Failed to initialize Supabase client."
-    }
+    },
+    "search": "Fatura ara..."
   },
   "clients": {
     "title": "Müşteriler",
@@ -419,7 +432,9 @@
       "reports": "Raporlar",
       "admin": "Admin",
       "settings": "Ayarlar"
-    }
+    },
+    "planLabel": "Plan",
+    "account": "Hesap"
   },
   "clientsPage": {
     "clients": "Müşteriler",
@@ -544,7 +559,20 @@
       "loadingTitle": "Gösterge Paneli Yüklenirken Hata",
       "supabaseInit": "Supabase istemcisi başlatılamadı",
       "verifySession": "Oturum doğrulanamadı"
-    }
+    },
+    "greeting": {
+      "morning": "Günaydın",
+      "afternoon": "İyi günler",
+      "evening": "İyi akşamlar"
+    },
+    "kpi": {
+      "totalRevenue": "Toplam Gelir",
+      "pendingInvoices": "Bekleyen Faturalar",
+      "paidThisMonth": "Bu Ay Ödenen",
+      "overdueAmount": "Geciken Tutar"
+    },
+    "vsLastMonth": "geçen aya göre",
+    "loading": "Yükleniyor..."
   },
   "expensesPage": {
     "title": "Giderler",
@@ -985,5 +1013,10 @@
     "notes": "ملاحظات",
     "status": "الحالة",
     "actions": "الإجراءات"
+  },
+  "header": {
+    "notifications": "Bildirimler",
+    "noNotifications": "Yeni bildirim yok",
+    "account": "Hesap"
   }
 }

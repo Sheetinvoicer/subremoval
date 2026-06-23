@@ -50,7 +50,13 @@
       "newInvoice": "Nova fatura",
       "selectPage": "Selecionar página",
       "unselectPage": "Desmarcar página",
-      "view": "Ver →"
+      "view": "Ver →",
+      "viewLabel": "Ver",
+      "edit": "Editar",
+      "export": "Exportar",
+      "exporting": "Exportando...",
+      "exported": "Fatura exportada",
+      "exportFailed": "Falha ao exportar a fatura"
     },
     "draft": "Rascunho",
     "sent": "Enviada",
@@ -68,7 +74,11 @@
       "failedSendInvoice": "Falha ao enviar a fatura"
     },
     "filters": {
-      "allStatuses": "Todos os status"
+      "allStatuses": "Todos os status",
+      "all": "Todas",
+      "paid": "Pagas",
+      "pending": "Pendentes",
+      "overdue": "Vencidas"
     },
     "sort": {
       "newest": "Mais recente",
@@ -91,7 +101,8 @@
       "bulkSending": "Enviando {completed}/{total}...",
       "sendSelected": "Enviar selecionadas ({count})",
       "progress": "Progresso: {completed}/{total} • Enviadas: {sent} • Falhas: {failed}",
-      "page": "Página {page} de {total}"
+      "page": "Página {page} de {total}",
+      "noResults": "Nenhuma fatura corresponde à sua pesquisa"
     },
     "pagination": {
       "prev": "Anterior",
@@ -153,7 +164,8 @@
         "loginToCreate": "You must be logged in to create invoices.",
         "createFailed": "Failed to create invoice."
       },
-      "csvUploadLabel": "Importar itens de CSV (opcional)"
+      "csvUploadLabel": "Importar itens de CSV (opcional)",
+      "successAnimation": "Fatura criada!"
     },
     "detail": {
       "createdLabel": "Created:",
@@ -188,7 +200,8 @@
       "failedConnect": "Failed to connect to database",
       "loginRequired": "Please login to view invoice details.",
       "supabaseInit": "Failed to initialize Supabase client."
-    }
+    },
+    "search": "Pesquisar faturas..."
   },
   "clients": {
     "title": "Clientes",
@@ -419,7 +432,9 @@
       "reports": "Relatórios",
       "admin": "Admin",
       "settings": "Configurações"
-    }
+    },
+    "planLabel": "Plano",
+    "account": "Conta"
   },
   "clientsPage": {
     "clients": "Clientes",
@@ -544,7 +559,20 @@
       "loadingTitle": "Erro ao carregar o painel",
       "supabaseInit": "Falha ao inicializar o cliente Supabase",
       "verifySession": "Falha ao verificar a sessão"
-    }
+    },
+    "greeting": {
+      "morning": "Bom dia",
+      "afternoon": "Boa tarde",
+      "evening": "Boa noite"
+    },
+    "kpi": {
+      "totalRevenue": "Receita total",
+      "pendingInvoices": "Faturas pendentes",
+      "paidThisMonth": "Pago este mês",
+      "overdueAmount": "Valor em atraso"
+    },
+    "vsLastMonth": "vs mês passado",
+    "loading": "Carregando..."
   },
   "expensesPage": {
     "title": "Despesas",
@@ -985,5 +1013,10 @@
     "notes": "ملاحظات",
     "status": "الحالة",
     "actions": "الإجراءات"
+  },
+  "header": {
+    "notifications": "Notificações",
+    "noNotifications": "Nenhuma notificação nova",
+    "account": "Conta"
   }
 }

@@ -50,7 +50,13 @@
       "newInvoice": "Neue Rechnung",
       "selectPage": "Seite auswählen",
       "unselectPage": "Seitenauswahl aufheben",
-      "view": "Ansehen →"
+      "view": "Ansehen →",
+      "viewLabel": "Ansehen",
+      "edit": "Bearbeiten",
+      "export": "Exportieren",
+      "exporting": "Exportieren...",
+      "exported": "Rechnung exportiert",
+      "exportFailed": "Export der Rechnung fehlgeschlagen"
     },
     "draft": "Entwurf",
     "sent": "Gesendet",
@@ -68,7 +74,11 @@
       "failedSendInvoice": "Rechnung konnte nicht gesendet werden"
     },
     "filters": {
-      "allStatuses": "Alle Status"
+      "allStatuses": "Alle Status",
+      "all": "Alle",
+      "paid": "Bezahlt",
+      "pending": "Ausstehend",
+      "overdue": "Überfällig"
     },
     "sort": {
       "newest": "Neueste",
@@ -91,7 +101,8 @@
       "bulkSending": "Sende {completed}/{total}...",
       "sendSelected": "Ausgewählte senden ({count})",
       "progress": "Fortschritt: {completed}/{total} • Gesendet: {sent} • Fehlgeschlagen: {failed}",
-      "page": "Seite {page} von {total}"
+      "page": "Seite {page} von {total}",
+      "noResults": "Keine Rechnungen entsprechen Ihrer Suche"
     },
     "pagination": {
       "prev": "Zurück",
@@ -153,7 +164,8 @@
         "loginToCreate": "You must be logged in to create invoices.",
         "createFailed": "Failed to create invoice."
       },
-      "csvUploadLabel": "Elemente aus CSV importieren (optional)"
+      "csvUploadLabel": "Elemente aus CSV importieren (optional)",
+      "successAnimation": "Rechnung erstellt!"
     },
     "detail": {
       "createdLabel": "Created:",
@@ -188,7 +200,8 @@
       "failedConnect": "Failed to connect to database",
       "loginRequired": "Please login to view invoice details.",
       "supabaseInit": "Failed to initialize Supabase client."
-    }
+    },
+    "search": "Rechnungen suchen..."
   },
   "clients": {
     "title": "Kunden",
@@ -419,7 +432,9 @@
       "reports": "Berichte",
       "admin": "Admin",
       "settings": "Einstellungen"
-    }
+    },
+    "planLabel": "Plan",
+    "account": "Konto"
   },
   "clientsPage": {
     "clients": "Kunden",
@@ -544,7 +559,20 @@
       "loadingTitle": "Fehler beim Laden des Dashboards",
       "supabaseInit": "Supabase-Client konnte nicht initialisiert werden",
       "verifySession": "Sitzung konnte nicht überprüft werden"
-    }
+    },
+    "greeting": {
+      "morning": "Guten Morgen",
+      "afternoon": "Guten Tag",
+      "evening": "Guten Abend"
+    },
+    "kpi": {
+      "totalRevenue": "Gesamtumsatz",
+      "pendingInvoices": "Ausstehende Rechnungen",
+      "paidThisMonth": "Diesen Monat bezahlt",
+      "overdueAmount": "Überfälliger Betrag"
+    },
+    "vsLastMonth": "ggü. letztem Monat",
+    "loading": "Wird geladen..."
   },
   "expensesPage": {
     "title": "Ausgaben",
@@ -985,5 +1013,10 @@
     "notes": "ملاحظات",
     "status": "الحالة",
     "actions": "الإجراءات"
+  },
+  "header": {
+    "notifications": "Benachrichtigungen",
+    "noNotifications": "Keine neuen Benachrichtigungen",
+    "account": "Konto"
   }
 }

@@ -58,7 +58,13 @@
       "newInvoice": "فاتورة جديدة",
       "selectPage": "تحديد الصفحة",
       "unselectPage": "إلغاء تحديد الصفحة",
-      "view": "عرض ←"
+      "view": "عرض ←",
+      "viewLabel": "عرض",
+      "edit": "تعديل",
+      "export": "تصدير",
+      "exporting": "جارٍ التصدير...",
+      "exported": "تم تصدير الفاتورة",
+      "exportFailed": "فشل تصدير الفاتورة"
     },
     "draft": "مسودة",
     "sent": "مرسلة",
@@ -76,7 +82,11 @@
       "failedSendInvoice": "فشل إرسال الفاتورة"
     },
     "filters": {
-      "allStatuses": "كل الحالات"
+      "allStatuses": "كل الحالات",
+      "all": "الكل",
+      "paid": "مدفوعة",
+      "pending": "قيد الانتظار",
+      "overdue": "متأخرة"
     },
     "sort": {
       "newest": "الأحدث",
@@ -99,7 +109,8 @@
       "bulkSending": "جاري الإرسال {completed}/{total}...",
       "sendSelected": "إرسال المحددة ({count})",
       "progress": "التقدم: {completed}/{total} • مرسلة: {sent} • فشل: {failed}",
-      "page": "الصفحة {page} من {total}"
+      "page": "الصفحة {page} من {total}",
+      "noResults": "لا توجد فواتير مطابقة لبحثك"
     },
     "pagination": {
       "prev": "السابق",
@@ -195,8 +206,10 @@
         "loginToCreate": "يجب تسجيل الدخول لإنشاء الفواتير.",
         "createFailed": "فشل إنشاء الفاتورة."
       },
-      "csvUploadLabel": "استيراد العناصر من ملف CSV (اختياري)"
-    }
+      "csvUploadLabel": "استيراد العناصر من ملف CSV (اختياري)",
+      "successAnimation": "تم إنشاء الفاتورة!"
+    },
+    "search": "ابحث في الفواتير..."
   },
   "clients": {
     "title": "العملاء",
@@ -463,7 +476,20 @@
       "loadingTitle": "خطأ في تحميل لوحة التحكم",
       "supabaseInit": "فشل تهيئة عميل Supabase",
       "verifySession": "فشل التحقق من الجلسة"
-    }
+    },
+    "greeting": {
+      "morning": "صباح الخير",
+      "afternoon": "مساء الخير",
+      "evening": "مساء الخير"
+    },
+    "kpi": {
+      "totalRevenue": "إجمالي الإيرادات",
+      "pendingInvoices": "الفواتير المعلقة",
+      "paidThisMonth": "المدفوع هذا الشهر",
+      "overdueAmount": "المبلغ المتأخر"
+    },
+    "vsLastMonth": "مقارنة بالشهر الماضي",
+    "loading": "جارٍ التحميل..."
   },
   "recurring": {
     "title": "الفواتير المتكررة",
@@ -592,7 +618,9 @@
       "reports": "التقارير",
       "admin": "الإدارة",
       "settings": "الإعدادات"
-    }
+    },
+    "planLabel": "الخطة",
+    "account": "الحساب"
   },
   "expensesPage": {
     "title": "المصروفات",
@@ -985,5 +1013,10 @@
       "loadFailed": "فشل تحميل التقارير",
       "insightsFailed": "فشل توليد التحليلات"
     }
+  },
+  "header": {
+    "notifications": "الإشعارات",
+    "noNotifications": "لا توجد إشعارات جديدة",
+    "account": "الحساب"
   }
 }

@@ -2,6 +2,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import ConsentAwareAnalytics from '@/components/ConsentAwareAnalytics'
 import CookieConsentBanner from '@/components/CookieConsentBanner'
+import PageTransition from '@/components/PageTransition'
 import { Toaster } from 'react-hot-toast'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
@@ -41,11 +42,23 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={direction} suppressHydrationWarning>
-      <body>
+      <body className="min-h-screen bg-background text-text-primary">
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>
-            {children}
-            <Toaster position="top-right" />
+            <PageTransition>{children}</PageTransition>
+            <Toaster
+              position="bottom-right"
+              toastOptions={{
+                style: {
+                  background: '#1A1A1A',
+                  color: '#FFFFFF',
+                  border: '1px solid #2A2A2A',
+                  borderRadius: '12px',
+                },
+                success: { iconTheme: { primary: '#10B981', secondary: '#1A1A1A' } },
+                error: { iconTheme: { primary: '#EF4444', secondary: '#1A1A1A' } },
+              }}
+            />
             <CookieConsentBanner />
             <ConsentAwareAnalytics />
           </ThemeProvider>

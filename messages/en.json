@@ -58,7 +58,13 @@
       "newInvoice": "New Invoice",
       "selectPage": "Select page",
       "unselectPage": "Unselect page",
-      "view": "View →"
+      "view": "View →",
+      "viewLabel": "View",
+      "edit": "Edit",
+      "export": "Export",
+      "exporting": "Exporting...",
+      "exported": "Invoice exported",
+      "exportFailed": "Failed to export invoice"
     },
     "draft": "Draft",
     "sent": "Sent",
@@ -76,7 +82,11 @@
       "failedSendInvoice": "Failed to send invoice"
     },
     "filters": {
-      "allStatuses": "All statuses"
+      "allStatuses": "All statuses",
+      "all": "All",
+      "paid": "Paid",
+      "pending": "Pending",
+      "overdue": "Overdue"
     },
     "sort": {
       "newest": "Newest",
@@ -99,7 +109,8 @@
       "bulkSending": "Sending {completed}/{total}...",
       "sendSelected": "Send selected ({count})",
       "progress": "Progress: {completed}/{total} • Sent: {sent} • Failed: {failed}",
-      "page": "Page {page} of {total}"
+      "page": "Page {page} of {total}",
+      "noResults": "No invoices match your search"
     },
     "pagination": {
       "prev": "Prev",
@@ -195,8 +206,10 @@
         "loginToCreate": "You must be logged in to create invoices.",
         "createFailed": "Failed to create invoice."
       },
-      "csvUploadLabel": "Import items from CSV (optional)"
-    }
+      "csvUploadLabel": "Import items from CSV (optional)",
+      "successAnimation": "Invoice created!"
+    },
+    "search": "Search invoices..."
   },
   "clients": {
     "title": "Clients",
@@ -493,7 +506,9 @@
       "reports": "Reports",
       "admin": "Admin",
       "settings": "Settings"
-    }
+    },
+    "planLabel": "Plan",
+    "account": "Account"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -552,7 +567,20 @@
       "loadingTitle": "Error Loading Dashboard",
       "supabaseInit": "Failed to initialize Supabase client",
       "verifySession": "Failed to verify session"
-    }
+    },
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "kpi": {
+      "totalRevenue": "Total Revenue",
+      "pendingInvoices": "Pending Invoices",
+      "paidThisMonth": "Paid This Month",
+      "overdueAmount": "Overdue Amount"
+    },
+    "vsLastMonth": "vs last month",
+    "loading": "Loading..."
   },
   "expensesPage": {
     "title": "Expenses",
@@ -985,5 +1013,10 @@
     "notes": "ملاحظات",
     "status": "الحالة",
     "actions": "الإجراءات"
+  },
+  "header": {
+    "notifications": "Notifications",
+    "noNotifications": "No new notifications",
+    "account": "Account"
   }
 }

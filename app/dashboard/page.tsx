@@ -6,12 +6,84 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
 import toast from 'react-hot-toast';
-import { Tooltip, TooltipProvider } from '@/components/Tooltip';
+import { TooltipProvider } from '@/components/Tooltip';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
 import { format, subDays, subMonths, startOfMonth, endOfMonth } from 'date-fns';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import Badge from '@/components/ui/Badge';
+import {
+  DollarSign,
+  Clock,
+  CheckCircle2,
+  AlertTriangle,
+  TrendingUp,
+  TrendingDown,
+  Download,
+  Plus,
+  ArrowRight,
+  Inbox,
+  FileText,
+} from 'lucide-react';
+
+// Animated number that counts up on mount / value change.
+function AnimatedNumber({
+  value,
+  prefix = '',
+  decimals = 0,
+}: {
+  value: number;
+  prefix?: string;
+  decimals?: number;
+}) {
+  const [display, setDisplay] = useState(0);
+  const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const duration = 900;
+    const start = performance.now();
+    const from = 0;
+    const animate = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(from + (value - from) * eased);
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(animate);
+      }
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [value]);
+
+  return (
+    <span>
+      {prefix}
+      {display.toLocaleString(undefined, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      })}
+    </span>
+  );
+}
+
+function ChangeIndicator({ change }: { change: number }) {
+  const positive = change >= 0;
+  return (
+    <span
+      className={`inline-flex items-center gap-0.5 text-xs font-medium ${
+        positive ? 'text-success' : 'text-red-400'
+      }`}
+    >
+      {positive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+      {Math.abs(change).toFixed(0)}%
+    </span>
+  );
+}
 
 // ===== TYPE DEFINITIONS =====
 interface Invoice {
@@ -34,6 +106,13 @@ interface Stats {
   totalClients: number;
   totalExpenses: number;
   growth: number;
+  paidThisMonth: number;
+  overdueAmount: number;
+  pendingCount: number;
+  revenueChange: number;
+  pendingChange: number;
+  paidThisMonthChange: number;
+  overdueChange: number;
 }
 
 interface RevenueDataPoint {
@@ -66,8 +145,16 @@ export default function DashboardPage() {
     overdueInvoices: 0,
     totalClients: 0,
     totalExpenses: 0,
-    growth: 0
+    growth: 0,
+    paidThisMonth: 0,
+    overdueAmount: 0,
+    pendingCount: 0,
+    revenueChange: 0,
+    pendingChange: 0,
+    paidThisMonthChange: 0,
+    overdueChange: 0
   });
+  const [userName, setUserName] = useState<string>('');
   const [recentInvoices, setRecentInvoices] = useState<Invoice[]>([]);
   const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
   const [statusData, setStatusData] = useState<StatusDataPoint[]>([]);
@@ -149,6 +236,13 @@ export default function DashboardPage() {
         return;
       }
 
+      const meta = authData.user?.user_metadata as Record<string, unknown> | undefined;
+      setUserName(
+        (meta?.full_name as string | undefined) ||
+          (meta?.name as string | undefined) ||
+          (authData.user?.email ? authData.user.email.split('@')[0] : '')
+      );
+
       const [invoicesRes, clientsRes, expensesRes] = await Promise.all([
         supabase
           .from('invoices')
@@ -180,7 +274,44 @@ export default function DashboardPage() {
       const totalRevenue = paidInvoices.reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
       const pendingAmount = pendingInvoices.reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
       const totalExpenses = expenses.reduce((s: number, e: any) => s + (e.amount || 0), 0);
-      
+      const overdueAmount = overdueInvoices.reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
+
+      // Month-over-month comparisons.
+      const now2 = new Date();
+      const thisMonthStart = startOfMonth(now2);
+      const thisMonthEnd = endOfMonth(now2);
+      const lastMonthDate = subMonths(now2, 1);
+      const lastMonthStart = startOfMonth(lastMonthDate);
+      const lastMonthEnd = endOfMonth(lastMonthDate);
+      const inRange = (d: string, start: Date, end: Date) => {
+        const dt = new Date(d);
+        return dt >= start && dt <= end;
+      };
+      const pct = (curr: number, prev: number) => {
+        if (prev === 0) return curr > 0 ? 100 : 0;
+        return ((curr - prev) / prev) * 100;
+      };
+
+      const paidThisMonth = paidInvoices
+        .filter((i: Invoice) => inRange(i.created_at, thisMonthStart, thisMonthEnd))
+        .reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
+      const paidLastMonth = paidInvoices
+        .filter((i: Invoice) => inRange(i.created_at, lastMonthStart, lastMonthEnd))
+        .reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
+      const revenueThisMonth = paidThisMonth;
+      const pendingThisMonth = pendingInvoices.filter((i: Invoice) =>
+        inRange(i.created_at, thisMonthStart, thisMonthEnd)
+      ).length;
+      const pendingLastMonth = pendingInvoices.filter((i: Invoice) =>
+        inRange(i.created_at, lastMonthStart, lastMonthEnd)
+      ).length;
+      const overdueThisMonth = overdueInvoices
+        .filter((i: Invoice) => inRange(i.created_at, thisMonthStart, thisMonthEnd))
+        .reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
+      const overdueLastMonth = overdueInvoices
+        .filter((i: Invoice) => inRange(i.created_at, lastMonthStart, lastMonthEnd))
+        .reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
+
       setStats({
         totalRevenue,
         netProfit: totalRevenue - totalExpenses,
@@ -190,7 +321,14 @@ export default function DashboardPage() {
         overdueInvoices: overdueInvoices.length,
         totalClients: clients.length,
         totalExpenses,
-        growth: 0
+        growth: 0,
+        paidThisMonth,
+        overdueAmount,
+        pendingCount: pendingInvoices.length,
+        revenueChange: pct(revenueThisMonth, paidLastMonth),
+        pendingChange: pct(pendingThisMonth, pendingLastMonth),
+        paidThisMonthChange: pct(paidThisMonth, paidLastMonth),
+        overdueChange: pct(overdueThisMonth, overdueLastMonth)
       });
       
       setRecentInvoices(invoices.slice(0, 5));
@@ -258,10 +396,10 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <TooltipProvider>
-        <div className="flex justify-center items-center h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="flex justify-center items-center min-h-[60vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-purple-600 mx-auto mb-4"></div>
-            <p className="text-gray-500">{t('loading')}</p>
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-accent mx-auto mb-4"></div>
+            <p className="text-text-secondary">{t('loading')}</p>
           </div>
         </div>
       </TooltipProvider>
@@ -272,18 +410,15 @@ export default function DashboardPage() {
   if (error) {
     return (
       <TooltipProvider>
-        <div className="flex justify-center items-center h-screen bg-gray-50 dark:bg-gray-900">
-          <div className="text-center bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg max-w-md">
-            <div className="text-5xl mb-4">⚠️</div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('errors.loadingTitle')}</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
-            >
-              {t('actions.tryAgain')}
-            </button>
-          </div>
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <Card hoverGlow={false} className="text-center max-w-md">
+            <div className="flex justify-center mb-4">
+              <AlertTriangle size={44} className="text-red-400" />
+            </div>
+            <h2 className="text-xl font-bold text-text-primary mb-2">{t('errors.loadingTitle')}</h2>
+            <p className="text-text-secondary mb-4">{error}</p>
+            <Button onClick={() => window.location.reload()}>{t('actions.tryAgain')}</Button>
+          </Card>
         </div>
       </TooltipProvider>
     );
@@ -291,35 +426,99 @@ export default function DashboardPage() {
 
   const hasData = stats.totalInvoices > 0 || stats.totalRevenue > 0;
 
+  const hour = new Date().getHours();
+  const greetingKey =
+    hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
+  const todayLabel = new Date().toLocaleDateString(undefined, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const kpiCards = [
+    {
+      label: t('kpi.totalRevenue'),
+      value: stats.totalRevenue,
+      prefix: '$',
+      change: stats.revenueChange,
+      Icon: DollarSign,
+      iconClass: 'text-success bg-success/10',
+      link: '/dashboard/invoices',
+      filter: 'paid',
+    },
+    {
+      label: t('kpi.pendingInvoices'),
+      value: stats.pendingAmount,
+      prefix: '$',
+      change: stats.pendingChange,
+      Icon: Clock,
+      iconClass: 'text-yellow-400 bg-yellow-400/10',
+      link: '/dashboard/invoices',
+      filter: 'pending',
+    },
+    {
+      label: t('kpi.paidThisMonth'),
+      value: stats.paidThisMonth,
+      prefix: '$',
+      change: stats.paidThisMonthChange,
+      Icon: CheckCircle2,
+      iconClass: 'text-accent bg-accent/10',
+      link: '/dashboard/invoices',
+      filter: 'paid',
+    },
+    {
+      label: t('kpi.overdueAmount'),
+      value: stats.overdueAmount,
+      prefix: '$',
+      change: stats.overdueChange,
+      Icon: AlertTriangle,
+      iconClass: 'text-red-400 bg-red-400/10',
+      link: '/dashboard/invoices',
+      filter: 'overdue',
+    },
+  ];
+
+  const statusBadgeVariant = (status?: string): 'success' | 'accent' | 'default' => {
+    if (status === 'paid') return 'success';
+    if (status === 'overdue') return 'default';
+    return 'accent';
+  };
+
   return (
     <TooltipProvider>
-      <div ref={dashboardRef} className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 md:p-8">
-        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div ref={dashboardRef} className="min-h-screen bg-background text-text-primary">
+        {/* Header section */}
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-2">{t('welcome')}</p>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{new Date().toLocaleDateString()}</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-text-primary">
+              {t(`greeting.${greetingKey}`)}
+              {userName ? `, ${userName}` : ''} <span className="inline-block">👋</span>
+            </h1>
+            <p className="mt-1 text-sm text-text-secondary">{todayLabel}</p>
           </div>
-          <button
-            data-html2canvas-ignore="true"
-            onClick={downloadDashboard}
-            disabled={downloading}
-            className="self-start bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors shadow-md disabled:opacity-70"
-          >
-            {downloading ? t('actions.downloadingDashboard') : `⬇ ${t('actions.downloadDashboard')}`}
-          </button>
+          <div className="flex items-center gap-2" data-html2canvas-ignore="true">
+            <Button variant="secondary" loading={downloading} onClick={downloadDashboard}>
+              {!downloading && <Download size={16} />}
+              {downloading ? t('actions.downloadingDashboard') : t('actions.downloadDashboard')}
+            </Button>
+            <Button onClick={() => navigateTo('/dashboard/invoices/new')}>
+              <Plus size={16} />
+              {t('actions.createInvoice')}
+            </Button>
+          </div>
         </div>
 
         {/* Period Selector */}
-        <div className="flex gap-2 mb-6">
-          {['week', 'month', 'year'].map(period => (
+        <div className="mb-6 inline-flex gap-1 rounded-button border border-border bg-surface p-1">
+          {['week', 'month', 'year'].map((period) => (
             <button
               key={period}
               onClick={() => setSelectedPeriod(period)}
-              className={`px-4 py-2 rounded-lg font-medium capitalize transition-all ${
-                selectedPeriod === period 
-                  ? 'bg-purple-600 text-white shadow-md' 
-                  : 'bg-white dark:bg-gray-800 border text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+              className={`rounded-button px-4 py-1.5 text-sm font-medium transition-all duration-250 ${
+                selectedPeriod === period
+                  ? 'bg-accent text-white shadow-glow-sm'
+                  : 'text-text-secondary hover:text-white'
               }`}
             >
               {t(`period.${period}`)}
@@ -327,218 +526,176 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Empty State */}
-        {!hasData ? (
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-2xl border border-purple-200 dark:border-purple-800 p-8 md:p-12 text-center mb-8">
-            <div className="text-7xl mb-4">📭</div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{t('noInvoices')}</h3>
-            <p className="text-gray-500 dark:text-gray-400 mb-4 max-w-md mx-auto">
-              {t('createFirstInvoice')}
-            </p>
-            <button 
-              onClick={() => navigateTo('/dashboard/invoices/new')}
-              className="bg-purple-600 text-white px-5 py-2.5 rounded-lg hover:bg-purple-700 transition-colors shadow-md"
-            >
-              + {t('actions.createInvoice')}
-            </button>
-          </div>
-        ) : (
-          // Stats Cards
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <Tooltip content={t('tooltips.totalRevenue')}>
-              <div onClick={() => navigateTo('/dashboard/invoices', 'paid')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
-                <div className="flex justify-between">
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase tracking-wide">{t('revenue')}</p>
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">${stats.totalRevenue.toLocaleString()}</p>
+        {/* KPI Cards */}
+        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {kpiCards.map((kpi) => {
+            const Icon = kpi.Icon;
+            return (
+              <Card
+                key={kpi.label}
+                onClick={() => navigateTo(kpi.link, kpi.filter)}
+                className="cursor-pointer"
+              >
+                <div className="flex items-start justify-between">
+                  <div className={`rounded-button p-2 ${kpi.iconClass}`}>
+                    <Icon size={20} />
                   </div>
-                  <div className="text-2xl">💰</div>
+                  <ChangeIndicator change={kpi.change} />
                 </div>
-              </div>
-            </Tooltip>
-            
-            <Tooltip content={t('tooltips.netProfit')}>
-              <div onClick={() => navigateTo('/dashboard/reports')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
-                <div className="flex justify-between">
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase tracking-wide">{t('netProfit')}</p>
-                    <p className="text-xl font-bold text-green-600">${stats.netProfit.toLocaleString()}</p>
-                  </div>
-                  <div className="text-2xl">📈</div>
-                </div>
-              </div>
-            </Tooltip>
-            
-            <Tooltip content={t('tooltips.pendingInvoices')}>
-              <div onClick={() => navigateTo('/dashboard/invoices', 'pending')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
-                <div className="flex justify-between">
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase tracking-wide">{t('pending')}</p>
-                    <p className="text-xl font-bold text-yellow-600">${stats.pendingAmount.toLocaleString()}</p>
-                  </div>
-                  <div className="text-2xl">⏳</div>
-                </div>
-              </div>
-            </Tooltip>
-            
-            <Tooltip content={t('tooltips.allInvoices')}>
-              <div onClick={() => navigateTo('/dashboard/invoices')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
-                <div className="flex justify-between">
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase tracking-wide">{t('totalInvoices')}</p>
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.totalInvoices}</p>
-                  </div>
-                  <div className="text-2xl">📄</div>
-                </div>
-              </div>
-            </Tooltip>
-            
-            <Tooltip content={t('tooltips.paidInvoices')}>
-              <div onClick={() => navigateTo('/dashboard/invoices', 'paid')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
-                <div className="flex justify-between">
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase tracking-wide">{t('paid')}</p>
-                    <p className="text-xl font-bold text-green-600">{stats.paidInvoices}</p>
-                  </div>
-                  <div className="text-2xl">✅</div>
-                </div>
-              </div>
-            </Tooltip>
-            
-            <Tooltip content={t('tooltips.totalClients')}>
-              <div onClick={() => navigateTo('/dashboard/clients')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
-                <div className="flex justify-between">
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase tracking-wide">{t('clients')}</p>
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.totalClients}</p>
-                  </div>
-                  <div className="text-2xl">👥</div>
-                </div>
-              </div>
-            </Tooltip>
-            
-            <Tooltip content={t('tooltips.overdueInvoices')}>
-              <div onClick={() => navigateTo('/dashboard/invoices', 'overdue')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
-                <div className="flex justify-between">
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase tracking-wide">{t('overdue')}</p>
-                    <p className="text-xl font-bold text-red-600">{stats.overdueInvoices}</p>
-                  </div>
-                  <div className="text-2xl">⚠️</div>
-                </div>
-              </div>
-            </Tooltip>
-            
-            <Tooltip content={t('tooltips.totalExpenses')}>
-              <div onClick={() => navigateTo('/dashboard/expenses')} className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4 cursor-pointer hover:shadow-lg transition-all hover:scale-[1.02]">
-                <div className="flex justify-between">
-                  <div>
-                    <p className="text-gray-500 text-xs uppercase tracking-wide">{t('expenses')}</p>
-                    <p className="text-xl font-bold text-red-600">${stats.totalExpenses.toLocaleString()}</p>
-                  </div>
-                  <div className="text-2xl">💰</div>
-                </div>
-              </div>
-            </Tooltip>
-          </div>
-        )}
+                <p className="mt-4 text-xs uppercase tracking-wide text-text-secondary">
+                  {kpi.label}
+                </p>
+                <p className="mt-1 text-2xl font-bold text-text-primary">
+                  <AnimatedNumber value={kpi.value} prefix={kpi.prefix} />
+                </p>
+                <p className="mt-1 text-[11px] text-text-secondary">{t('vsLastMonth')}</p>
+              </Card>
+            );
+          })}
+        </div>
 
-        {/* Charts */}
+        {/* Quick Stats Chart */}
         {hasData && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4">
-              <h2 className="font-bold mb-3">{t('revenueTrend')}</h2>
+          <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <Card hoverGlow={false}>
+              <h2 className="mb-3 font-semibold text-text-primary">{t('revenueTrend')}</h2>
               <ResponsiveContainer width="100%" height={250}>
                 <AreaChart data={revenueData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <RechartsTooltip />
-                  <Area type="monotone" dataKey="revenue" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.3} />
+                  <defs>
+                    <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#6366F1" stopOpacity={0.5} />
+                      <stop offset="100%" stopColor="#6366F1" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" />
+                  <XAxis dataKey="name" stroke="#A1A1AA" fontSize={12} tickLine={false} />
+                  <YAxis stroke="#A1A1AA" fontSize={12} tickLine={false} axisLine={false} />
+                  <RechartsTooltip
+                    contentStyle={{
+                      backgroundColor: '#1A1A1A',
+                      border: '1px solid #2A2A2A',
+                      borderRadius: 12,
+                      color: '#FFFFFF',
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="#6366F1"
+                    strokeWidth={2}
+                    fill="url(#revGradient)"
+                  />
                 </AreaChart>
               </ResponsiveContainer>
-            </div>
-            
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4">
-              <h2 className="font-bold mb-3">{t('invoiceStatus')}</h2>
+            </Card>
+
+            <Card hoverGlow={false}>
+              <h2 className="mb-3 font-semibold text-text-primary">{t('invoiceStatus')}</h2>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
-                  <Pie 
-                    data={statusData} 
-                    cx="50%" 
-                    cy="50%" 
-                    innerRadius={50} 
-                    outerRadius={80} 
-                    dataKey="value" 
+                  <Pie
+                    data={statusData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={80}
+                    dataKey="value"
                     label
                   >
                     {statusData.map((entry, index) => (
-                      <Cell 
-                        key={index} 
-                        fill={entry.color} 
-                        style={{ cursor: 'pointer' }} 
-                        onClick={() => navigateTo(entry.link)} 
+                      <Cell
+                        key={index}
+                        fill={entry.color}
+                        stroke="#1A1A1A"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => navigateTo(entry.link)}
                       />
                     ))}
                   </Pie>
-                  <RechartsTooltip />
-                  <Legend onClick={(e) => {
-                    const item = statusData.find(d => d.name === e.value);
-                    if (item) navigateTo(item.link);
-                  }} />
+                  <RechartsTooltip
+                    contentStyle={{
+                      backgroundColor: '#1A1A1A',
+                      border: '1px solid #2A2A2A',
+                      borderRadius: 12,
+                      color: '#FFFFFF',
+                    }}
+                  />
+                  <Legend
+                    wrapperStyle={{ color: '#A1A1AA' }}
+                    onClick={(e) => {
+                      const item = statusData.find((d) => d.name === e.value);
+                      if (item) navigateTo(item.link);
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
-            </div>
+            </Card>
           </div>
         )}
 
-        {/* Recent Invoices */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow border p-4">
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="font-bold">{t('recentInvoices')}</h2>
-            <button onClick={() => navigateTo('/dashboard/invoices')} className="text-purple-600 text-sm hover:text-purple-700 transition-colors">
-              {t('actions.viewAll')} →
+        {/* Recent Invoices Table */}
+        <Card hoverGlow={false} className="p-0 overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+            <h2 className="font-semibold text-text-primary">{t('recentInvoices')}</h2>
+            <button
+              onClick={() => navigateTo('/dashboard/invoices')}
+              className="inline-flex items-center gap-1 text-sm text-accent transition-colors hover:text-accent-secondary"
+            >
+              {t('actions.viewAll')} <ArrowRight size={14} />
             </button>
           </div>
+
           {recentInvoices.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="text-4xl mb-2">📄</div>
-              <p className="text-gray-500">{t('noInvoicesYet')}</p>
-              <button 
-                onClick={() => navigateTo('/dashboard/invoices/new')}
-                className="mt-2 text-purple-600 hover:text-purple-700 text-sm"
-              >
-                {t('actions.createFirstInvoice')} →
-              </button>
+            <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
+                <Inbox size={28} className="text-accent" />
+              </div>
+              <p className="mb-1 font-medium text-text-primary">{t('noInvoicesYet')}</p>
+              <p className="mb-4 max-w-xs text-sm text-text-secondary">{t('createFirstInvoice')}</p>
+              <Button onClick={() => navigateTo('/dashboard/invoices/new')}>
+                <Plus size={16} />
+                {t('actions.createInvoice')}
+              </Button>
             </div>
           ) : (
-            <div className="space-y-2">
-              {recentInvoices.map((inv, idx) => (
-                <div 
-                  key={idx} 
-                  onClick={() => navigateTo(`/dashboard/invoices/${inv.id}`)} 
-                  className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className={`text-2xl ${inv.status === 'paid' ? 'text-green-500' : 'text-yellow-500'}`}>
-                      {inv.status === 'paid' ? '✅' : '📄'}
-                    </span>
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">{inv.invoice_number || t('invoice')}</p>
-                      <p className="text-xs text-gray-500">{t('due')}: {inv.due_date ? new Date(inv.due_date).toLocaleDateString() : t('notAvailable')}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-gray-900 dark:text-white">{inv.currency || 'USD'} {inv.total?.toFixed(2) || '0.00'}</p>
-                    <p className={`text-xs font-medium ${inv.status === 'paid' ? 'text-green-500' : 'text-yellow-500'}`}>
-                      {t(`status.${inv.status || 'draft'}`)}
-                    </p>
-                  </div>
-                </div>
-              ))}
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-text-secondary">
+                    <th className="px-6 py-3 font-medium">{t('invoice')}</th>
+                    <th className="px-6 py-3 font-medium">{t('due')}</th>
+                    <th className="px-6 py-3 font-medium text-right">{t('revenue')}</th>
+                    <th className="px-6 py-3 font-medium text-right">{t('invoiceStatus')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentInvoices.map((inv, idx) => (
+                    <tr
+                      key={idx}
+                      onClick={() => navigateTo(`/dashboard/invoices/${inv.id}`)}
+                      className="cursor-pointer border-b border-border/60 transition-colors hover:bg-white/5"
+                    >
+                      <td className="px-6 py-4 font-medium text-text-primary">
+                        {inv.invoice_number || t('invoice')}
+                      </td>
+                      <td className="px-6 py-4 text-text-secondary">
+                        {inv.due_date ? new Date(inv.due_date).toLocaleDateString() : t('notAvailable')}
+                      </td>
+                      <td className="px-6 py-4 text-right font-semibold text-text-primary">
+                        {inv.currency || 'USD'} {inv.total?.toFixed(2) || '0.00'}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <Badge variant={statusBadgeVariant(inv.status)}>
+                          {t(`status.${inv.status || 'draft'}`)}
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
-        </div>
+        </Card>
       </div>
     </TooltipProvider>
   );

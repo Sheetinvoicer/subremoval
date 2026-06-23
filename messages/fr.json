@@ -58,7 +58,13 @@
       "newInvoice": "Nouvelle facture",
       "selectPage": "Sélectionner la page",
       "unselectPage": "Désélectionner la page",
-      "view": "Voir →"
+      "view": "Voir →",
+      "viewLabel": "Voir",
+      "edit": "Modifier",
+      "export": "Exporter",
+      "exporting": "Exportation...",
+      "exported": "Facture exportée",
+      "exportFailed": "Échec de l'exportation de la facture"
     },
     "draft": "Brouillon",
     "sent": "Envoyée",
@@ -76,7 +82,11 @@
       "failedSendInvoice": "Échec de l'envoi de la facture"
     },
     "filters": {
-      "allStatuses": "Tous les statuts"
+      "allStatuses": "Tous les statuts",
+      "all": "Toutes",
+      "paid": "Payées",
+      "pending": "En attente",
+      "overdue": "En retard"
     },
     "sort": {
       "newest": "Plus récent",
@@ -99,7 +109,8 @@
       "bulkSending": "Envoi {completed}/{total}...",
       "sendSelected": "Envoyer la sélection ({count})",
       "progress": "Progression : {completed}/{total} • Envoyées : {sent} • Échouées : {failed}",
-      "page": "Page {page} sur {total}"
+      "page": "Page {page} sur {total}",
+      "noResults": "Aucune facture ne correspond à votre recherche"
     },
     "pagination": {
       "prev": "Précédent",
@@ -195,8 +206,10 @@
         "loginToCreate": "Vous devez être connecté pour créer des factures.",
         "createFailed": "Échec de la création de la facture."
       },
-      "csvUploadLabel": "Importer des éléments depuis un CSV (facultatif)"
-    }
+      "csvUploadLabel": "Importer des éléments depuis un CSV (facultatif)",
+      "successAnimation": "Facture créée !"
+    },
+    "search": "Rechercher des factures..."
   },
   "clients": {
     "title": "Clients",
@@ -427,7 +440,9 @@
       "reports": "Rapports",
       "admin": "Admin",
       "settings": "Paramètres"
-    }
+    },
+    "planLabel": "Forfait",
+    "account": "Compte"
   },
   "clientsPage": {
     "clients": "Clients",
@@ -552,7 +567,20 @@
       "loadingTitle": "Erreur de chargement du tableau de bord",
       "supabaseInit": "Échec de l'initialisation du client Supabase",
       "verifySession": "Échec de la vérification de la session"
-    }
+    },
+    "greeting": {
+      "morning": "Bonjour",
+      "afternoon": "Bon après-midi",
+      "evening": "Bonsoir"
+    },
+    "kpi": {
+      "totalRevenue": "Revenu total",
+      "pendingInvoices": "Factures en attente",
+      "paidThisMonth": "Payé ce mois-ci",
+      "overdueAmount": "Montant en retard"
+    },
+    "vsLastMonth": "vs mois dernier",
+    "loading": "Chargement..."
   },
   "expensesPage": {
     "title": "Dépenses",
@@ -985,5 +1013,10 @@
     "notes": "ملاحظات",
     "status": "الحالة",
     "actions": "الإجراءات"
+  },
+  "header": {
+    "notifications": "Notifications",
+    "noNotifications": "Aucune nouvelle notification",
+    "account": "Compte"
   }
 }

@@ -25,8 +25,8 @@ function SuccessContent() {
   if (loading) {
     return (
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="mt-4 text-gray-600">Verifying your subscription...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto"></div>
+        <p className="mt-4 text-text-secondary">Verifying your subscription...</p>
       </div>
     )
   }
@@ -57,8 +57,8 @@ export default function SubscriptionSuccessPage() {
     <div className="max-w-2xl mx-auto text-center py-20">
       <Suspense fallback={
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto"></div>
+          <p className="mt-4 text-text-secondary">Loading...</p>
         </div>
       }>
         <SuccessContent />

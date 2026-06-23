@@ -58,7 +58,13 @@
       "newInvoice": "Nueva Factura",
       "selectPage": "Seleccionar página",
       "unselectPage": "Deseleccionar página",
-      "view": "Ver →"
+      "view": "Ver →",
+      "viewLabel": "Ver",
+      "edit": "Editar",
+      "export": "Exportar",
+      "exporting": "Exportando...",
+      "exported": "Factura exportada",
+      "exportFailed": "Error al exportar la factura"
     },
     "draft": "Borrador",
     "sent": "Enviada",
@@ -76,7 +82,11 @@
       "failedSendInvoice": "Error al enviar la factura"
     },
     "filters": {
-      "allStatuses": "Todos los estados"
+      "allStatuses": "Todos los estados",
+      "all": "Todas",
+      "paid": "Pagadas",
+      "pending": "Pendientes",
+      "overdue": "Vencidas"
     },
     "sort": {
       "newest": "Más reciente",
@@ -99,7 +109,8 @@
       "bulkSending": "Enviando {completed}/{total}...",
       "sendSelected": "Enviar seleccionadas ({count})",
       "progress": "Progreso: {completed}/{total} • Enviadas: {sent} • Fallidas: {failed}",
-      "page": "Página {page} de {total}"
+      "page": "Página {page} de {total}",
+      "noResults": "Ninguna factura coincide con tu búsqueda"
     },
     "pagination": {
       "prev": "Anterior",
@@ -195,8 +206,10 @@
         "loginToCreate": "Debes iniciar sesión para crear facturas.",
         "createFailed": "Error al crear la factura."
       },
-      "csvUploadLabel": "Importar elementos desde CSV (opcional)"
-    }
+      "csvUploadLabel": "Importar elementos desde CSV (opcional)",
+      "successAnimation": "¡Factura creada!"
+    },
+    "search": "Buscar facturas..."
   },
   "clients": {
     "title": "Clientes",
@@ -427,7 +440,9 @@
       "reports": "Informes",
       "admin": "Admin",
       "settings": "Configuración"
-    }
+    },
+    "planLabel": "Plan",
+    "account": "Cuenta"
   },
   "clientsPage": {
     "clients": "Clientes",
@@ -552,7 +567,20 @@
       "loadingTitle": "Error al Cargar el Panel",
       "supabaseInit": "Error al inicializar el cliente Supabase",
       "verifySession": "Error al verificar la sesión"
-    }
+    },
+    "greeting": {
+      "morning": "Buenos días",
+      "afternoon": "Buenas tardes",
+      "evening": "Buenas noches"
+    },
+    "kpi": {
+      "totalRevenue": "Ingresos totales",
+      "pendingInvoices": "Facturas pendientes",
+      "paidThisMonth": "Pagado este mes",
+      "overdueAmount": "Importe vencido"
+    },
+    "vsLastMonth": "vs mes pasado",
+    "loading": "Cargando..."
   },
   "expensesPage": {
     "title": "Gastos",
@@ -985,5 +1013,10 @@
     "notes": "ملاحظات",
     "status": "الحالة",
     "actions": "الإجراءات"
+  },
+  "header": {
+    "notifications": "Notificaciones",
+    "noNotifications": "No hay notificaciones nuevas",
+    "account": "Cuenta"
   }
 }

@@ -42,7 +42,7 @@ export default function Button({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`rounded-lg font-medium transition-colors ${variants[variant]} ${sizes[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
+      className={`rounded-lg font-medium transition-all duration-200 ${disabled ? '' : 'hover:scale-[1.03] active:scale-95 motion-reduce:transform-none'} ${variants[variant]} ${sizes[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
     >
       {children}
     </button>

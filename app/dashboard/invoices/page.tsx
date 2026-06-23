@@ -4,6 +4,19 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import toast from 'react-hot-toast';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import Badge from '@/components/ui/Badge';
+import {
+  Plus,
+  Search,
+  Eye,
+  Pencil,
+  Download,
+  Inbox,
+  AlertTriangle,
+} from 'lucide-react';
 
 type BulkResult = {
   invoiceId: string
@@ -28,13 +41,16 @@ export default function InvoicesPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [invoices, setInvoices] = useState<Invoice[]>([])
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter] = useState('all')
   const [sortBy, setSortBy] = useState('created_desc')
+  const [activeFilter, setActiveFilter] = useState<'all' | 'paid' | 'pending' | 'overdue'>('all')
+  const [searchQuery, setSearchQuery] = useState('')
   const [page, setPage] = useState(1)
   const [selectedInvoiceIds, setSelectedInvoiceIds] = useState<string[]>([])
   const [bulkSending, setBulkSending] = useState(false)
   const [bulkResults, setBulkResults] = useState<Record<string, BulkResult>>({})
   const [bulkProgress, setBulkProgress] = useState({ total: 0, completed: 0, sent: 0, failed: 0 })
+  const [exportingId, setExportingId] = useState<string | null>(null)
   const pageSize = 9
 
   useEffect(() => {
@@ -95,8 +111,36 @@ export default function InvoicesPage() {
     }
   }
 
-  const totalPages = Math.max(1, Math.ceil(invoices.length / pageSize))
-  const pagedInvoices = useMemo(() => invoices.slice((page - 1) * pageSize, page * pageSize), [invoices, page])
+  const isOverdue = (invoice: Invoice) =>
+    invoice.status !== 'paid' && invoice.due_date && new Date(invoice.due_date) < new Date()
+
+  const filteredInvoices = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase()
+    return invoices.filter((invoice) => {
+      // Status filter buttons.
+      if (activeFilter === 'paid' && invoice.status !== 'paid') return false
+      if (activeFilter === 'pending' && (invoice.status === 'paid' || isOverdue(invoice))) return false
+      if (activeFilter === 'overdue' && !(invoice.status === 'overdue' || isOverdue(invoice))) return false
+
+      // Search by invoice number and client name.
+      if (q) {
+        const number = (invoice.invoice_number || '').toLowerCase()
+        const clientName = (invoice.clients?.name || '').toLowerCase()
+        if (!number.includes(q) && !clientName.includes(q)) return false
+      }
+      return true
+    })
+  }, [invoices, activeFilter, searchQuery])
+
+  useEffect(() => {
+    setPage(1)
+  }, [activeFilter, searchQuery])
+
+  const totalPages = Math.max(1, Math.ceil(filteredInvoices.length / pageSize))
+  const pagedInvoices = useMemo(
+    () => filteredInvoices.slice((page - 1) * pageSize, page * pageSize),
+    [filteredInvoices, page]
+  )
   const selectedInvoicesCount = selectedInvoiceIds.length
   const allPagedSelected = pagedInvoices.length > 0 && pagedInvoices.every((invoice) => selectedInvoiceIds.includes(invoice.id))
 
@@ -151,107 +195,186 @@ export default function InvoicesPage() {
     })
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'draft':
-        return 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200';
-      case 'sent':
-        return 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300';
-      case 'paid':
-        return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300';
-      case 'overdue':
-        return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300';
-      default:
-        return 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200';
+  async function exportInvoicePdf(invoice: Invoice) {
+    const node = document.getElementById(`invoice-card-${invoice.id}`)
+    if (!node) return
+    try {
+      setExportingId(invoice.id)
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf'),
+      ])
+      const canvas = await html2canvas(node, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: getComputedStyle(node).backgroundColor || '#0A0A0A',
+      })
+      const imgData = canvas.toDataURL('image/png')
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height],
+      })
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height)
+      pdf.save(`${invoice.invoice_number || 'invoice'}.pdf`)
+      toast.success(t('actions.exported'))
+    } catch (err) {
+      console.error(err)
+      toast.error(t('actions.exportFailed'))
+    } finally {
+      setExportingId(null)
     }
-  };
+  }
+
+  const statusBadgeVariant = (invoice: Invoice): 'success' | 'accent' | 'default' => {
+    if (invoice.status === 'paid') return 'success'
+    if (invoice.status === 'overdue' || isOverdue(invoice)) return 'default'
+    return 'accent'
+  }
+
+  const filterButtons: { key: 'all' | 'paid' | 'pending' | 'overdue'; label: string }[] = [
+    { key: 'all', label: t('filters.all') },
+    { key: 'paid', label: t('filters.paid') },
+    { key: 'pending', label: t('filters.pending') },
+    { key: 'overdue', label: t('filters.overdue') },
+  ]
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="container mx-auto p-4">
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">{t('errorLabel')}: {error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="mt-2 text-sm text-blue-600 hover:underline"
-          >
-            {t('actions.tryAgain')}
-          </button>
-        </div>
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <Card hoverGlow={false} className="text-center max-w-md">
+          <div className="flex justify-center mb-4">
+            <AlertTriangle size={44} className="text-red-400" />
+          </div>
+          <p className="text-text-secondary mb-4">{t('errorLabel')}: {error}</p>
+          <Button onClick={() => window.location.reload()}>{t('actions.tryAgain')}</Button>
+        </Card>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+    <div className="min-h-screen bg-background text-text-primary">
+      {/* Header */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('title')}</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">{t('subtitle')}</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-text-primary">{t('title')}</h1>
+          <p className="mt-1 text-sm text-text-secondary">{t('subtitle')}</p>
         </div>
-        <Link href="/dashboard/invoices/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
-          + {t('actions.newInvoice')}
+        <Link href="/dashboard/invoices/new">
+          <Button>
+            <Plus size={16} />
+            {t('actions.newInvoice')}
+          </Button>
         </Link>
       </div>
 
-      <div className="flex flex-wrap gap-3 mb-4">
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="border rounded px-3 py-2">
-          <option value="all">{t('filters.allStatuses')}</option>
-          <option value="draft">{t('status.draft')}</option>
-          <option value="sent">{t('status.sent')}</option>
-          <option value="paid">{t('status.paid')}</option>
-          <option value="overdue">{t('status.overdue')}</option>
-        </select>
-        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="border rounded px-3 py-2">
-          <option value="created_desc">{t('sort.newest')}</option>
-          <option value="created_asc">{t('sort.oldest')}</option>
-          <option value="due_asc">{t('sort.dueAsc')}</option>
-          <option value="due_desc">{t('sort.dueDesc')}</option>
-          <option value="total_desc">{t('sort.amountHighLow')}</option>
-          <option value="total_asc">{t('sort.amountLowHigh')}</option>
-        </select>
-        {invoices.length > 0 && (
+      {/* Search + filters */}
+      <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="relative w-full lg:max-w-sm">
+          <Search size={16} className="pointer-events-none absolute top-1/2 -translate-y-1/2 ltr:left-3 rtl:right-3 text-text-secondary" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t('search')}
+            className="w-full rounded-button border border-border bg-surface py-2 text-sm text-text-primary placeholder:text-text-secondary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40 ltr:pl-9 ltr:pr-3 rtl:pr-9 rtl:pl-3"
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {filterButtons.map((f) => (
+            <button
+              key={f.key}
+              onClick={() => setActiveFilter(f.key)}
+              className={`rounded-button px-4 py-1.5 text-sm font-medium transition-all duration-250 ${
+                activeFilter === f.key
+                  ? 'bg-accent text-white shadow-glow-sm'
+                  : 'border border-border bg-surface text-text-secondary hover:text-white'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="rounded-button border border-border bg-surface px-3 py-1.5 text-sm text-text-primary focus:border-accent focus:outline-none"
+          >
+            <option value="created_desc">{t('sort.newest')}</option>
+            <option value="created_asc">{t('sort.oldest')}</option>
+            <option value="due_asc">{t('sort.dueAsc')}</option>
+            <option value="due_desc">{t('sort.dueDesc')}</option>
+            <option value="total_desc">{t('sort.amountHighLow')}</option>
+            <option value="total_asc">{t('sort.amountLowHigh')}</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Bulk controls */}
+      <div className="mb-4 flex flex-wrap items-center gap-3">
+        {filteredInvoices.length > 0 && (
           <button
             onClick={togglePageSelection}
-            className="border rounded px-3 py-2 text-sm"
+            className="rounded-button border border-border bg-surface px-3 py-1.5 text-sm text-text-secondary hover:text-white"
           >
             {allPagedSelected ? t('actions.unselectPage') : t('actions.selectPage')}
           </button>
         )}
-        <button
+        <Button
+          variant="secondary"
           onClick={handleBulkSend}
           disabled={selectedInvoicesCount === 0 || bulkSending}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+          loading={bulkSending}
         >
-          {bulkSending ? t('labels.bulkSending', { completed: bulkProgress.completed, total: bulkProgress.total }) : t('labels.sendSelected', { count: selectedInvoicesCount })}
-        </button>
+          {bulkSending
+            ? t('labels.bulkSending', { completed: bulkProgress.completed, total: bulkProgress.total })
+            : t('labels.sendSelected', { count: selectedInvoicesCount })}
+        </Button>
+        <span className="text-sm text-text-secondary">{t('labels.selectedInvoices', { count: selectedInvoicesCount })}</span>
       </div>
 
       {bulkProgress.total > 0 && (
-        <div className="mb-4 rounded-lg border border-gray-200 dark:border-gray-700 p-3">
-          <p className="text-sm text-gray-700 dark:text-gray-200">
+        <Card hoverGlow={false} className="mb-4 py-3">
+          <p className="text-sm text-text-secondary">
             {t('labels.progress', { completed: bulkProgress.completed, total: bulkProgress.total, sent: bulkProgress.sent, failed: bulkProgress.failed })}
           </p>
-        </div>
+        </Card>
       )}
 
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-sm text-gray-600 dark:text-gray-300">{t('labels.selectedInvoices', { count: selectedInvoicesCount })}</span>
-      </div>
-
+      {/* Empty / no results / grid */}
       {invoices.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
-          <p className="text-gray-500 dark:text-gray-400 mb-4">{t('labels.noInvoices')}</p>
-          <Link href="/dashboard/invoices/new" className="text-blue-600 hover:underline">{t('actions.newInvoice')}</Link>
-        </div>
+        <Card hoverGlow={false} className="text-center py-12">
+          <div className="flex justify-center mb-4">
+            <span className="rounded-full bg-accent/10 p-4 text-accent">
+              <Inbox size={36} />
+            </span>
+          </div>
+          <p className="text-text-secondary mb-4">{t('labels.noInvoices')}</p>
+          <Link href="/dashboard/invoices/new">
+            <Button>
+              <Plus size={16} />
+              {t('actions.newInvoice')}
+            </Button>
+          </Link>
+        </Card>
+      ) : filteredInvoices.length === 0 ? (
+        <Card hoverGlow={false} className="text-center py-12">
+          <div className="flex justify-center mb-4">
+            <span className="rounded-full bg-surface p-4 text-text-secondary">
+              <Search size={36} />
+            </span>
+          </div>
+          <p className="text-text-secondary">{t('labels.noResults')}</p>
+        </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {pagedInvoices.map((invoice, idx) => (
@@ -260,61 +383,90 @@ export default function InvoicesPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6"
             >
-              <div className="mb-3 flex items-center justify-between">
-                <label className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                  <input
-                    type="checkbox"
-                    checked={selectedInvoiceIds.includes(invoice.id)}
-                    onChange={() => toggleInvoiceSelection(invoice.id)}
-                  />
-                  {t('labels.select')}
-                </label>
-                {bulkResults[invoice.id] && (
-                  <span className={`text-xs ${bulkResults[invoice.id].success ? 'text-green-600' : 'text-red-600'}`}>
-                    {bulkResults[invoice.id].success ? t('labels.resultSent') : `${t('labels.resultFailed')} ${bulkResults[invoice.id].error}`}
-                  </span>
-                )}
-              </div>
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {invoice.invoice_number}
-                  </p>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mt-1">
-                    {invoice.clients?.name || t('labels.unknownClient')}
-                  </h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    {t('labels.projectPrefix')} {invoice.projects?.name || t('labels.unassigned')}
-                  </p>
+              <Card id={`invoice-card-${invoice.id}`} className="group h-full">
+                <div className="mb-3 flex items-center justify-between">
+                  <label className="inline-flex items-center gap-2 text-sm text-text-secondary">
+                    <input
+                      type="checkbox"
+                      checked={selectedInvoiceIds.includes(invoice.id)}
+                      onChange={() => toggleInvoiceSelection(invoice.id)}
+                      className="accent-accent"
+                    />
+                    {t('labels.select')}
+                  </label>
+                  {bulkResults[invoice.id] && (
+                    <span className={`text-xs ${bulkResults[invoice.id].success ? 'text-success' : 'text-red-400'}`}>
+                      {bulkResults[invoice.id].success ? t('labels.resultSent') : `${t('labels.resultFailed')} ${bulkResults[invoice.id].error}`}
+                    </span>
+                  )}
                 </div>
-                <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(invoice.status)}`}>
-                  {t(`status.${invoice.status}`) || invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
-                </span>
-              </div>
-              
-              <div className="flex justify-between items-end mt-4">
-                <div>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {invoice.currency} {(invoice.total || 0).toFixed(2)}
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {t('labels.due')} {new Date(invoice.due_date).toLocaleDateString()}
-                  </p>
+
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <p className="text-sm text-text-secondary">{invoice.invoice_number}</p>
+                    <h3 className="text-lg font-semibold text-text-primary mt-1">
+                      {invoice.clients?.name || t('labels.unknownClient')}
+                    </h3>
+                    <p className="text-xs text-text-secondary mt-1">
+                      {t('labels.projectPrefix')} {invoice.projects?.name || t('labels.unassigned')}
+                    </p>
+                  </div>
+                  <Badge variant={statusBadgeVariant(invoice)}>
+                    {t(`status.${invoice.status}`) || invoice.status}
+                  </Badge>
                 </div>
-                <Link href={`/dashboard/invoices/${invoice.id}`} className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm">{t('actions.view')}</Link>
-              </div>
+
+                <div className="flex items-end justify-between mt-4">
+                  <div>
+                    <p className="text-2xl font-bold text-text-primary">
+                      {invoice.currency} {(invoice.total || 0).toFixed(2)}
+                    </p>
+                    <p className="text-sm text-text-secondary">
+                      {t('labels.due')} {new Date(invoice.due_date).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Hover actions */}
+                <div
+                  data-html2canvas-ignore="true"
+                  className="mt-4 flex items-center gap-2 border-t border-border pt-3 opacity-100 transition-opacity duration-250 lg:opacity-0 lg:group-hover:opacity-100"
+                >
+                  <Link
+                    href={`/dashboard/invoices/${invoice.id}`}
+                    className="inline-flex items-center gap-1 rounded-button px-2.5 py-1.5 text-sm text-text-secondary hover:text-accent"
+                  >
+                    <Eye size={15} />
+                    {t('actions.viewLabel')}
+                  </Link>
+                  <Link
+                    href={`/dashboard/invoices/${invoice.id}/edit`}
+                    className="inline-flex items-center gap-1 rounded-button px-2.5 py-1.5 text-sm text-text-secondary hover:text-accent"
+                  >
+                    <Pencil size={15} />
+                    {t('actions.edit')}
+                  </Link>
+                  <button
+                    onClick={() => exportInvoicePdf(invoice)}
+                    disabled={exportingId === invoice.id}
+                    className="inline-flex items-center gap-1 rounded-button px-2.5 py-1.5 text-sm text-text-secondary hover:text-accent disabled:opacity-60"
+                  >
+                    <Download size={15} />
+                    {exportingId === invoice.id ? t('actions.exporting') : t('actions.export')}
+                  </button>
+                </div>
+              </Card>
             </motion.div>
           ))}
         </div>
       )}
 
-      {invoices.length > pageSize && (
+      {filteredInvoices.length > pageSize && (
         <div className="flex items-center justify-end gap-2 mt-6">
-          <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="px-3 py-1 border rounded disabled:opacity-50">{t('pagination.prev')}</button>
-          <span className="text-sm text-gray-600">{t('labels.page', { page, total: totalPages })}</span>
-          <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="px-3 py-1 border rounded disabled:opacity-50">{t('pagination.next')}</button>
+          <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="rounded-button border border-border bg-surface px-3 py-1 text-sm text-text-secondary disabled:opacity-50">{t('pagination.prev')}</button>
+          <span className="text-sm text-text-secondary">{t('labels.page', { page, total: totalPages })}</span>
+          <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="rounded-button border border-border bg-surface px-3 py-1 text-sm text-text-secondary disabled:opacity-50">{t('pagination.next')}</button>
         </div>
       )}
     </div>

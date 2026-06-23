@@ -79,3 +79,172 @@ body {
 .animate-in {
   animation: fadeIn 0.15s ease-out;
 }
+
+/* ==========================================================================
+   Phase 1 — Dark design system foundation
+   ========================================================================== */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Dark background as the default surface */
+html,
+body {
+  background-color: #0a0a0a;
+  color: #ffffff;
+}
+
+/* Smooth transitions on all elements */
+* {
+  transition-property: color, background-color, border-color, fill, stroke,
+    box-shadow, transform, opacity;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    transition: none !important;
+  }
+}
+
+/* Custom dark scrollbar with accent color */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #6366f1 #111111;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #111111;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 8px;
+  border: 2px solid #111111;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #6366f1;
+}
+
+/* Smooth page transition wrapper */
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition {
+  animation: pageFadeIn 0.25s ease-out;
+}
+
+/* ==========================================================================
+   Phase 5 — Animations & final polish
+   ========================================================================== */
+
+/* Accent focus ring on all form inputs */
+input:not([type='checkbox']):not([type='radio']):focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.35);
+}
+
+/* Button micro-interaction: subtle lift + press */
+button:not(:disabled),
+a[role='button'],
+[type='submit']:not(:disabled) {
+  transition-property: color, background-color, border-color, box-shadow,
+    transform, opacity;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+}
+
+button:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+/* Reusable hover helpers */
+.hover-lift {
+  transition: transform 200ms ease, box-shadow 200ms ease,
+    border-color 200ms ease;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.5),
+    0 12px 30px -8px rgba(99, 102, 241, 0.45);
+}
+
+/* Accent spinner */
+@keyframes accentSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spinner-accent {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  border: 3px solid rgba(99, 102, 241, 0.2);
+  border-top-color: #6366f1;
+  animation: accentSpin 0.7s linear infinite;
+}
+
+/* Success checkmark animation */
+@keyframes successPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes checkDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.success-pop {
+  animation: successPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.success-check-path {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: checkDraw 0.4s ease-out 0.2s forwards;
+}
+
+/* Respect reduced motion for the new animations too */
+@media (prefers-reduced-motion: reduce) {
+  .hover-lift:hover {
+    transform: none;
+  }
+  .spinner-accent,
+  .success-pop,
+  .success-check-path {
+    animation: none;
+  }
+}
