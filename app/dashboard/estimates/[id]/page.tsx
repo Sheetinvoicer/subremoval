@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { DetailPageSkeleton } from '@/components/LoadingSkeleton';
 
 interface Estimate {
   id: string;
@@ -67,11 +68,7 @@ export default function EstimateDetailPage({ params }: PageProps) {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-      </div>
-    );
+    return <DetailPageSkeleton />;
   }
 
   if (error) {

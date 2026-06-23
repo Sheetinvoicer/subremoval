@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import { CardGridSkeleton } from '@/components/LoadingSkeleton';
 import {
   Plus,
   Search,
@@ -228,10 +229,11 @@ export default function InvoicesPage() {
     }
   }
 
-  const statusBadgeVariant = (invoice: Invoice): 'success' | 'accent' | 'default' => {
+  const statusBadgeVariant = (invoice: Invoice): 'success' | 'warning' | 'danger' => {
+    // green = paid, red = overdue, yellow = pending (draft/sent, not yet paid)
     if (invoice.status === 'paid') return 'success'
-    if (invoice.status === 'overdue' || isOverdue(invoice)) return 'default'
-    return 'accent'
+    if (invoice.status === 'overdue' || isOverdue(invoice)) return 'danger'
+    return 'warning'
   }
 
   const filterButtons: { key: 'all' | 'paid' | 'pending' | 'overdue'; label: string }[] = [
@@ -242,11 +244,7 @@ export default function InvoicesPage() {
   ]
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-      </div>
-    )
+    return <CardGridSkeleton withToolbar />
   }
 
   if (error) {
@@ -300,7 +298,7 @@ export default function InvoicesPage() {
               className={`rounded-button px-4 py-1.5 text-sm font-medium transition-all duration-250 ${
                 activeFilter === f.key
                   ? 'bg-accent text-white shadow-glow-sm'
-                  : 'border border-border bg-surface text-text-secondary hover:text-white'
+                  : 'border border-border bg-surface text-text-secondary hover:text-text-primary'
               }`}
             >
               {f.label}
@@ -326,7 +324,7 @@ export default function InvoicesPage() {
         {filteredInvoices.length > 0 && (
           <button
             onClick={togglePageSelection}
-            className="rounded-button border border-border bg-surface px-3 py-1.5 text-sm text-text-secondary hover:text-white"
+            className="rounded-button border border-border bg-surface px-3 py-1.5 text-sm text-text-secondary hover:text-text-primary"
           >
             {allPagedSelected ? t('actions.unselectPage') : t('actions.selectPage')}
           </button>

@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
+import { CardGridSkeleton } from '@/components/LoadingSkeleton';
 
 interface Project {
   id: string;
@@ -74,7 +75,7 @@ export default function ProjectsPage() {
   }, [projects]);
 
   if (loading) {
-    return <div className="p-8 text-center text-gray-500 dark:text-gray-400">{t('loading')}</div>;
+    return <CardGridSkeleton />;
   }
 
   if (error) {

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { SettingsSkeleton } from '@/components/LoadingSkeleton';
 import { t } from '@/lib/i18n';
 import { convertAmount, formatCurrencyAmount, getRatesWithDailyCache } from '@/lib/currency';
 
@@ -134,11 +135,7 @@ export default function CurrencySettingsPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-      </div>
-    );
+    return <SettingsSkeleton sections={2} />;
   }
 
   const convertedPreviewAmount = rates

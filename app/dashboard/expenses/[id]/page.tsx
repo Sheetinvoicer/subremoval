@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
+import { DetailPageSkeleton } from '@/components/LoadingSkeleton';
 
 interface Expense {
   id: string;
@@ -99,7 +100,7 @@ export default function ExpenseDetailPage() {
   };
 
   if (loading) {
-    return <div className="p-6">{t('loading')}</div>;
+    return <DetailPageSkeleton />;
   }
 
   if (error) {

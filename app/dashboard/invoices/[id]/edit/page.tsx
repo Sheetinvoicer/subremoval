@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { FormPageSkeleton } from '@/components/LoadingSkeleton';
 import toast, { Toaster } from 'react-hot-toast';
 
 interface Invoice {
@@ -205,11 +206,7 @@ export default function EditInvoicePage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-      </div>
-    )
+    return <FormPageSkeleton fields={8} />
   }
 
   if (error) {

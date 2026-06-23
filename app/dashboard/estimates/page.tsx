@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { TableListSkeleton } from '@/components/LoadingSkeleton';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
@@ -66,22 +67,17 @@ export default function EstimatesPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'draft': return 'bg-gray-200 text-gray-700';
-      case 'sent': return 'bg-blue-200 text-blue-700';
-      case 'accepted': return 'bg-green-200 text-green-700';
-      case 'rejected': return 'bg-red-200 text-red-700';
-      case 'converted': return 'bg-purple-200 text-purple-700';
-      default: return 'bg-gray-200 text-gray-700';
+      case 'draft': return 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200';
+      case 'sent': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300';
+      case 'accepted': return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
+      case 'rejected': return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
+      case 'converted': return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300';
+      default: return 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200';
     }
   };
 
   if (loading) {
-    return (
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{t('title')}</h1>
-        <div className="text-gray-500 dark:text-gray-400">{t('loading')}</div>
-      </div>
-    );
+    return <TableListSkeleton withToolbar={false} />;
   }
 
   if (error) {

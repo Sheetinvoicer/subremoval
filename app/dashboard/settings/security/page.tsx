@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { SettingsSkeleton } from '@/components/LoadingSkeleton'
 
 interface StatusResponse {
   enabled: boolean
@@ -102,7 +103,7 @@ export default function SecuritySettingsPage() {
   }
 
   if (loading) {
-    return <div className="p-6">Loading security settings...</div>
+    return <SettingsSkeleton sections={2} />
   }
 
   return (

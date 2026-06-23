@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { FormPageSkeleton } from '@/components/LoadingSkeleton';
 
 interface ExpenseFormData {
   id: string;
@@ -136,7 +137,7 @@ export default function EditExpensePage() {
   };
 
   if (loading) {
-    return <div className="p-6">Loading...</div>;
+    return <FormPageSkeleton fields={5} />;
   }
 
   if (error && !form) {

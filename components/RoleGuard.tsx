@@ -1,7 +1,6 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import { hasRequiredRole, normalizeRole } from '@/lib/auth/roles'
 
 type RoleGuardProps = {
@@ -16,30 +15,24 @@ export default function RoleGuard({ requiredRole, children, fallback = null }: R
 
   useEffect(() => {
     const checkRole = async () => {
-      const supabase = createClient()
-      if (!supabase) {
-        setLoading(false)
+      try {
+        // Use the server endpoint so the email-based admin bootstrap is applied
+        // consistently with the middleware and admin APIs.
+        const res = await fetch('/api/auth/role', { cache: 'no-store' })
+        const payload = await res.json().catch(() => null)
+
+        if (!res.ok || !payload?.role) {
+          setAllowed(false)
+          return
+        }
+
+        const userRole = normalizeRole(payload.role)
+        setAllowed(hasRequiredRole(userRole, requiredRole))
+      } catch {
         setAllowed(false)
-        return
-      }
-
-      const { data: authData } = await supabase.auth.getUser()
-      const user = authData?.user
-      if (!user) {
-        setAllowed(false)
+      } finally {
         setLoading(false)
-        return
       }
-
-      const { data } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', user.id)
-        .single()
-
-      const userRole = normalizeRole(data?.role)
-      setAllowed(hasRequiredRole(userRole, requiredRole))
-      setLoading(false)
     }
 
     checkRole()

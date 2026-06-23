@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client'
+import { DetailPageSkeleton } from '@/components/LoadingSkeleton'
 import toast, { Toaster } from 'react-hot-toast';
 import CurrencyDisplay from '@/components/CurrencyDisplay';
 import {
@@ -197,11 +198,7 @@ export default function InvoiceDetailPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-      </div>
-    )
+    return <DetailPageSkeleton />
   }
 
   if (error) {

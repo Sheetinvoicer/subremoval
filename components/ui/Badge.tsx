@@ -5,6 +5,8 @@ type BadgeVariant =
   | 'accent'
   | 'secondary'
   | 'success'
+  | 'warning'
+  | 'danger'
   | 'outline'
 
 type BadgeProps = React.HTMLAttributes<HTMLSpanElement> & {
@@ -16,7 +18,13 @@ const variantClasses: Record<BadgeVariant, string> = {
   accent: 'bg-accent/15 text-accent border border-accent/30',
   secondary:
     'bg-accent-secondary/15 text-accent-secondary border border-accent-secondary/30',
-  success: 'bg-success/15 text-success border border-success/30',
+  // Status colors: readable tint + text in both light and dark themes.
+  success:
+    'bg-green-100 text-green-700 border border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800/40',
+  warning:
+    'bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800/40',
+  danger:
+    'bg-red-100 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800/40',
   outline: 'bg-transparent text-text-secondary border border-border',
 }
 

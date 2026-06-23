@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
+import { FormPageSkeleton } from '@/components/LoadingSkeleton';
 
 interface Project {
   id: string;
@@ -91,7 +92,7 @@ export default function EditProjectPage() {
     router.push(`/dashboard/projects/${project.id}`);
   };
 
-  if (!project && !error) return <div className="p-6">{t('detail.loading')}</div>;
+  if (!project && !error) return <FormPageSkeleton fields={4} />;
 
   return (
     <div className="p-6 md:p-8 max-w-2xl">

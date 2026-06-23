@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
+import { DetailPageSkeleton } from '@/components/LoadingSkeleton';
 
 interface Project {
   id: string;
@@ -74,7 +75,7 @@ export default function ProjectDetailPage() {
     return { totalRevenue, invoiceCount: invoices.length, paid, pending };
   }, [invoices]);
 
-  if (loading) return <div className="p-6">{t('detail.loading')}</div>;
+  if (loading) return <DetailPageSkeleton />;
   if (error) return <div className="p-6 text-red-600">{t('errorPrefix')}: {error}</div>;
   if (!project) return <div className="p-6">{t('detail.notFound')}</div>;
 

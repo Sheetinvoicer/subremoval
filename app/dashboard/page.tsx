@@ -15,6 +15,7 @@ import { format, subDays, subMonths, startOfMonth, endOfMonth } from 'date-fns';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import { DashboardSkeleton } from '@/components/LoadingSkeleton';
 import {
   DollarSign,
   Clock,
@@ -394,16 +395,7 @@ export default function DashboardPage() {
 
   // Loading state
   if (loading) {
-    return (
-      <TooltipProvider>
-        <div className="flex justify-center items-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-accent mx-auto mb-4"></div>
-            <p className="text-text-secondary">{t('loading')}</p>
-          </div>
-        </div>
-      </TooltipProvider>
-    );
+    return <DashboardSkeleton />;
   }
 
   // Error state
@@ -518,7 +510,7 @@ export default function DashboardPage() {
               className={`rounded-button px-4 py-1.5 text-sm font-medium transition-all duration-250 ${
                 selectedPeriod === period
                   ? 'bg-accent text-white shadow-glow-sm'
-                  : 'text-text-secondary hover:text-white'
+                  : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               {t(`period.${period}`)}
@@ -563,8 +555,8 @@ export default function DashboardPage() {
                 <AreaChart data={revenueData}>
                   <defs>
                     <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#6366F1" stopOpacity={0.5} />
-                      <stop offset="100%" stopColor="#6366F1" stopOpacity={0} />
+                      <stop offset="0%" stopColor="#9333EA" stopOpacity={0.5} />
+                      <stop offset="100%" stopColor="#9333EA" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" />
@@ -581,7 +573,7 @@ export default function DashboardPage() {
                   <Area
                     type="monotone"
                     dataKey="revenue"
-                    stroke="#6366F1"
+                    stroke="#9333EA"
                     strokeWidth={2}
                     fill="url(#revGradient)"
                   />
@@ -673,7 +665,7 @@ export default function DashboardPage() {
                     <tr
                       key={idx}
                       onClick={() => navigateTo(`/dashboard/invoices/${inv.id}`)}
-                      className="cursor-pointer border-b border-border/60 transition-colors hover:bg-white/5"
+                      className="cursor-pointer border-b border-border/60 transition-colors hover:bg-black/5 dark:hover:bg-white/5"
                     >
                       <td className="px-6 py-4 font-medium text-text-primary">
                         {inv.invoice_number || t('invoice')}

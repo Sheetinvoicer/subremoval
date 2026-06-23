@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { SubscriptionSkeleton } from '@/components/LoadingSkeleton';
 import { useTranslations } from 'next-intl';
 
 interface Plan {
@@ -141,11 +142,7 @@ export default function SubscriptionPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-      </div>
-    );
+    return <SubscriptionSkeleton />;
   }
 
   return (

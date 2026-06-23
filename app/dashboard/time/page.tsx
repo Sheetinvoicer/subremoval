@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { formatMinutesAsHoursMinutes } from '@/lib/timeTracking';
+import { TableListSkeleton } from '@/components/LoadingSkeleton';
 import { useTranslations } from 'next-intl';
 
 interface ClientItem {
@@ -209,7 +210,7 @@ export default function TimeTrackingPage() {
   };
 
   if (loading) {
-    return <div className="p-6">{t('loading')}</div>;
+    return <TableListSkeleton />;
   }
 
   return (

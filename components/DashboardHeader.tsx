@@ -100,7 +100,7 @@ export default function DashboardHeader() {
           <button
             onClick={() => setNotifOpen((o) => !o)}
             aria-label={th('notifications')}
-            className="relative rounded-button p-2 text-text-secondary transition-all duration-250 hover:bg-white/5 hover:text-white"
+            className="relative rounded-button p-2 text-text-secondary transition-all duration-250 hover:bg-accent/10 hover:text-text-primary"
           >
             <Bell size={20} />
           </button>
@@ -120,7 +120,7 @@ export default function DashboardHeader() {
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setMenuOpen((o) => !o)}
-            className="flex items-center gap-2 rounded-button p-1.5 text-text-secondary transition-all duration-250 hover:bg-white/5"
+            className="flex items-center gap-2 rounded-button p-1.5 text-text-secondary transition-all duration-250 hover:bg-accent/10"
           >
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-accent to-accent-secondary text-xs font-semibold text-white">
               {getInitials(name, email)}
@@ -143,14 +143,14 @@ export default function DashboardHeader() {
               <Link
                 href="/dashboard/settings"
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 px-4 py-2.5 text-sm text-text-secondary transition-colors duration-250 hover:bg-white/5 hover:text-white"
+                className="flex items-center gap-2 px-4 py-2.5 text-sm text-text-secondary transition-colors duration-250 hover:bg-accent/10 hover:text-text-primary"
               >
                 <Settings size={16} />
                 {t('items.settings')}
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-400 transition-colors duration-250 hover:bg-red-500/10 hover:text-red-300"
+                className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-600 transition-colors duration-250 hover:bg-red-500/10 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
               >
                 <LogOut size={16} />
                 {t('logout')}

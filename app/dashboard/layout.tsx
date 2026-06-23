@@ -8,6 +8,7 @@ import Footer from '@/components/Footer'
 import SearchBar from '@/components/SearchBar'
 import { Toaster } from 'react-hot-toast'
 import { useLocale } from 'next-intl'
+import { DashboardChromeSkeleton } from '@/components/LoadingSkeleton'
 
 // Lazy-load non-critical widgets so they don't block dashboard page transitions
 const AIAssistant = dynamic(() => import('@/components/AIAssistant'), { ssr: false })
@@ -26,7 +27,11 @@ export default function DashboardLayout({
     setMounted(true)
   }, [])
 
-  if (!mounted) return null
+  // Render a structural chrome skeleton (instead of a blank screen) until the
+  // client layout mounts. This keeps the page from flashing empty and then
+  // "popping" the whole dashboard into view, which is one of the causes of the
+  // perceived content jump on initial load.
+  if (!mounted) return <DashboardChromeSkeleton />
 
   return (
     <div className="flex flex-col min-h-screen">

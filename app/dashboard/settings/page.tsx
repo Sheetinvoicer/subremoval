@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/client';
+import { SettingsSkeleton } from '@/components/LoadingSkeleton';
 import { routing, rtlLocales } from '@/i18n/routing';
 import {
   DEFAULT_ACCOUNTING_MAPPING,
@@ -545,11 +546,7 @@ export default function SettingsPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-      </div>
-    );
+    return <SettingsSkeleton />;
   }
 
   return (

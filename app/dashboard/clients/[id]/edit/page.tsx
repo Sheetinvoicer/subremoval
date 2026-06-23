@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
+import { FormPageSkeleton } from '@/components/LoadingSkeleton';
 
 interface FormState {
   name: string;
@@ -129,7 +130,7 @@ export default function EditClientPage() {
   };
 
   if (loading) {
-    return <div className="p-8 text-center text-gray-500 dark:text-gray-400">{t('loadingSingle')}</div>;
+    return <FormPageSkeleton />;
   }
 
   return (

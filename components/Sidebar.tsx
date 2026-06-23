@@ -89,12 +89,15 @@ function Sidebar() {
           null
       );
 
-      const { data: userRow } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-      setRole(normalizeRole(userRow?.role));
+      // Resolve the effective role from the server so the email-based admin
+      // bootstrap is honoured (matches middleware + admin APIs).
+      try {
+        const res = await fetch('/api/auth/role', { cache: 'no-store' });
+        const payload = await res.json().catch(() => null);
+        setRole(normalizeRole(payload?.role));
+      } catch {
+        setRole(ROLES.VIEWER);
+      }
 
       const { data: subscription } = await supabase
         .from('subscriptions')
@@ -181,7 +184,7 @@ function Sidebar() {
                   } ${
                     active
                       ? 'bg-accent/10 text-accent font-semibold shadow-glow-sm'
-                      : 'text-text-secondary hover:text-white hover:bg-white/5'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-accent/10'
                   }`}
                 >
                   {/* Left accent border (active or hover) */}
@@ -233,7 +236,7 @@ function Sidebar() {
                 href="/dashboard/settings"
                 onClick={() => isMobile && setIsOpen(false)}
                 aria-label={t('items.settings')}
-                className="p-2 rounded-button text-text-secondary hover:text-white hover:bg-white/5 transition-colors duration-150"
+                className="p-2 rounded-button text-text-secondary hover:text-text-primary hover:bg-accent/10 transition-colors duration-150"
               >
                 <Settings size={18} />
               </Link>
@@ -241,7 +244,7 @@ function Sidebar() {
 
             <button
               onClick={handleLogout}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-button text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors duration-150 ${
+              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-button text-sm text-red-600 hover:bg-red-500/10 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors duration-150 ${
                 isRtl ? 'flex-row-reverse text-right' : ''
               }`}
             >

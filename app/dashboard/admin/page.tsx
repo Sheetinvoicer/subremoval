@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import RoleGuard from '@/components/RoleGuard'
+import { Skeleton } from '@/components/LoadingSkeleton'
 
 const roles = ['admin', 'staff', 'viewer'] as const
 
@@ -64,7 +65,18 @@ export default function AdminUsersPage() {
         {error && <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-red-700">{error}</div>}
 
         {loading ? (
-          <div className="text-gray-500">Loading users...</div>
+          <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-4 border-b border-gray-200 p-4 last:border-b-0 dark:border-gray-800"
+              >
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-4 w-48" />
+                <Skeleton className="ml-auto h-8 w-24 rounded-button" />
+              </div>
+            ))}
+          </div>
         ) : (
           <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800">
             <table className="min-w-full text-sm">

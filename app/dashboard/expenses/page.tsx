@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { CardGridSkeleton } from '@/components/LoadingSkeleton';
 import { useTranslations } from 'next-intl';
 
 interface Expense {
@@ -83,11 +84,7 @@ export default function ExpensesPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
-      </div>
-    );
+    return <CardGridSkeleton withToolbar />;
   }
 
   if (error) {

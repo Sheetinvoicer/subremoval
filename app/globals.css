@@ -32,6 +32,16 @@ h1, h2, h3, h4, h5, h6 {
   --bg-primary: #ffffff;
   --bg-secondary: #f9fafb;
   --border: #e5e7eb;
+
+  /* Design-system tokens (RGB channels) — light theme.
+     Consumed by Tailwind colors background/surface/card/border/text-* so the
+     whole UI (sidebar, cards, headers) adapts to light mode. */
+  --ds-background: 249 250 251; /* gray-50 */
+  --ds-surface: 255 255 255; /* white */
+  --ds-card: 255 255 255; /* white */
+  --ds-border: 229 231 235; /* gray-200 */
+  --ds-text-primary: 17 24 39; /* gray-900 */
+  --ds-text-secondary: 75 85 99; /* gray-600 */
 }
 
 /* Dark Mode */
@@ -41,6 +51,14 @@ h1, h2, h3, h4, h5, h6 {
   --bg-primary: #111827;
   --bg-secondary: #1f2937;
   --border: #374151;
+
+  /* Design-system tokens (RGB channels) — dark theme. */
+  --ds-background: 10 10 10; /* #0A0A0A */
+  --ds-surface: 17 17 17; /* #111111 */
+  --ds-card: 26 26 26; /* #1A1A1A */
+  --ds-border: 42 42 42; /* #2A2A2A */
+  --ds-text-primary: 255 255 255; /* white */
+  --ds-text-secondary: 161 161 170; /* #A1A1AA */
 }
 
 body {
@@ -89,12 +107,9 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Dark background as the default surface */
-html,
-body {
-  background-color: #0a0a0a;
-  color: #ffffff;
-}
+/* Base surface/text colors come from the theme-aware design tokens applied on
+   <body> (bg-background / text-text-primary), so they follow light/dark mode.
+   No unconditional dark color is forced here anymore. */
 
 /* Smooth transitions on all elements */
 * {
@@ -114,10 +129,10 @@ body {
   }
 }
 
-/* Custom dark scrollbar with accent color */
+/* Custom scrollbar with accent color */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #6366f1 #111111;
+  scrollbar-color: #9333ea transparent;
 }
 
 *::-webkit-scrollbar {
@@ -126,17 +141,18 @@ body {
 }
 
 *::-webkit-scrollbar-track {
-  background: #111111;
+  background: transparent;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #2a2a2a;
+  background: rgb(var(--ds-border));
   border-radius: 8px;
-  border: 2px solid #111111;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: #6366f1;
+  background: #9333ea;
 }
 
 /* Smooth page transition wrapper */
@@ -164,8 +180,8 @@ input:not([type='checkbox']):not([type='radio']):focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.35);
+  border-color: #9333ea;
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.35);
 }
 
 /* Button micro-interaction: subtle lift + press */
@@ -244,7 +260,33 @@ button:not(:disabled):active {
   }
   .spinner-accent,
   .success-pop,
-  .success-check-path {
+  .success-check-path,
+  .page-transition,
+  .animate-in {
     animation: none;
   }
+}
+
+
+/* ==========================================================================
+   Recharts — theme-aware axis, grid and legend colors
+   Charts set their data-series colors inline (green/red/purple, etc.), but
+   axis ticks default to a fixed dim gray that is hard to read on dark
+   backgrounds. Drive the chrome (ticks, grid, legend) from the theme tokens so
+   charts are legible in both light and dark mode.
+   ========================================================================== */
+.recharts-cartesian-axis-tick-value,
+.recharts-cartesian-axis-tick text,
+.recharts-label,
+.recharts-pie-label-text {
+  fill: rgb(var(--ds-text-secondary)) !important;
+}
+
+.recharts-cartesian-grid line,
+.recharts-cartesian-axis line {
+  stroke: rgb(var(--ds-border)) !important;
+}
+
+.recharts-legend-item-text {
+  color: rgb(var(--ds-text-secondary)) !important;
 }

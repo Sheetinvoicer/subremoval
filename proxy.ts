@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { routing } from './i18n/routing'
 import { createServerClient } from '@supabase/ssr'
-import { hasRequiredRole, ROLES } from '@/lib/auth/roles'
+import { hasRequiredRole, isAdminEmail, ROLES } from '@/lib/auth/roles'
 
 const adminRouteMatchers = [/^\/dashboard\/admin(\/.*)?$/, /^\/api\/admin(\/.*)?$/]
 
@@ -32,11 +32,15 @@ async function getCurrentRoleFromRequest(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
+  // Email-based admin bootstrap mirrors lib/auth/roles so the designated owner
+  // is recognised as admin even without a stored `admin` role.
+  if (isAdminEmail(user.email)) return ROLES.ADMIN
+
   const { data } = await supabase
     .from('users')
     .select('role')
     .eq('id', user.id)
-    .single()
+    .maybeSingle()
 
   return data?.role ?? null
 }
