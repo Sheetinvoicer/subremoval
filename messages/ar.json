@@ -332,7 +332,8 @@
       "accountingExportReady": "تصدير {format} جاهز وتم تنزيله.",
       "accountDeleted": "تم حذف حسابك وبياناتك الشخصية بنجاح.",
       "cookiesEnabled": "تم تحديث تفضيلات ملفات تعريف الارتباط: تم تفعيل الملفات الاختيارية.",
-      "cookiesDisabled": "تم تحديث تفضيلات ملفات تعريف الارتباط: تم تعطيل الملفات الاختيارية."
+      "cookiesDisabled": "تم تحديث تفضيلات ملفات تعريف الارتباط: تم تعطيل الملفات الاختيارية.",
+      "bankConnected": "تم ربط حسابك المصرفي بنجاح."
     },
     "company": {
       "title": "معلومات الشركة",
@@ -397,7 +398,8 @@
       "saveSettings": "حفظ الإعدادات",
       "preparing": "جارٍ التجهيز...",
       "preparingExport": "جارٍ تجهيز التصدير...",
-      "deletingAccount": "جارٍ حذف الحساب..."
+      "deletingAccount": "جارٍ حذف الحساب...",
+      "connectingBank": "جارٍ الاتصال..."
     },
     "accounting": {
       "title": "تكامل البنك والمحاسبة",
@@ -416,7 +418,9 @@
       "exportQuickBooks": "تصدير QuickBooks (CSV)",
       "exportXero": "تصدير Xero (CSV)",
       "exportCsv": "تصدير CSV",
-      "exportExcel": "تصدير Excel"
+      "exportExcel": "تصدير Excel",
+      "connectBank": "ربط حساب مصرفي",
+      "bankConnectedStatus": "تم ربط الحساب المصرفي"
     },
     "privacy": {
       "title": "الخصوصية وGDPR",
@@ -441,7 +445,8 @@
       "logoImageOnly": "يرجى رفع ملف صورة لشعار الفاتورة.",
       "failedExportData": "فشل تصدير البيانات",
       "failedExportAccountingData": "فشل تصدير البيانات المحاسبية",
-      "failedDeleteAccountData": "فشل حذف بيانات الحساب"
+      "failedDeleteAccountData": "فشل حذف بيانات الحساب",
+      "failedConnectBank": "فشل ربط الحساب المصرفي"
     }
   },
   "dashboard": {
@@ -571,6 +576,7 @@
       "signIn": "تسجيل الدخول",
       "orContinueWith": "أو المتابعة عبر",
       "signInWithGoogle": "تسجيل الدخول باستخدام Google",
+      "signInWithMicrosoft": "تسجيل الدخول باستخدام Microsoft",
       "rememberDevice": "تذكر هذا الجهاز لمدة 30 يومًا",
       "verifying": "جارٍ التحقق...",
       "verifyContinue": "تحقق وتابع"
@@ -613,7 +619,10 @@
     },
     "actions": {
       "creating": "جارٍ إنشاء الحساب...",
-      "signUp": "إنشاء حساب"
+      "signUp": "إنشاء حساب",
+      "orContinueWith": "أو المتابعة عبر",
+      "signInWithGoogle": "تسجيل الدخول باستخدام Google",
+      "signInWithMicrosoft": "تسجيل الدخول باستخدام Microsoft"
     },
     "footer": {
       "alreadyHaveAccount": "لديك حساب بالفعل؟",
@@ -637,13 +646,16 @@
       "clients": "العملاء",
       "projects": "المشاريع",
       "expenses": "المصروفات",
+      "bank": "البنك",
       "recurring": "المتكررة",
       "estimates": "عروض الأسعار",
       "time": "تتبع الوقت",
       "reports": "التقارير",
       "subscription": "الاشتراك",
       "admin": "الإدارة",
-      "settings": "الإعدادات"
+      "auditLogs": "سجل التدقيق",
+      "settings": "الإعدادات",
+      "adminAi": "ذكاء المشرف"
     },
     "planLabel": "الخطة",
     "account": "الحساب"
@@ -1044,5 +1056,85 @@
     "notifications": "الإشعارات",
     "noNotifications": "لا توجد إشعارات جديدة",
     "account": "الحساب"
+  },
+  "adminAi": {
+    "title": "ذكاء اصطناعي للمشرف",
+    "subtitle": "رؤى وتنبيهات شذوذ وتوصيات مدعومة بالذكاء الاصطناعي عبر منصتك.",
+    "refresh": "تحديث",
+    "error": "فشل تحميل بيانات ذكاء المشرف",
+    "metrics": {
+      "title": "رؤى الاستخدام",
+      "totalUsers": "إجمالي المستخدمين",
+      "activeUsers": "المستخدمون النشطون (30 يومًا)",
+      "totalInvoices": "إجمالي الفواتير",
+      "overdueInvoices": "الفواتير المتأخرة",
+      "totalRevenue": "إجمالي الإيرادات",
+      "pendingRevenue": "الإيرادات المعلقة",
+      "totalClients": "إجمالي العملاء",
+      "events24h": "الأحداث (24 ساعة)",
+      "admins": "المشرفون",
+      "staff": "الموظفون",
+      "viewers": "المشاهدون",
+      "newUsers": "جديد (30 يومًا)"
+    },
+    "anomalies": {
+      "title": "تنبيهات الشذوذ",
+      "none": "لم يتم اكتشاف أي شذوذ. كل شيء يبدو طبيعيًا.",
+      "severity": {
+        "high": "مرتفع",
+        "medium": "متوسط",
+        "low": "منخفض"
+      }
+    },
+    "recommendations": {
+      "title": "توصيات ذكية",
+      "roles": {
+        "title": "اقتراحات الأدوار",
+        "none": "لا توجد تغييرات في الأدوار مقترحة.",
+        "apply": "تعيين {role}",
+        "applied": "تم تحديث الدور"
+      },
+      "features": {
+        "title": "توصيات الميزات",
+        "none": "لا توجد توصيات ميزات حاليًا."
+      },
+      "invoices": {
+        "title": "تحسين الفواتير",
+        "none": "لا توجد نصائح للفواتير حاليًا."
+      },
+      "aiTips": {
+        "title": "نصائح الذكاء الاصطناعي",
+        "generate": "نصائح الذكاء الاصطناعي"
+      }
+    },
+    "activity": {
+      "title": "تحليل نشاط المستخدمين",
+      "user": "المستخدم",
+      "actions": "الإجراءات",
+      "topActions": "أهم الإجراءات",
+      "none": "لم يتم تسجيل أي نشاط حديث."
+    },
+    "report": {
+      "title": "تقرير المشرف",
+      "generate": "إنشاء تقرير",
+      "generating": "جارٍ الإنشاء...",
+      "empty": "أنشئ تقرير ذكاء اصطناعي لتلخيص صحة المنصة والنشاط والمخاطر.",
+      "error": "فشل إنشاء التقرير"
+    },
+    "assistant": {
+      "title": "مساعد الذكاء الاصطناعي للمشرف",
+      "subtitle": "اطرح أسئلة حول المستخدمين والنشاط والاستخدام.",
+      "placeholder": "اسأل عن المستخدمين والنشاط والإيرادات...",
+      "send": "إرسال",
+      "thinking": "يفكر...",
+      "empty": "اسأل الذكاء الاصطناعي عن بيانات منصتك أو اختر اقتراحًا:",
+      "error": "فشل الحصول على رد",
+      "suggestions": {
+        "activeUsers": "من هم المستخدمون الأكثر نشاطًا؟",
+        "anomalies": "هل هناك أي أنشطة مشبوهة؟",
+        "roles": "أي المستخدمين يجب أن يغيروا أدوارهم؟",
+        "revenue": "لخّص الإيرادات والفواتير المتأخرة"
+      }
+    }
   }
 }

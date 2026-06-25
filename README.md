@@ -39,7 +39,7 @@ SheetInvoicer is a full-stack invoicing platform for freelancers and small busin
 
 ### Prerequisites
 
-- Node.js `20.x`
+- Node.js `24.x`
 - npm `>=10`
 - Supabase project
 - Stripe account

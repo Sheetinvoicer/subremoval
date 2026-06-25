@@ -332,7 +332,8 @@
       "accountingExportReady": "{format} export is ready and has been downloaded.",
       "accountDeleted": "Your account and personal data were deleted successfully.",
       "cookiesEnabled": "Cookie preferences updated: optional cookies enabled.",
-      "cookiesDisabled": "Cookie preferences updated: optional cookies disabled."
+      "cookiesDisabled": "Cookie preferences updated: optional cookies disabled.",
+      "bankConnected": "Your bank account was connected successfully."
     },
     "languageOptions": {
       "en": "English",
@@ -397,7 +398,8 @@
       "saveSettings": "Save Settings",
       "preparing": "Preparing...",
       "preparingExport": "Preparing export...",
-      "deletingAccount": "Deleting account..."
+      "deletingAccount": "Deleting account...",
+      "connectingBank": "Connecting..."
     },
     "accounting": {
       "title": "Bank & Accounting Integration",
@@ -416,7 +418,9 @@
       "exportQuickBooks": "Export QuickBooks (CSV)",
       "exportXero": "Export Xero (CSV)",
       "exportCsv": "Export CSV",
-      "exportExcel": "Export Excel"
+      "exportExcel": "Export Excel",
+      "connectBank": "Connect Bank Account",
+      "bankConnectedStatus": "Bank account connected"
     },
     "privacy": {
       "title": "Privacy & GDPR",
@@ -441,7 +445,8 @@
       "logoImageOnly": "Please upload an image file for the invoice logo.",
       "failedExportData": "Failed to export data",
       "failedExportAccountingData": "Failed to export accounting data",
-      "failedDeleteAccountData": "Failed to delete account data"
+      "failedDeleteAccountData": "Failed to delete account data",
+      "failedConnectBank": "Failed to connect bank account"
     }
   },
   "login": {
@@ -459,6 +464,7 @@
       "signIn": "Sign In",
       "orContinueWith": "Or continue with",
       "signInWithGoogle": "Sign in with Google",
+      "signInWithMicrosoft": "Sign in with Microsoft",
       "rememberDevice": "Remember this device for 30 days",
       "verifying": "Verifying...",
       "verifyContinue": "Verify & Continue"
@@ -501,7 +507,10 @@
     },
     "actions": {
       "creating": "Creating account...",
-      "signUp": "Sign Up"
+      "signUp": "Sign Up",
+      "orContinueWith": "Or continue with",
+      "signInWithGoogle": "Sign in with Google",
+      "signInWithMicrosoft": "Sign in with Microsoft"
     },
     "footer": {
       "alreadyHaveAccount": "Already have an account?",
@@ -525,13 +534,16 @@
       "clients": "Clients",
       "projects": "Projects",
       "expenses": "Expenses",
+      "bank": "Bank",
       "recurring": "Recurring",
       "estimates": "Estimates",
       "time": "Time Tracking",
       "reports": "Reports",
       "subscription": "Subscription",
       "admin": "Admin",
-      "settings": "Settings"
+      "auditLogs": "Audit Log",
+      "settings": "Settings",
+      "adminAi": "AI Admin"
     },
     "planLabel": "Plan",
     "account": "Account"
@@ -1044,5 +1056,85 @@
     "notifications": "Notifications",
     "noNotifications": "No new notifications",
     "account": "Account"
+  },
+  "adminAi": {
+    "title": "Admin AI",
+    "subtitle": "AI-powered insights, anomaly alerts and recommendations across your platform.",
+    "refresh": "Refresh",
+    "error": "Failed to load admin AI data",
+    "metrics": {
+      "title": "Usage Insights",
+      "totalUsers": "Total Users",
+      "activeUsers": "Active Users (30d)",
+      "totalInvoices": "Total Invoices",
+      "overdueInvoices": "Overdue Invoices",
+      "totalRevenue": "Total Revenue",
+      "pendingRevenue": "Pending Revenue",
+      "totalClients": "Total Clients",
+      "events24h": "Events (24h)",
+      "admins": "Admins",
+      "staff": "Staff",
+      "viewers": "Viewers",
+      "newUsers": "New (30d)"
+    },
+    "anomalies": {
+      "title": "Anomaly Alerts",
+      "none": "No anomalies detected. Everything looks normal.",
+      "severity": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      }
+    },
+    "recommendations": {
+      "title": "Smart Recommendations",
+      "roles": {
+        "title": "Role Suggestions",
+        "none": "No role changes suggested.",
+        "apply": "Set {role}",
+        "applied": "Role updated"
+      },
+      "features": {
+        "title": "Feature Recommendations",
+        "none": "No feature recommendations right now."
+      },
+      "invoices": {
+        "title": "Invoice Optimization",
+        "none": "No invoice tips right now."
+      },
+      "aiTips": {
+        "title": "AI Tips",
+        "generate": "AI Tips"
+      }
+    },
+    "activity": {
+      "title": "User Activity Analysis",
+      "user": "User",
+      "actions": "Actions",
+      "topActions": "Top Actions",
+      "none": "No recent activity recorded."
+    },
+    "report": {
+      "title": "Admin Report",
+      "generate": "Generate Report",
+      "generating": "Generating...",
+      "empty": "Generate an AI report to summarize platform health, activity and risks.",
+      "error": "Failed to generate report"
+    },
+    "assistant": {
+      "title": "Admin AI Assistant",
+      "subtitle": "Ask questions about users, activity and usage.",
+      "placeholder": "Ask about users, activity, revenue...",
+      "send": "Send",
+      "thinking": "Thinking...",
+      "empty": "Ask the AI about your platform data, or pick a suggestion:",
+      "error": "Failed to get a response",
+      "suggestions": {
+        "activeUsers": "Who are the most active users?",
+        "anomalies": "Are there any suspicious activities?",
+        "roles": "Which users should change roles?",
+        "revenue": "Summarize revenue and overdue invoices"
+      }
+    }
   }
 }

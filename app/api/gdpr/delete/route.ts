@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSupabaseAdminClient } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
+import { recordAuditLog, AUDIT_ACTIONS } from '@/lib/audit/log'
 
 export const dynamic = 'force-dynamic'
 
@@ -61,6 +62,14 @@ export async function DELETE(request: Request) {
     if (userRowDeleteError) {
       return NextResponse.json({ error: userRowDeleteError.message }, { status: 500 })
     }
+
+    await recordAuditLog({
+      action: AUDIT_ACTIONS.GDPR_DELETED,
+      actor: user,
+      resourceType: 'account',
+      resourceId: user.id,
+      request,
+    })
 
     // Removing the auth user requires the service-role key. If it is not
     // configured, the account's data has still been erased above; report success

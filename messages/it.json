@@ -258,7 +258,8 @@
       "accountingExportReady": "L'esportazione {format} è pronta ed è stata scaricata.",
       "accountDeleted": "Il tuo account e i dati personali sono stati eliminati con successo.",
       "cookiesEnabled": "Preferenze cookie aggiornate: cookie opzionali attivati.",
-      "cookiesDisabled": "Preferenze cookie aggiornate: cookie opzionali disattivati."
+      "cookiesDisabled": "Preferenze cookie aggiornate: cookie opzionali disattivati.",
+      "bankConnected": "Il tuo conto bancario è stato collegato correttamente."
     },
     "languageOptions": {
       "en": "English",
@@ -323,7 +324,8 @@
       "saveSettings": "Salva impostazioni",
       "preparing": "Preparazione...",
       "preparingExport": "Preparazione esportazione...",
-      "deletingAccount": "Eliminazione account..."
+      "deletingAccount": "Eliminazione account...",
+      "connectingBank": "Connessione..."
     },
     "accounting": {
       "title": "Integrazione bancaria e contabile",
@@ -342,7 +344,9 @@
       "exportQuickBooks": "Esporta QuickBooks (CSV)",
       "exportXero": "Esporta Xero (CSV)",
       "exportCsv": "Esporta CSV",
-      "exportExcel": "Esporta Excel"
+      "exportExcel": "Esporta Excel",
+      "connectBank": "Collega conto bancario",
+      "bankConnectedStatus": "Conto bancario collegato"
     },
     "privacy": {
       "title": "Privacy e GDPR",
@@ -367,7 +371,8 @@
       "logoImageOnly": "Si prega di caricare un file immagine per il logo della fattura.",
       "failedExportData": "Impossibile esportare i dati",
       "failedExportAccountingData": "Impossibile esportare i dati contabili",
-      "failedDeleteAccountData": "Impossibile eliminare i dati dell'account"
+      "failedDeleteAccountData": "Impossibile eliminare i dati dell'account",
+      "failedConnectBank": "Impossibile collegare il conto bancario"
     }
   },
   "login": {
@@ -385,6 +390,7 @@
       "signIn": "Accedi",
       "orContinueWith": "O continua con",
       "signInWithGoogle": "Accedi con Google",
+      "signInWithMicrosoft": "Accedi con Microsoft",
       "rememberDevice": "Ricorda questo dispositivo per 30 giorni",
       "verifying": "Verifica...",
       "verifyContinue": "Verifica e continua"
@@ -427,7 +433,10 @@
     },
     "actions": {
       "creating": "Creazione account...",
-      "signUp": "Registrati"
+      "signUp": "Registrati",
+      "orContinueWith": "O continua con",
+      "signInWithGoogle": "Accedi con Google",
+      "signInWithMicrosoft": "Accedi con Microsoft"
     },
     "footer": {
       "alreadyHaveAccount": "Hai già un account?",
@@ -451,13 +460,16 @@
       "clients": "Clienti",
       "projects": "Progetti",
       "expenses": "Spese",
+      "bank": "Banca",
       "recurring": "Ricorrenti",
       "estimates": "Preventivi",
       "time": "Monitoraggio tempo",
       "reports": "Report",
       "subscription": "Abbonamento",
       "admin": "Admin",
-      "settings": "Impostazioni"
+      "auditLogs": "Registro attività",
+      "settings": "Impostazioni",
+      "adminAi": "IA Admin"
     },
     "planLabel": "Piano",
     "account": "Account"
@@ -1044,5 +1056,85 @@
     "notifications": "Notifiche",
     "noNotifications": "Nessuna nuova notifica",
     "account": "Account"
+  },
+  "adminAi": {
+    "title": "IA di amministrazione",
+    "subtitle": "Approfondimenti, avvisi di anomalie e raccomandazioni basati sull'IA per tutta la tua piattaforma.",
+    "refresh": "Aggiorna",
+    "error": "Impossibile caricare i dati dell'IA di amministrazione",
+    "metrics": {
+      "title": "Statistiche di utilizzo",
+      "totalUsers": "Utenti totali",
+      "activeUsers": "Utenti attivi (30 g)",
+      "totalInvoices": "Fatture totali",
+      "overdueInvoices": "Fatture scadute",
+      "totalRevenue": "Ricavi totali",
+      "pendingRevenue": "Ricavi in sospeso",
+      "totalClients": "Clienti totali",
+      "events24h": "Eventi (24 h)",
+      "admins": "Amministratori",
+      "staff": "Staff",
+      "viewers": "Visualizzatori",
+      "newUsers": "Nuovi (30 g)"
+    },
+    "anomalies": {
+      "title": "Avvisi di anomalie",
+      "none": "Nessuna anomalia rilevata. Tutto sembra normale.",
+      "severity": {
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Bassa"
+      }
+    },
+    "recommendations": {
+      "title": "Raccomandazioni intelligenti",
+      "roles": {
+        "title": "Suggerimenti sui ruoli",
+        "none": "Nessun cambio di ruolo suggerito.",
+        "apply": "Imposta {role}",
+        "applied": "Ruolo aggiornato"
+      },
+      "features": {
+        "title": "Raccomandazioni sulle funzioni",
+        "none": "Nessuna raccomandazione sulle funzioni al momento."
+      },
+      "invoices": {
+        "title": "Ottimizzazione fatture",
+        "none": "Nessun suggerimento sulle fatture al momento."
+      },
+      "aiTips": {
+        "title": "Consigli IA",
+        "generate": "Consigli IA"
+      }
+    },
+    "activity": {
+      "title": "Analisi dell'attività utenti",
+      "user": "Utente",
+      "actions": "Azioni",
+      "topActions": "Azioni principali",
+      "none": "Nessuna attività recente registrata."
+    },
+    "report": {
+      "title": "Report di amministrazione",
+      "generate": "Genera report",
+      "generating": "Generazione...",
+      "empty": "Genera un report IA per riassumere stato, attività e rischi della piattaforma.",
+      "error": "Impossibile generare il report"
+    },
+    "assistant": {
+      "title": "Assistente IA di amministrazione",
+      "subtitle": "Fai domande su utenti, attività e utilizzo.",
+      "placeholder": "Chiedi di utenti, attività, ricavi...",
+      "send": "Invia",
+      "thinking": "Sto pensando...",
+      "empty": "Chiedi all'IA dei dati della tua piattaforma o scegli un suggerimento:",
+      "error": "Impossibile ottenere una risposta",
+      "suggestions": {
+        "activeUsers": "Chi sono gli utenti più attivi?",
+        "anomalies": "Ci sono attività sospette?",
+        "roles": "Quali utenti dovrebbero cambiare ruolo?",
+        "revenue": "Riassumi ricavi e fatture scadute"
+      }
+    }
   }
 }

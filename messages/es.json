@@ -266,7 +266,8 @@
       "accountingExportReady": "La exportación {format} está lista y ha sido descargada.",
       "accountDeleted": "Tu cuenta y datos personales fueron eliminados correctamente.",
       "cookiesEnabled": "Preferencias de cookies actualizadas: cookies opcionales activadas.",
-      "cookiesDisabled": "Preferencias de cookies actualizadas: cookies opcionales desactivadas."
+      "cookiesDisabled": "Preferencias de cookies actualizadas: cookies opcionales desactivadas.",
+      "bankConnected": "Tu cuenta bancaria se conectó correctamente."
     },
     "languageOptions": {
       "en": "English",
@@ -331,7 +332,8 @@
       "saveSettings": "Guardar Configuración",
       "preparing": "Preparando...",
       "preparingExport": "Preparando exportación...",
-      "deletingAccount": "Eliminando cuenta..."
+      "deletingAccount": "Eliminando cuenta...",
+      "connectingBank": "Conectando..."
     },
     "accounting": {
       "title": "Integración Bancaria y Contable",
@@ -350,7 +352,9 @@
       "exportQuickBooks": "Exportar QuickBooks (CSV)",
       "exportXero": "Exportar Xero (CSV)",
       "exportCsv": "Exportar CSV",
-      "exportExcel": "Exportar Excel"
+      "exportExcel": "Exportar Excel",
+      "connectBank": "Conectar cuenta bancaria",
+      "bankConnectedStatus": "Cuenta bancaria conectada"
     },
     "privacy": {
       "title": "Privacidad y RGPD",
@@ -375,7 +379,8 @@
       "logoImageOnly": "Por favor sube un archivo de imagen para el logotipo de la factura.",
       "failedExportData": "Error al exportar datos",
       "failedExportAccountingData": "Error al exportar datos contables",
-      "failedDeleteAccountData": "Error al eliminar datos de cuenta"
+      "failedDeleteAccountData": "Error al eliminar datos de cuenta",
+      "failedConnectBank": "No se pudo conectar la cuenta bancaria"
     }
   },
   "login": {
@@ -393,6 +398,7 @@
       "signIn": "Iniciar Sesión",
       "orContinueWith": "O continúa con",
       "signInWithGoogle": "Iniciar sesión con Google",
+      "signInWithMicrosoft": "Iniciar sesión con Microsoft",
       "rememberDevice": "Recordar este dispositivo por 30 días",
       "verifying": "Verificando...",
       "verifyContinue": "Verificar y Continuar"
@@ -435,7 +441,10 @@
     },
     "actions": {
       "creating": "Creando cuenta...",
-      "signUp": "Registrarse"
+      "signUp": "Registrarse",
+      "orContinueWith": "O continúa con",
+      "signInWithGoogle": "Iniciar sesión con Google",
+      "signInWithMicrosoft": "Iniciar sesión con Microsoft"
     },
     "footer": {
       "alreadyHaveAccount": "¿Ya tienes una cuenta?",
@@ -459,13 +468,16 @@
       "clients": "Clientes",
       "projects": "Proyectos",
       "expenses": "Gastos",
+      "bank": "Banco",
       "recurring": "Recurrentes",
       "estimates": "Presupuestos",
       "time": "Control de Tiempo",
       "reports": "Informes",
       "subscription": "Suscripción",
       "admin": "Admin",
-      "settings": "Configuración"
+      "auditLogs": "Registro de auditoría",
+      "settings": "Configuración",
+      "adminAi": "IA de Admin"
     },
     "planLabel": "Plan",
     "account": "Cuenta"
@@ -1044,5 +1056,85 @@
     "notifications": "Notificaciones",
     "noNotifications": "No hay notificaciones nuevas",
     "account": "Cuenta"
+  },
+  "adminAi": {
+    "title": "IA de Administración",
+    "subtitle": "Información, alertas de anomalías y recomendaciones impulsadas por IA en toda tu plataforma.",
+    "refresh": "Actualizar",
+    "error": "No se pudieron cargar los datos de la IA de administración",
+    "metrics": {
+      "title": "Información de uso",
+      "totalUsers": "Usuarios totales",
+      "activeUsers": "Usuarios activos (30 d)",
+      "totalInvoices": "Facturas totales",
+      "overdueInvoices": "Facturas vencidas",
+      "totalRevenue": "Ingresos totales",
+      "pendingRevenue": "Ingresos pendientes",
+      "totalClients": "Clientes totales",
+      "events24h": "Eventos (24 h)",
+      "admins": "Administradores",
+      "staff": "Personal",
+      "viewers": "Lectores",
+      "newUsers": "Nuevos (30 d)"
+    },
+    "anomalies": {
+      "title": "Alertas de anomalías",
+      "none": "No se detectaron anomalías. Todo parece normal.",
+      "severity": {
+        "high": "Alta",
+        "medium": "Media",
+        "low": "Baja"
+      }
+    },
+    "recommendations": {
+      "title": "Recomendaciones inteligentes",
+      "roles": {
+        "title": "Sugerencias de roles",
+        "none": "No se sugieren cambios de rol.",
+        "apply": "Asignar {role}",
+        "applied": "Rol actualizado"
+      },
+      "features": {
+        "title": "Recomendaciones de funciones",
+        "none": "No hay recomendaciones de funciones por ahora."
+      },
+      "invoices": {
+        "title": "Optimización de facturas",
+        "none": "No hay consejos de facturas por ahora."
+      },
+      "aiTips": {
+        "title": "Consejos de IA",
+        "generate": "Consejos de IA"
+      }
+    },
+    "activity": {
+      "title": "Análisis de actividad de usuarios",
+      "user": "Usuario",
+      "actions": "Acciones",
+      "topActions": "Acciones principales",
+      "none": "No hay actividad reciente registrada."
+    },
+    "report": {
+      "title": "Informe de administración",
+      "generate": "Generar informe",
+      "generating": "Generando...",
+      "empty": "Genera un informe de IA para resumir el estado, la actividad y los riesgos de la plataforma.",
+      "error": "No se pudo generar el informe"
+    },
+    "assistant": {
+      "title": "Asistente de IA de administración",
+      "subtitle": "Haz preguntas sobre usuarios, actividad y uso.",
+      "placeholder": "Pregunta sobre usuarios, actividad, ingresos...",
+      "send": "Enviar",
+      "thinking": "Pensando...",
+      "empty": "Pregúntale a la IA sobre los datos de tu plataforma o elige una sugerencia:",
+      "error": "No se pudo obtener una respuesta",
+      "suggestions": {
+        "activeUsers": "¿Quiénes son los usuarios más activos?",
+        "anomalies": "¿Hay actividades sospechosas?",
+        "roles": "¿Qué usuarios deberían cambiar de rol?",
+        "revenue": "Resume los ingresos y las facturas vencidas"
+      }
+    }
   }
 }

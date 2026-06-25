@@ -5,7 +5,7 @@
 1. Push repository to GitHub/GitLab/Bitbucket.
 2. Import project in Vercel.
 3. Set **Framework Preset** to Next.js.
-4. Set Node.js runtime to `20.x`.
+4. Set Node.js runtime to `24.x`.
 5. Add environment variables from `.env.example`.
 6. Deploy.
 
@@ -46,6 +46,25 @@ At minimum configure:
 4. Subscribe to relevant events (for example checkout/payment completion).
 5. Save webhook signing secret as:
    - `STRIPE_WEBHOOK_SECRET`
+
+## 4.1 Live Bank Sync Webhook
+
+The live bank sync feature exposes `/api/webhooks/stripe/bank`, which imports
+balance transactions from connected Stripe accounts and auto-reconciles them
+against open invoices. It is separate from the billing webhook above.
+
+1. In the Stripe Dashboard, add a **Connect** webhook endpoint (events on
+   connected accounts):
+   - URL: `https://<your-domain>/api/webhooks/stripe/bank`
+2. Subscribe to the balance/bank events:
+   - `balance.available`, `charge.succeeded`, `charge.captured`,
+     `charge.refunded`, `payout.paid`, `payout.created`, `payout.failed`,
+     `financial_connections.account.refreshed_transactions`
+3. Save the signing secret as:
+   - `STRIPE_BANK_WEBHOOK_SECRET` (falls back to `STRIPE_WEBHOOK_SECRET` if unset)
+4. Apply the migration that streams transactions to the dashboard in real time:
+   - `supabase/migrations/202606250019_enable_realtime_transactions.sql`
+     (adds `public.transactions` to the `supabase_realtime` publication)
 
 ## 5. Resend Email Setup
 

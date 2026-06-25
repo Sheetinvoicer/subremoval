@@ -3,6 +3,7 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import ConsentAwareAnalytics from '@/components/ConsentAwareAnalytics'
 import CookieConsentBanner from '@/components/CookieConsentBanner'
 import PageTransition from '@/components/PageTransition'
+import ChunkErrorHandler from '@/components/ChunkErrorHandler'
 import { Toaster } from 'react-hot-toast'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
@@ -43,6 +44,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={direction} suppressHydrationWarning>
       <body className="min-h-screen bg-background text-text-primary">
+        <ChunkErrorHandler />
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>
             <PageTransition>{children}</PageTransition>

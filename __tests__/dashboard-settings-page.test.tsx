@@ -188,4 +188,91 @@ describe('Dashboard Settings page', () => {
       expect(screen.getByText('QUICKBOOKS export is ready and has been downloaded.')).toBeInTheDocument();
     });
   });
+
+  it('starts the Stripe Connect OAuth flow when connecting a bank account', async () => {
+    const from = jest.fn().mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
+        }),
+      }),
+      upsert: jest.fn().mockResolvedValue({ error: null }),
+    });
+
+    createClient.mockReturnValue({
+      auth: {
+        getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'user-123' } }, error: null }),
+        getSession: jest.fn().mockResolvedValue({ data: { session: { access_token: 'token-abc' } } }),
+      },
+      from,
+    });
+
+    // jsdom cannot perform (or assert on) a real navigation, so we only verify
+    // that the handler called the OAuth start endpoint and entered the in-flight
+    // state; the subsequent window.location handoff is a browser concern.
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue({ url: 'https://connect.stripe.test/oauth' }),
+    });
+
+    render(<SettingsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Connect Bank Account' })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Connect Bank Account' }));
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith('/api/stripe/connect', expect.objectContaining({
+        method: 'POST',
+      }));
+      // The handler switches to the in-flight label while the browser hands off
+      // to Stripe, confirming the success path ran without an error.
+      expect(screen.getByRole('button', { name: 'Connecting...' })).toBeInTheDocument();
+    });
+  });
+
+  it('surfaces an error when bank connection is not configured', async () => {
+    const from = jest.fn().mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
+        }),
+      }),
+      upsert: jest.fn().mockResolvedValue({ error: null }),
+    });
+
+    createClient.mockReturnValue({
+      auth: {
+        getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'user-123' } }, error: null }),
+        getSession: jest.fn().mockResolvedValue({ data: { session: { access_token: 'token-abc' } } }),
+      },
+      from,
+    });
+
+    global.fetch.mockResolvedValue({
+      ok: false,
+      json: jest.fn().mockResolvedValue({
+        error: 'Stripe Connect is not configured. Set STRIPE_CONNECT_CLIENT_ID to enable bank connection.',
+      }),
+    });
+
+    render(<SettingsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Connect Bank Account' })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Connect Bank Account' }));
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith('/api/stripe/connect', expect.objectContaining({
+        method: 'POST',
+      }));
+      expect(
+        screen.getByText('Stripe Connect is not configured. Set STRIPE_CONNECT_CLIENT_ID to enable bank connection.'),
+      ).toBeInTheDocument();
+    });
+  });
 });

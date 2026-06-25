@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { requireRole, ROLES, normalizeRole } from '@/lib/auth/roles-server'
+import { recordAuditLog, AUDIT_ACTIONS } from '@/lib/audit/log'
 
 export const dynamic = 'force-dynamic'
 
@@ -56,6 +57,15 @@ export async function PATCH(request) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  await recordAuditLog({
+    action: AUDIT_ACTIONS.USER_ROLE_UPDATED,
+    actor: access.user,
+    resourceType: 'user',
+    resourceId: targetUserId,
+    metadata: { role: targetRole, target_email: data?.email },
+    request,
+  })
 
   return NextResponse.json({ user: data })
 }

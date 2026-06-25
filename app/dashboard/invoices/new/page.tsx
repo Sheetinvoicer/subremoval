@@ -11,12 +11,14 @@ import { AnimatePresence, motion } from 'framer-motion'
 import CSVUploader from '@/components/CSVUploader'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import SmartCurrencyTax from '@/components/SmartCurrencyTax'
+import { useSmartDetection } from '@/hooks/useSmartDetection'
 import {
   ArrowLeft,
   Users,
   CalendarDays,
   ListPlus,
-  Percent,
+  StickyNote,
   Plus,
   Trash2,
   Check,
@@ -53,10 +55,25 @@ export default function NewInvoicePage() {
   const [clientId, setClientId] = useState('')
   const [projectId, setProjectId] = useState('')
   const [items, setItems] = useState<InvoiceItem[]>([{ ...emptyItem }])
-  const [currency, setCurrency] = useState('USD')
   const [dueDate, setDueDate] = useState(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
-  const [taxRate, setTaxRate] = useState(0)
   const [notes, setNotes] = useState('')
+
+  // Smart, IP-based currency & tax detection with remembered manual overrides.
+  const {
+    currency,
+    taxRate,
+    taxType,
+    detected,
+    autoDetect,
+    manualOverride,
+    detecting,
+    error: detectionError,
+    rates,
+    setCurrency,
+    setTaxRate,
+    setAutoDetect,
+    redetect,
+  } = useSmartDetection()
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -297,17 +314,35 @@ export default function NewInvoicePage() {
               <span className="rounded-button bg-accent/10 p-1.5 text-accent"><CalendarDays size={16} /></span>
               <h2 className="font-semibold text-text-primary">{t('new.dueDate')}</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div>
                 <label htmlFor="invoice-due-date" className={labelClass}>{t('new.dueDate')}</label>
                 <input id="invoice-due-date" name="dueDate" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={`${inputClass} [color-scheme:dark]`} />
               </div>
-              <div>
-                <label htmlFor="invoice-currency" className={labelClass}>{t('new.currency')}</label>
-                <input id="invoice-currency" name="currency" type="text" value={currency} onChange={(e) => setCurrency(e.target.value.toUpperCase())} maxLength={3} className={inputClass} />
-              </div>
             </div>
           </Card>
+
+          {/* Smart currency & tax detection */}
+          <SmartCurrencyTax
+            variant="dark"
+            currency={currency}
+            taxRate={taxRate}
+            taxType={taxType}
+            detected={detected}
+            autoDetect={autoDetect}
+            manualOverride={manualOverride}
+            detecting={detecting}
+            error={detectionError}
+            rates={rates}
+            onCurrencyChange={setCurrency}
+            onTaxRateChange={setTaxRate}
+            onAutoDetectChange={setAutoDetect}
+            onRedetect={redetect}
+            labels={{
+              currencyLabel: t('new.currency'),
+              taxLabel: t('new.taxRate'),
+            }}
+          />
 
           {/* Line Items */}
           <Card hoverGlow={false}>
@@ -345,19 +380,13 @@ export default function NewInvoicePage() {
             </div>
           </Card>
 
-          {/* Tax & Notes */}
+          {/* Notes */}
           <Card hoverGlow={false}>
             <div className="mb-4 flex items-center gap-2">
-              <span className="rounded-button bg-accent/10 p-1.5 text-accent"><Percent size={16} /></span>
-              <h2 className="font-semibold text-text-primary">{t('new.taxRate')}</h2>
+              <span className="rounded-button bg-accent/10 p-1.5 text-accent"><StickyNote size={16} /></span>
+              <h2 className="font-semibold text-text-primary">{t('new.notes')}</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="invoice-tax-rate" className={labelClass}>{t('new.taxRate')}</label>
-                <input id="invoice-tax-rate" name="taxRate" type="number" min="0" max="100" step="0.01" value={taxRate} onChange={(e) => setTaxRate(Number(e.target.value))} className={inputClass} />
-              </div>
-            </div>
-            <div className="mt-4">
+            <div>
               <label htmlFor="invoice-notes" className={labelClass}>{t('new.notes')}</label>
               <textarea id="invoice-notes" name="notes" value={notes} onChange={(e) => setNotes(e.target.value)} className={`${inputClass} min-h-20`} />
             </div>

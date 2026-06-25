@@ -5,6 +5,8 @@ import { createClient } from '@/lib/supabase/client';
 import { SettingsSkeleton } from '@/components/LoadingSkeleton';
 import { t } from '@/lib/i18n';
 import { convertAmount, formatCurrencyAmount, getRatesWithDailyCache } from '@/lib/currency';
+import { useSmartDetection } from '@/hooks/useSmartDetection';
+import SmartCurrencyTax from '@/components/SmartCurrencyTax';
 
 interface CurrencySetting {
   id: string;
@@ -30,7 +32,9 @@ export default function CurrencySettingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  // Smart detection drives the currency selection; it restores remembered
+  // preferences and lets the user detect / override currency and tax.
+  const smart = useSmartDetection({ enabled: false });
   const [rates, setRates] = useState<Record<string, number> | null>(null);
   const [converterAmount, setConverterAmount] = useState(1000);
   const [currentSetting, setCurrentSetting] = useState<CurrencySetting | null>(null);
@@ -81,7 +85,7 @@ export default function CurrencySettingsPage() {
 
       if (data) {
         setCurrentSetting(data);
-        setSelectedCurrency(data.default_currency || 'USD');
+        smart.setCurrency(data.default_currency || 'USD');
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load settings';
@@ -111,11 +115,15 @@ export default function CurrencySettingsPage() {
         return;
       }
 
+      // Remember the manual overrides locally so they persist across sessions
+      // and are reused on the invoice creation screen.
+      smart.savePreferences();
+
       const { error: queryError } = await supabase
         .from('user_currency_settings')
         .upsert({
           user_id: user.id,
-          default_currency: selectedCurrency,
+          default_currency: smart.currency,
           updated_at: new Date().toISOString(),
         });
 
@@ -139,7 +147,7 @@ export default function CurrencySettingsPage() {
   }
 
   const convertedPreviewAmount = rates
-    ? convertAmount(converterAmount, 'USD', selectedCurrency, rates as any)
+    ? convertAmount(converterAmount, 'USD', smart.currency, rates as any)
     : converterAmount;
 
   return (
@@ -166,6 +174,27 @@ export default function CurrencySettingsPage() {
       )}
 
       <form onSubmit={saveSettings} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 space-y-6">
+        <SmartCurrencyTax
+          variant="light"
+          currency={smart.currency}
+          taxRate={smart.taxRate}
+          taxType={smart.taxType}
+          detected={smart.detected}
+          autoDetect={smart.autoDetect}
+          manualOverride={smart.manualOverride}
+          detecting={smart.detecting}
+          error={smart.error}
+          rates={smart.rates}
+          onCurrencyChange={smart.setCurrency}
+          onTaxRateChange={smart.setTaxRate}
+          onAutoDetectChange={smart.setAutoDetect}
+          onRedetect={smart.redetect}
+          labels={{
+            title: 'Smart currency & tax detection',
+            subtitle: 'Detect your currency and tax rate automatically, or set them manually.',
+            currencyLabel: 'Default Currency',
+          }}
+        />
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {t('defaultCurrency') || 'Default Currency'}
@@ -175,9 +204,9 @@ export default function CurrencySettingsPage() {
               <button
                 key={currency.code}
                 type="button"
-                onClick={() => setSelectedCurrency(currency.code)}
+                onClick={() => smart.setCurrency(currency.code)}
                 className={`p-3 rounded-lg border-2 text-center transition-all ${
-                  selectedCurrency === currency.code
+                  smart.currency === currency.code
                     ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
                     : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                 }`}
@@ -209,7 +238,7 @@ export default function CurrencySettingsPage() {
               className="w-full md:w-56 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             />
             <p className="text-sm text-gray-700 dark:text-gray-300">
-              {formatCurrencyAmount(converterAmount, 'USD')} = {formatCurrencyAmount(convertedPreviewAmount, selectedCurrency)}
+              {formatCurrencyAmount(converterAmount, 'USD')} = {formatCurrencyAmount(convertedPreviewAmount, smart.currency)}
             </p>
             {!rates && (
               <p className="text-xs text-amber-600 dark:text-amber-400">

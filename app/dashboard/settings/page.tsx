@@ -63,6 +63,8 @@ export default function SettingsPage() {
   const [exportingData, setExportingData] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [exportingAccounting, setExportingAccounting] = useState<null | 'quickbooks' | 'xero' | 'csv' | 'excel'>(null);
+  const [connectingBank, setConnectingBank] = useState(false);
+  const [bankConnected, setBankConnected] = useState(false);
   const [cookieConsent, setCookieConsent] = useState<'accepted' | 'rejected' | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -74,20 +76,48 @@ export default function SettingsPage() {
   const templateSettingsLoadedRef = useRef(false);
   const accountingMappingLoadedRef = useRef(false);
 
-  // ORIGINAL useEffect - unchanged
+  // Loads server settings, restores locally-persisted UI state, and reflects the
+  // outcome of the Stripe Connect bank flow when redirected back to this page.
   useEffect(() => {
     loadSettings();
     if (typeof document !== 'undefined') {
-      const consentCookie = document.cookie
-        .split('; ')
-        .find((entry) => entry.startsWith('cookie_consent='));
+      const cookies = document.cookie.split('; ');
+      const consentCookie = cookies.find((entry) => entry.startsWith('cookie_consent='));
       const value = consentCookie?.split('=')[1];
       if (value === 'accepted' || value === 'rejected') {
         setCookieConsent(value);
       }
+
+      // The OAuth callback records the connected account in this cookie so the
+      // UI can show the connected state across reloads.
+      const bankCookie = cookies.find((entry) => entry.startsWith('stripe_connect_account='));
+      if (bankCookie && bankCookie.split('=')[1]) {
+        setBankConnected(true);
+      }
     }
 
     if (typeof window !== 'undefined') {
+      // Surface the result of the Stripe Connect redirect, then strip the query
+      // param so refreshing the page doesn't replay the toast.
+      const params = new URLSearchParams(window.location.search);
+      const bankStatus = params.get('bank');
+      if (bankStatus === 'connected') {
+        setBankConnected(true);
+        setSuccess(t('messages.bankConnected'));
+        setTimeout(() => setSuccess(null), 3000);
+      } else if (bankStatus === 'error') {
+        setError(t('errors.failedConnectBank'));
+      }
+      if (bankStatus) {
+        params.delete('bank');
+        const query = params.toString();
+        window.history.replaceState(
+          null,
+          '',
+          `${window.location.pathname}${query ? `?${query}` : ''}`,
+        );
+      }
+
       const raw = window.localStorage.getItem(INVOICE_TEMPLATE_STORAGE_KEY);
       if (raw) {
         try {
@@ -486,6 +516,51 @@ export default function SettingsPage() {
       setError(errorMessage);
     } finally {
       setExportingAccounting(null);
+    }
+  }
+
+  // Kicks off the Stripe Connect OAuth flow. The API route returns the hosted
+  // authorize URL, then we hand the browser off to Stripe; the user returns via
+  // /api/stripe/connect/callback which redirects back here with a status.
+  async function connectBankAccount() {
+    setError(null);
+    setSuccess(null);
+    setConnectingBank(true);
+
+    try {
+      const supabase = createClient();
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (supabase) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          headers.Authorization = `Bearer ${session.access_token}`;
+        }
+      }
+
+      const response = await fetch('/api/stripe/connect', {
+        method: 'POST',
+        headers,
+      });
+
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok || !payload.url) {
+        setError(payload.error || t('errors.failedConnectBank'));
+        setConnectingBank(false);
+        return;
+      }
+
+      // Full-page navigation to Stripe's hosted OAuth screen. We intentionally
+      // leave `connectingBank` set while the browser unloads.
+      window.location.href = payload.url;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : t('errors.failedConnectBank');
+      setError(errorMessage);
+      setConnectingBank(false);
     }
   }
 
@@ -894,6 +969,25 @@ export default function SettingsPage() {
                 placeholder={t('accounting.placeholders.referencePrefix')}
               />
             </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => void connectBankAccount()}
+              disabled={connectingBank}
+              className="px-4 py-2 rounded-lg bg-purple-600 text-white text-sm hover:bg-purple-700 disabled:opacity-50"
+            >
+              {connectingBank ? t('actions.connectingBank') : t('accounting.connectBank')}
+            </button>
+            {bankConnected && (
+              <span className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                {t('accounting.bankConnectedStatus')}
+              </span>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-2">

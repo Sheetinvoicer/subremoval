@@ -266,7 +266,8 @@
       "accountingExportReady": "L'exportation {format} est prête et a été téléchargée.",
       "accountDeleted": "Votre compte et vos données personnelles ont été supprimés avec succès.",
       "cookiesEnabled": "Préférences de cookies mises à jour : cookies optionnels activés.",
-      "cookiesDisabled": "Préférences de cookies mises à jour : cookies optionnels désactivés."
+      "cookiesDisabled": "Préférences de cookies mises à jour : cookies optionnels désactivés.",
+      "bankConnected": "Votre compte bancaire a été connecté avec succès."
     },
     "languageOptions": {
       "en": "English",
@@ -331,7 +332,8 @@
       "saveSettings": "Enregistrer les paramètres",
       "preparing": "Préparation...",
       "preparingExport": "Préparation de l'exportation...",
-      "deletingAccount": "Suppression du compte..."
+      "deletingAccount": "Suppression du compte...",
+      "connectingBank": "Connexion..."
     },
     "accounting": {
       "title": "Intégration bancaire et comptable",
@@ -350,7 +352,9 @@
       "exportQuickBooks": "Exporter QuickBooks (CSV)",
       "exportXero": "Exporter Xero (CSV)",
       "exportCsv": "Exporter CSV",
-      "exportExcel": "Exporter Excel"
+      "exportExcel": "Exporter Excel",
+      "connectBank": "Connecter un compte bancaire",
+      "bankConnectedStatus": "Compte bancaire connecté"
     },
     "privacy": {
       "title": "Confidentialité et RGPD",
@@ -375,7 +379,8 @@
       "logoImageOnly": "Veuillez télécharger un fichier image pour le logo de la facture.",
       "failedExportData": "Échec de l'exportation des données",
       "failedExportAccountingData": "Échec de l'exportation des données comptables",
-      "failedDeleteAccountData": "Échec de la suppression des données du compte"
+      "failedDeleteAccountData": "Échec de la suppression des données du compte",
+      "failedConnectBank": "Échec de la connexion du compte bancaire"
     }
   },
   "login": {
@@ -393,6 +398,7 @@
       "signIn": "Se connecter",
       "orContinueWith": "Ou continuer avec",
       "signInWithGoogle": "Se connecter avec Google",
+      "signInWithMicrosoft": "Se connecter avec Microsoft",
       "rememberDevice": "Se souvenir de cet appareil pendant 30 jours",
       "verifying": "Vérification...",
       "verifyContinue": "Vérifier et continuer"
@@ -435,7 +441,10 @@
     },
     "actions": {
       "creating": "Création du compte...",
-      "signUp": "S'inscrire"
+      "signUp": "S'inscrire",
+      "orContinueWith": "Ou continuer avec",
+      "signInWithGoogle": "Se connecter avec Google",
+      "signInWithMicrosoft": "Se connecter avec Microsoft"
     },
     "footer": {
       "alreadyHaveAccount": "Vous avez déjà un compte ?",
@@ -459,13 +468,16 @@
       "clients": "Clients",
       "projects": "Projets",
       "expenses": "Dépenses",
+      "bank": "Banque",
       "recurring": "Récurrents",
       "estimates": "Devis",
       "time": "Suivi du temps",
       "reports": "Rapports",
       "subscription": "Abonnement",
       "admin": "Admin",
-      "settings": "Paramètres"
+      "auditLogs": "Journal d'audit",
+      "settings": "Paramètres",
+      "adminAi": "IA Admin"
     },
     "planLabel": "Forfait",
     "account": "Compte"
@@ -1044,5 +1056,85 @@
     "notifications": "Notifications",
     "noNotifications": "Aucune nouvelle notification",
     "account": "Compte"
+  },
+  "adminAi": {
+    "title": "IA d'administration",
+    "subtitle": "Analyses, alertes d'anomalies et recommandations propulsées par l'IA sur toute votre plateforme.",
+    "refresh": "Actualiser",
+    "error": "Échec du chargement des données de l'IA d'administration",
+    "metrics": {
+      "title": "Aperçu de l'utilisation",
+      "totalUsers": "Utilisateurs totaux",
+      "activeUsers": "Utilisateurs actifs (30 j)",
+      "totalInvoices": "Factures totales",
+      "overdueInvoices": "Factures en retard",
+      "totalRevenue": "Revenu total",
+      "pendingRevenue": "Revenu en attente",
+      "totalClients": "Clients totaux",
+      "events24h": "Événements (24 h)",
+      "admins": "Admins",
+      "staff": "Personnel",
+      "viewers": "Lecteurs",
+      "newUsers": "Nouveaux (30 j)"
+    },
+    "anomalies": {
+      "title": "Alertes d'anomalies",
+      "none": "Aucune anomalie détectée. Tout semble normal.",
+      "severity": {
+        "high": "Élevée",
+        "medium": "Moyenne",
+        "low": "Faible"
+      }
+    },
+    "recommendations": {
+      "title": "Recommandations intelligentes",
+      "roles": {
+        "title": "Suggestions de rôles",
+        "none": "Aucun changement de rôle suggéré.",
+        "apply": "Définir {role}",
+        "applied": "Rôle mis à jour"
+      },
+      "features": {
+        "title": "Recommandations de fonctionnalités",
+        "none": "Aucune recommandation de fonctionnalité pour le moment."
+      },
+      "invoices": {
+        "title": "Optimisation des factures",
+        "none": "Aucun conseil de facturation pour le moment."
+      },
+      "aiTips": {
+        "title": "Conseils IA",
+        "generate": "Conseils IA"
+      }
+    },
+    "activity": {
+      "title": "Analyse de l'activité des utilisateurs",
+      "user": "Utilisateur",
+      "actions": "Actions",
+      "topActions": "Actions principales",
+      "none": "Aucune activité récente enregistrée."
+    },
+    "report": {
+      "title": "Rapport d'administration",
+      "generate": "Générer le rapport",
+      "generating": "Génération...",
+      "empty": "Générez un rapport IA pour résumer l'état, l'activité et les risques de la plateforme.",
+      "error": "Échec de la génération du rapport"
+    },
+    "assistant": {
+      "title": "Assistant IA d'administration",
+      "subtitle": "Posez des questions sur les utilisateurs, l'activité et l'utilisation.",
+      "placeholder": "Posez une question sur les utilisateurs, l'activité, le revenu...",
+      "send": "Envoyer",
+      "thinking": "Réflexion...",
+      "empty": "Interrogez l'IA sur les données de votre plateforme ou choisissez une suggestion :",
+      "error": "Échec de l'obtention d'une réponse",
+      "suggestions": {
+        "activeUsers": "Qui sont les utilisateurs les plus actifs ?",
+        "anomalies": "Y a-t-il des activités suspectes ?",
+        "roles": "Quels utilisateurs devraient changer de rôle ?",
+        "revenue": "Résumez le revenu et les factures en retard"
+      }
+    }
   }
 }

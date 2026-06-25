@@ -1,0 +1,118 @@
+
+> sheetinvoicer@0.1.0 prebuild
+> node scripts/generate-standalone.js
+
+issue.md.junie_standalone already exists.
+
+> sheetinvoicer@0.1.0 build
+> next build
+
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env.local, .env.production
+- Experiments (use with caution):
+  · optimizePackageImports
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 7.0s
+  Running TypeScript ...
+  Finished TypeScript in 5.4s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/57) ...
+  Generating static pages using 7 workers (14/57) 
+  Generating static pages using 7 workers (28/57) 
+  Generating static pages using 7 workers (42/57) 
+✓ Generating static pages using 7 workers (57/57) in 244ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /api-docs
+├ ƒ /api/accounting/export
+├ ƒ /api/admin/ai/analytics
+├ ƒ /api/admin/ai/chat
+├ ƒ /api/admin/ai/recommendations
+├ ƒ /api/admin/audit-logs
+├ ƒ /api/admin/backups
+├ ƒ /api/admin/backups/restore
+├ ƒ /api/admin/users
+├ ƒ /api/agents/chat
+├ ƒ /api/ai/action
+├ ƒ /api/auth/2fa
+├ ƒ /api/auth/reset-password
+├ ƒ /api/auth/role
+├ ƒ /api/auth/session
+├ ƒ /api/auth/welcome-email
+├ ƒ /api/bank/balance
+├ ƒ /api/bank/reconcile
+├ ƒ /api/bank/transactions
+├ ƒ /api/cron/generate-recurring
+├ ƒ /api/cron/send-reminders
+├ ƒ /api/cron/supabase-backup
+├ ƒ /api/currency/rates
+├ ƒ /api/discount
+├ ƒ /api/gdpr/delete
+├ ƒ /api/gdpr/export
+├ ƒ /api/invoices/send-magic-link
+├ ƒ /api/locale
+├ ƒ /api/location
+├ ƒ /api/send-invoice
+├ ƒ /api/sentry-example-api
+├ ƒ /api/stripe/calculate-tax
+├ ƒ /api/stripe/cancel-subscription
+├ ƒ /api/stripe/connect
+├ ƒ /api/stripe/connect/callback
+├ ƒ /api/stripe/create-checkout
+├ ƒ /api/stripe/create-subscription
+├ ƒ /api/stripe/webhook
+├ ƒ /api/webhooks/stripe/bank
+├ ƒ /clients
+├ ƒ /dashboard
+├ ƒ /dashboard/admin
+├ ƒ /dashboard/admin/ai
+├ ƒ /dashboard/admin/audit-logs
+├ ƒ /dashboard/bank
+├ ƒ /dashboard/clients
+├ ƒ /dashboard/clients/[id]
+├ ƒ /dashboard/clients/[id]/edit
+├ ƒ /dashboard/clients/new
+├ ƒ /dashboard/estimates
+├ ƒ /dashboard/estimates/[id]
+├ ƒ /dashboard/estimates/new
+├ ƒ /dashboard/expenses
+├ ƒ /dashboard/expenses/[id]
+├ ƒ /dashboard/expenses/[id]/edit
+├ ƒ /dashboard/expenses/new
+├ ƒ /dashboard/invoices
+├ ƒ /dashboard/invoices/[id]
+├ ƒ /dashboard/invoices/[id]/edit
+├ ƒ /dashboard/invoices/new
+├ ƒ /dashboard/projects
+├ ƒ /dashboard/projects/[id]
+├ ƒ /dashboard/projects/[id]/edit
+├ ƒ /dashboard/projects/new
+├ ƒ /dashboard/recurring
+├ ƒ /dashboard/recurring/new
+├ ƒ /dashboard/reports
+├ ƒ /dashboard/settings
+├ ƒ /dashboard/settings/currency
+├ ƒ /dashboard/settings/reminders
+├ ƒ /dashboard/settings/security
+├ ƒ /dashboard/subscription
+├ ƒ /dashboard/subscription/success
+├ ƒ /dashboard/time
+├ ƒ /login
+├ ƒ /pay/[id]
+├ ƒ /portal/[token]
+├ ƒ /pricing
+├ ƒ /privacy
+├ ƒ /sentry-example-page
+├ ƒ /signup
+├ ƒ /terms
+└ ƒ /update-password
+
+
+ƒ Proxy (Middleware)
+
+ƒ  (Dynamic)  server-rendered on demand
+

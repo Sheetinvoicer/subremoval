@@ -14,12 +14,15 @@ import {
   Users,
   FolderKanban,
   Wallet,
+  Landmark,
   Repeat,
   ClipboardList,
   Clock,
   TrendingUp,
   Shield,
+  ScrollText,
   CreditCard,
+  Sparkles,
   type LucideIcon,
 } from 'lucide-react';
 import { hasRequiredRole, normalizeRole, ROLES } from '@/lib/auth/roles';
@@ -32,12 +35,15 @@ const navItems: { key: string; href: string; Icon: LucideIcon }[] = [
   { key: 'clients', href: '/dashboard/clients', Icon: Users },
   { key: 'projects', href: '/dashboard/projects', Icon: FolderKanban },
   { key: 'expenses', href: '/dashboard/expenses', Icon: Wallet },
+  { key: 'bank', href: '/dashboard/bank', Icon: Landmark },
   { key: 'recurring', href: '/dashboard/recurring', Icon: Repeat },
   { key: 'estimates', href: '/dashboard/estimates', Icon: ClipboardList },
   { key: 'time', href: '/dashboard/time', Icon: Clock },
   { key: 'reports', href: '/dashboard/reports', Icon: TrendingUp },
   { key: 'subscription', href: '/dashboard/subscription', Icon: CreditCard },
   { key: 'admin', href: '/dashboard/admin', Icon: Shield },
+  { key: 'adminAi', href: '/dashboard/admin/ai', Icon: Sparkles },
+  { key: 'auditLogs', href: '/dashboard/admin/audit-logs', Icon: ScrollText },
   { key: 'settings', href: '/dashboard/settings', Icon: Settings },
 ];
 
@@ -111,7 +117,7 @@ function Sidebar() {
   }, [supabase]);
 
   const visibleNavItems = navItems.filter((item) => {
-    if (item.href === '/dashboard/admin') {
+    if (item.href.startsWith('/dashboard/admin')) {
       return hasRequiredRole(role, ROLES.ADMIN);
     }
     return true;
