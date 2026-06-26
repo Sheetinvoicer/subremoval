@@ -109,4 +109,41 @@ describe('Generate recurring cron route', () => {
     expect(updateMock).toHaveBeenCalledWith(expect.objectContaining({ next_date: expect.any(String) }))
     expect(sendEmailMock).toHaveBeenCalled()
   })
+
+  it('skips generation when the due occurrence is an exception date but still advances next_date', async () => {
+    lteMock.mockResolvedValue({
+      data: [
+        {
+          id: 'rec-skip',
+          user_id: 'user-1',
+          client_id: 'client-1',
+          amount: 99,
+          currency: 'USD',
+          frequency: 'monthly',
+          next_date: '2026-06-21',
+          exceptions: ['2026-06-21'],
+          notes: 'Skipped occurrence',
+          clients: { name: 'Jane', email: 'jane@example.com' },
+        },
+      ],
+      error: null,
+    })
+
+    const req = {
+      headers: { get: () => 'Bearer secret-123' },
+    }
+
+    const res = await GET(req)
+    const payload = await res.json()
+
+    expect(res.status).toBe(200)
+    expect(payload.success).toBe(true)
+    expect(payload.processed).toBe(1)
+    expect(payload.results[0]).toMatchObject({ templateId: 'rec-skip', skipped: true })
+    // No invoice created and no email sent for the skipped occurrence...
+    expect(insertMock).not.toHaveBeenCalled()
+    expect(sendEmailMock).not.toHaveBeenCalled()
+    // ...but the schedule still advances so it isn't stuck on the skipped date.
+    expect(updateMock).toHaveBeenCalledWith(expect.objectContaining({ next_date: expect.any(String) }))
+  })
 })

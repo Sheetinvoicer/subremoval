@@ -43,6 +43,30 @@ export async function GET(request) {
     const results = []
 
     for (const template of templates || []) {
+      // Per-schedule skip dates: if this due occurrence (`next_date`) was marked
+      // as an exception, don't generate an invoice for it — but still advance
+      // `next_date` so the schedule is never stuck on the skipped date.
+      const exceptions = Array.isArray(template.exceptions)
+        ? template.exceptions.map((value) => String(value))
+        : []
+      const occurrence = template.next_date ? String(template.next_date) : null
+
+      if (occurrence && exceptions.includes(occurrence)) {
+        const skippedNextDate = getNextDate(today, template.frequency)
+        const { error: skipError } = await supabase
+          .from('recurring_invoices')
+          .update({ next_date: skippedNextDate })
+          .eq('id', template.id)
+
+        if (skipError) {
+          results.push({ templateId: template.id, success: false, error: skipError.message })
+          continue
+        }
+
+        results.push({ templateId: template.id, success: true, skipped: true, skippedDate: occurrence })
+        continue
+      }
+
       const { data: createdInvoice, error: createError } = await supabase
         .from('invoices')
         .insert({

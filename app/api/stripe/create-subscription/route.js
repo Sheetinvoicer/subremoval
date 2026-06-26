@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { isContactSales, resolvePriceId } from '@/lib/subscriptions/plans'
 
 function getStripeClient() {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY
@@ -11,22 +12,21 @@ function getStripeClient() {
   return new Stripe(stripeSecretKey)
 }
 
-// Map a friendly plan name to a configured Stripe price ID via env vars.
-function resolvePriceId(planName) {
-  if (!planName) return null
-  const normalized = String(planName).toLowerCase()
-  const map = {
-    pro: process.env.STRIPE_PRO_PRICE_ID || process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID,
-    business:
-      process.env.STRIPE_BUSINESS_PRICE_ID || process.env.NEXT_PUBLIC_STRIPE_BUSINESS_PRICE_ID,
-  }
-  return map[normalized] || null
-}
-
 export async function POST(request) {
   try {
     const body = await request.json().catch(() => ({}))
     const { plan, priceId: rawPriceId, customerEmail, userId, successUrl, cancelUrl } = body || {}
+
+    // Enterprise is sales-assisted: there is no self-serve checkout price.
+    if (isContactSales(plan)) {
+      return NextResponse.json(
+        {
+          error: 'Enterprise plans are sales-assisted. Please contact sales.',
+          action: 'contact_sales',
+        },
+        { status: 400 },
+      )
+    }
 
     const priceId = rawPriceId || resolvePriceId(plan)
 

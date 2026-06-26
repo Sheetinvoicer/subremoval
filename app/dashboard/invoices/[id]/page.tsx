@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client'
@@ -10,11 +10,19 @@ import {
   DEFAULT_INVOICE_TEMPLATE_SETTINGS,
   INVOICE_TEMPLATE_STORAGE_KEY,
   type InvoiceTemplateSettings,
+  resolveInvoiceTemplate,
   sanitizeAccentColor,
   sanitizeInvoiceTemplateSettings,
 } from '@/lib/invoiceTemplate';
 import { formatMinutesAsHoursMinutes } from '@/lib/timeTracking';
 import { useTranslations } from 'next-intl';
+import { isFeatureEnabled } from '@/lib/featureFlags';
+import { INVOICE_STATUS_LIFECYCLE } from '@/lib/invoices/payments';
+import StatusTimeline from '@/components/invoices/StatusTimeline';
+import PaymentTracker, { type PaymentRecord } from '@/components/invoices/PaymentTracker';
+import InvoiceHistoryLog, { type InvoiceHistoryEntry } from '@/components/invoices/InvoiceHistoryLog';
+import CommentThread, { type CommentRecord } from '@/components/invoices/CommentThread';
+import ShareLinkPanel, { type ShareLinkRecord } from '@/components/invoices/ShareLinkPanel';
 
 interface Invoice {
   id: string
@@ -24,11 +32,12 @@ interface Invoice {
   tax_amount?: number
   tax_rate_percentage?: number
   currency: string
-  status: 'draft' | 'sent' | 'paid' | 'overdue'
+  status: string
   due_date: string
   items?: { description: string; quantity: number; price: number; total?: number }[]
   notes?: string
   created_at: string
+  metadata?: Record<string, unknown> | null
   clients?: { name?: string; email?: string } | null
 }
 
@@ -65,9 +74,66 @@ export default function InvoiceDetailPage() {
   const [updatingStatus, setUpdatingStatus] = useState(false)
   const [templateSettings, setTemplateSettings] = useState<InvoiceTemplateSettings>(DEFAULT_INVOICE_TEMPLATE_SETTINGS)
   const [timeEntries, setTimeEntries] = useState<InvoiceTimeEntry[]>([])
+  const [payments, setPayments] = useState<PaymentRecord[]>([])
+  const [history, setHistory] = useState<InvoiceHistoryEntry[]>([])
+  const [comments, setComments] = useState<CommentRecord[]>([])
+  const [shareLink, setShareLink] = useState<ShareLinkRecord | null>(null)
   const params = useParams<{ id: string }>()
   const router = useRouter()
   const id = params?.id
+  const detailV2 = isFeatureEnabled('invoiceDetailV2')
+
+  // Reloads the payment/history facets (and the possibly auto-flipped status)
+  // without re-running the full initial load. Intentionally free of `t` so its
+  // identity is stable and it can be called from handlers.
+  const refreshDetailData = useCallback(async () => {
+    if (!id) return
+    const supabase = createClient()
+    if (!supabase) return
+    const { data: userData } = await supabase.auth.getUser()
+    const user = userData?.user
+    if (!user) return
+
+    const [
+      { data: inv },
+      { data: paymentData },
+      { data: historyData },
+      { data: commentData },
+      { data: shareData },
+    ] = await Promise.all([
+      supabase.from('invoices').select('status').eq('user_id', user.id).eq('id', id).single(),
+      supabase
+        .from('invoice_payments')
+        .select('id, amount, currency, kind, note, paid_at, created_at')
+        .eq('user_id', user.id)
+        .eq('invoice_id', id)
+        .order('paid_at', { ascending: false }),
+      supabase
+        .from('invoice_history')
+        .select('id, action, before, after, created_at')
+        .eq('user_id', user.id)
+        .eq('invoice_id', id)
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('invoice_comments')
+        .select('id, invoice_id, parent_id, audience, body, created_at')
+        .eq('user_id', user.id)
+        .eq('invoice_id', id)
+        .order('created_at', { ascending: true }),
+      supabase
+        .from('invoice_share_links')
+        .select('id, token, expires_at, revoked_at, view_count, last_viewed_at, created_at')
+        .eq('user_id', user.id)
+        .eq('invoice_id', id)
+        .order('created_at', { ascending: false }),
+    ])
+
+    if (inv?.status) setInvoice((prev) => (prev ? { ...prev, status: inv.status } : prev))
+    setPayments((paymentData || []) as PaymentRecord[])
+    setHistory((historyData || []) as InvoiceHistoryEntry[])
+    setComments((commentData || []) as CommentRecord[])
+    setShareLink(((shareData && shareData[0]) || null) as ShareLinkRecord | null)
+  }, [id])
 
   useEffect(() => {
     async function loadInvoice() {
@@ -100,6 +166,7 @@ export default function InvoiceDetailPage() {
       }
 
       setInvoice(data)
+      setDisplayCurrency(data.currency || 'USD')
 
       const { data: timeData } = await supabase
         .from('time_entries')
@@ -110,31 +177,69 @@ export default function InvoiceDetailPage() {
 
       setTimeEntries((timeData || []) as InvoiceTimeEntry[])
 
-      const { data: currencySettings } = await supabase
-        .from('user_currency_settings')
-        .select('default_currency')
-        .eq('user_id', user.id)
-        .single()
+      if (detailV2) {
+        const [
+          { data: paymentData },
+          { data: historyData },
+          { data: commentData },
+          { data: shareData },
+        ] = await Promise.all([
+          supabase
+            .from('invoice_payments')
+            .select('id, amount, currency, kind, note, paid_at, created_at')
+            .eq('user_id', user.id)
+            .eq('invoice_id', id)
+            .order('paid_at', { ascending: false }),
+          supabase
+            .from('invoice_history')
+            .select('id, action, before, after, created_at')
+            .eq('user_id', user.id)
+            .eq('invoice_id', id)
+            .order('created_at', { ascending: false }),
+          supabase
+            .from('invoice_comments')
+            .select('id, invoice_id, parent_id, audience, body, created_at')
+            .eq('user_id', user.id)
+            .eq('invoice_id', id)
+            .order('created_at', { ascending: true }),
+          supabase
+            .from('invoice_share_links')
+            .select('id, token, expires_at, revoked_at, view_count, last_viewed_at, created_at')
+            .eq('user_id', user.id)
+            .eq('invoice_id', id)
+            .order('created_at', { ascending: false }),
+        ])
+        setPayments((paymentData || []) as PaymentRecord[])
+        setHistory((historyData || []) as InvoiceHistoryEntry[])
+        setComments((commentData || []) as CommentRecord[])
+        setShareLink(((shareData && shareData[0]) || null) as ShareLinkRecord | null)
+      }
 
-      setDisplayCurrency(currencySettings?.default_currency || 'USD')
       setLoading(false)
     }
 
     if (id) {
       loadInvoice()
     }
-  }, [id])
+  }, [id, detailV2])
 
+  // Prefer the invoice's own template (metadata.template, Step 5b) and fall back
+  // to the user's global default from Settings (localStorage). Recomputed when
+  // the invoice loads so a per-invoice template wins over the global one.
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    const raw = window.localStorage.getItem(INVOICE_TEMPLATE_STORAGE_KEY)
-    if (!raw) return
-    try {
-      setTemplateSettings(sanitizeInvoiceTemplateSettings(JSON.parse(raw)))
-    } catch {
-      setTemplateSettings(DEFAULT_INVOICE_TEMPLATE_SETTINGS)
+    let globalDefault = DEFAULT_INVOICE_TEMPLATE_SETTINGS
+    if (typeof window !== 'undefined') {
+      const raw = window.localStorage.getItem(INVOICE_TEMPLATE_STORAGE_KEY)
+      if (raw) {
+        try {
+          globalDefault = sanitizeInvoiceTemplateSettings(JSON.parse(raw))
+        } catch {
+          globalDefault = DEFAULT_INVOICE_TEMPLATE_SETTINGS
+        }
+      }
     }
-  }, [])
+    setTemplateSettings(resolveInvoiceTemplate(invoice?.metadata, globalDefault))
+  }, [invoice])
 
   const computedSubtotal = useMemo(() => {
     if (!invoice?.items?.length) return Number(invoice?.subtotal || 0)
@@ -169,6 +274,22 @@ export default function InvoiceDetailPage() {
 
     setInvoice({ ...invoice, status })
     toast.success(t('detail.statusUpdated', { status: t(`status.${status}`) }))
+
+    // Record the manual status change in the owner-visible history trail.
+    if (detailV2) {
+      const { data: authData } = await supabase.auth.getUser()
+      const userId = authData?.user?.id
+      if (userId) {
+        await supabase.from('invoice_history').insert({
+          invoice_id: invoice.id,
+          user_id: userId,
+          action: 'status.changed',
+          before: { status: invoice.status },
+          after: { status },
+        })
+      }
+      void refreshDetailData()
+    }
   }
 
   const handleSendInvoice = async () => {
@@ -237,7 +358,7 @@ export default function InvoiceDetailPage() {
     <div className="container mx-auto p-4">
       <Toaster position="top-right" />
       
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+      <div className="invoice-print-area bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -255,7 +376,7 @@ export default function InvoiceDetailPage() {
               {templateSettings.template.toUpperCase()} {t('detail.templateSuffix')}
             </span>
           )}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 no-print">
             {invoice.status === 'draft' && (
               <>
                 <button
@@ -268,16 +389,22 @@ export default function InvoiceDetailPage() {
                 <Link href={`/dashboard/invoices/${invoice.id}/edit`} className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">{t('detail.edit')}</Link>
               </>
             )}
-            {['draft', 'sent', 'paid', 'overdue'].map((statusOption) => (
+            {[...(detailV2 ? INVOICE_STATUS_LIFECYCLE : ['draft', 'sent', 'paid', 'overdue'])].map((statusOption) => (
               <button
                 key={statusOption}
-                onClick={() => updateStatus(statusOption as Invoice['status'])}
+                onClick={() => updateStatus(statusOption)}
                 disabled={updatingStatus || invoice.status === statusOption}
                 className="px-3 py-2 border rounded-lg text-xs disabled:opacity-50"
               >
                 {t(`status.${statusOption}`)}
               </button>
             ))}
+            <button
+              onClick={() => window.print()}
+              className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+            >
+              {t('detail.print.button')}
+            </button>
             <button
               onClick={() => router.back()}
               className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
@@ -316,6 +443,22 @@ export default function InvoiceDetailPage() {
             </div>
           )}
         </div>
+
+        {detailV2 && (
+          <div className="mb-6 space-y-6 no-print">
+            <StatusTimeline status={invoice.status} />
+            <PaymentTracker
+              invoiceId={invoice.id}
+              total={Number(invoice.total) || 0}
+              currency={invoice.currency}
+              status={invoice.status}
+              payments={payments}
+              onRecorded={() => {
+                void refreshDetailData()
+              }}
+            />
+          </div>
+        )}
 
         {invoice.items && invoice.items.length > 0 && (
           <div className="mt-6">
@@ -373,7 +516,7 @@ export default function InvoiceDetailPage() {
           </div>
         )}
 
-        <div className="mt-6">
+        <div className="mt-6 no-print">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('detail.linkedTimeEntries')}</h3>
             <Link href="/dashboard/time" className="text-sm text-blue-600 hover:underline">{t('detail.manageTimeEntries')}</Link>
@@ -399,6 +542,26 @@ export default function InvoiceDetailPage() {
           <div className="mt-6">
             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t('detail.notes')}</h3>
             <p className="text-gray-700 dark:text-gray-300 mt-1 whitespace-pre-wrap">{invoice.notes}</p>
+          </div>
+        )}
+
+        {detailV2 && (
+          <div className="mt-6 space-y-6 no-print">
+            <ShareLinkPanel
+              invoiceId={invoice.id}
+              link={shareLink}
+              onChanged={() => {
+                void refreshDetailData()
+              }}
+            />
+            <CommentThread
+              invoiceId={invoice.id}
+              comments={comments}
+              onChanged={() => {
+                void refreshDetailData()
+              }}
+            />
+            <InvoiceHistoryLog entries={history} />
           </div>
         )}
       </div>

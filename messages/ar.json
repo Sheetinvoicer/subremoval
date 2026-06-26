@@ -1,4 +1,96 @@
 {
+  "subscriptionPlans": {
+    "heading": "اختر خطتك",
+    "subheading": "تسعير بسيط ينمو مع عملك",
+    "perMonth": "/شهر",
+    "customPricing": "مخصص",
+    "currentPlan": "الخطة الحالية",
+    "mostPopular": "الأكثر شيوعًا",
+    "actions": {
+      "choose": "اختر {plan}",
+      "upgrade": "الترقية إلى {plan}",
+      "downgrade": "التبديل إلى {plan}",
+      "contactSales": "تواصل مع المبيعات",
+      "current": "الخطة الحالية",
+      "manage": "إدارة الفوترة"
+    },
+    "proration": {
+      "note": "يتم احتساب تغييرات الخطة بشكل تناسبي فورًا.",
+      "upgraded": "تمت الترقية إلى {plan}. يُطبَّق رسم تناسبي لبقية هذه الفترة.",
+      "downgraded": "تم التبديل إلى {plan}. يُضاف الوقت غير المستخدم كرصيد إلى فاتورتك التالية."
+    },
+    "tiers": {
+      "free": {
+        "name": "Free",
+        "tagline": "للبدء"
+      },
+      "pro": {
+        "name": "Pro",
+        "tagline": "للمستقلين المتنامين"
+      },
+      "business": {
+        "name": "Business",
+        "tagline": "للفِرق"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "tagline": "للمؤسسات"
+      }
+    },
+    "features": {
+      "invoicesLimited": "حتى {count} فاتورة",
+      "clientsLimited": "حتى {count} عميل",
+      "expensesLimited": "حتى {count} مصروف",
+      "unlimitedInvoices": "فواتير غير محدودة",
+      "unlimitedClients": "عملاء غير محدودين",
+      "unlimitedExpenses": "مصروفات غير محدودة",
+      "basicReports": "تقارير أساسية",
+      "aiAssistant": "مساعد الذكاء الاصطناعي",
+      "multiLanguage": "متعدد اللغات",
+      "multiCurrency": "متعدد العملات",
+      "teamMembers": "{count} أعضاء الفريق",
+      "unlimitedTeam": "أعضاء فريق غير محدودين",
+      "userRoles": "أدوار المستخدمين",
+      "adminAi": "ذكاء اصطناعي للإدارة",
+      "auditLog": "سجل التدقيق",
+      "bankSync": "مزامنة البنك",
+      "prioritySupport": "دعم ذو أولوية",
+      "sso": "SSO",
+      "customBranding": "علامة تجارية مخصصة",
+      "dedicatedSupport": "دعم مخصص",
+      "customIntegrations": "تكاملات مخصصة"
+    },
+    "gate": {
+      "limitReached": "لقد وصلت إلى حد خطتك. قم بالترقية لإضافة المزيد.",
+      "featureLocked": "هذه الميزة غير متضمنة في خطتك الحالية.",
+      "upgradeCta": "ترقية",
+      "learnMore": "اعرف المزيد"
+    },
+    "team": {
+      "title": "أعضاء الفريق",
+      "description": "ادعُ زملاءك للتعاون.",
+      "inviteEmail": "بريد الزميل الإلكتروني",
+      "invite": "دعوة",
+      "seatsUsed": "تم استخدام {used} من {total} مقعدًا",
+      "seatsUnlimited": "مقاعد غير محدودة",
+      "seatLimitReached": "لقد استخدمت جميع المقاعد في خطتك. قم بالترقية للمزيد.",
+      "pending": "قيد الانتظار",
+      "active": "نشط",
+      "remove": "إزالة",
+      "empty": "لا يوجد أعضاء فريق بعد."
+    },
+    "sso": {
+      "title": "تسجيل الدخول الموحد (SSO)",
+      "description": "اسمح لفريقك بتسجيل الدخول عبر موفر الهوية الخاص بك.",
+      "domain": "نطاق الشركة",
+      "register": "تسجيل النطاق",
+      "signInWithSso": "تسجيل الدخول عبر SSO",
+      "status": "الحالة",
+      "pending": "الإعداد قيد الانتظار",
+      "active": "نشط",
+      "locked": "تتوفر خدمة SSO في خطتي Business وEnterprise."
+    }
+  },
   "subscription": {
     "title": "الاشتراك",
     "subtitle": "إدارة خطتك وفواتيرك",
@@ -53,32 +145,257 @@
     "parseError": "خطأ في تحليل ملف CSV: {message}"
   },
   "invoices": {
+    "editor": {
+      "createTitle": "إنشاء فاتورة",
+      "editTitle": "تعديل الفاتورة {number}",
+      "createCta": "إنشاء الفاتورة",
+      "saveCta": "حفظ التغييرات",
+      "creating": "جارٍ الإنشاء...",
+      "saving": "جارٍ الحفظ...",
+      "moneyHeading": "الضريبة والخصم",
+      "taxMode": "وضع الضريبة",
+      "taxModeExclusive": "إضافة الضريبة (غير شاملة)",
+      "taxModeInclusive": "الأسعار شاملة الضريبة (شاملة)",
+      "lineTaxRate": "ضريبة %",
+      "lineTaxRateHint": "اتركه فارغًا لاستخدام ضريبة الفاتورة.",
+      "discountType": "نوع الخصم",
+      "discountPercent": "نسبة مئوية (%)",
+      "discountFixed": "مبلغ ثابت",
+      "discountValue": "قيمة الخصم",
+      "rounding": "تقريب الإجمالي",
+      "roundingNone": "بدون تقريب",
+      "roundingHint": "تقريب الإجمالي إلى أقرب وحدة.",
+      "subtotalLabel": "المجموع الفرعي:",
+      "discountLabel": "الخصم:",
+      "taxLabel": "الضريبة:",
+      "roundingLabel": "التقريب:",
+      "totalLabel": "الإجمالي:",
+      "effectiveTax": "معدل الضريبة الفعلي {rate}%",
+      "updatedToast": "تم تحديث الفاتورة بنجاح.",
+      "autosave": {
+        "saving": "جارٍ حفظ المسودة...",
+        "saved": "تم حفظ المسودة",
+        "savedAt": "تم حفظ المسودة في {time}",
+        "error": "تعذّر حفظ المسودة",
+        "idle": "يتم حفظ التغييرات تلقائيًا"
+      },
+      "draft": {
+        "restoreTitle": "استعادة المسودة غير المحفوظة؟",
+        "restoreBody": "وجدنا مسودة محفوظة تلقائيًا من {time}.",
+        "restoreAction": "استعادة المسودة",
+        "discardAction": "تجاهل",
+        "restored": "تمت استعادة المسودة.",
+        "discarded": "تم تجاهل المسودة."
+      },
+      "errors": {
+        "projectInvalid": "المشروع المحدد غير صالح.",
+        "loadFailed": "فشل تحميل الفاتورة.",
+        "notFound": "الفاتورة غير موجودة.",
+        "updateFailed": "فشل تحديث الفاتورة."
+      },
+      "template": {
+        "heading": "القالب",
+        "style": "النمط",
+        "classic": "كلاسيكي",
+        "modern": "عصري",
+        "minimal": "بسيط",
+        "accent": "لون التمييز",
+        "sections": "الأقسام المرئية",
+        "showBusinessDetails": "تفاصيل الشركة",
+        "showClientDetails": "تفاصيل العميل",
+        "showDueDate": "تاريخ الاستحقاق",
+        "showNotes": "الملاحظات",
+        "showStatusBadge": "شارة الحالة",
+        "usingGlobal": "انطلاقًا من قالبك الافتراضي"
+      },
+      "preview": {
+        "heading": "معاينة مباشرة",
+        "title": "فاتورة",
+        "from": "من",
+        "businessPlaceholder": "شركتك",
+        "billTo": "الفاتورة إلى",
+        "noClient": "لم يتم اختيار عميل",
+        "due": "الاستحقاق",
+        "description": "الوصف",
+        "qty": "الكمية",
+        "price": "السعر",
+        "amount": "المبلغ",
+        "subtotal": "المجموع الفرعي",
+        "discount": "الخصم",
+        "tax": "الضريبة",
+        "total": "الإجمالي",
+        "notes": "الملاحظات",
+        "draft": "مسودة",
+        "empty": "أضف بنودًا لمعاينة هذه الفاتورة."
+      },
+      "ai": {
+        "heading": "بنود بالذكاء الاصطناعي",
+        "description": "صف العمل ودع الذكاء الاصطناعي يصيغ بنودًا احترافية وملاحظة.",
+        "briefLabel": "صف العمل",
+        "briefPlaceholder": "مثال: تصميم موقع تسويقي من 5 صفحات مع شعار وجولتي مراجعة",
+        "generate": "إنشاء",
+        "generating": "جارٍ الإنشاء…",
+        "resultHeading": "{count} بنود مقترحة",
+        "notesLabel": "ملاحظة مقترحة",
+        "apply": "إضافة إلى الفاتورة",
+        "dismiss": "تجاهل",
+        "errors": {
+          "briefRequired": "صف العمل أولاً.",
+          "locked": "الإنشاء بالذكاء الاصطناعي متاح في خطة Pro وما فوق.",
+          "login": "يجب تسجيل الدخول.",
+          "unavailable": "الإنشاء بالذكاء الاصطناعي غير مُهيأ.",
+          "generic": "تعذر إنشاء المحتوى. حاول مرة أخرى أو أضف البنود يدويًا."
+        }
+      },
+      "branding": {
+        "heading": "الهوية التجارية",
+        "locked": "تخصيص الهوية التجارية متاح في خطة Enterprise.",
+        "logo": "الشعار",
+        "logoPreviewAlt": "شعار الفاتورة",
+        "noLogo": "بدون شعار",
+        "uploadLogo": "رفع الشعار",
+        "removeLogo": "إزالة الشعار",
+        "logoTypeError": "يرجى اختيار ملف صورة.",
+        "logoSizeError": "يجب أن يكون حجم الشعار أقل من 512 كيلوبايت.",
+        "logoReadError": "تعذر قراءة الملف.",
+        "secondaryColor": "اللون الثانوي",
+        "typography": "الخطوط",
+        "fonts": {
+          "sans": "بلا زوائد",
+          "serif": "بزوائد",
+          "mono": "أحادي المسافة"
+        },
+        "watermark": "علامة مائية",
+        "watermarkPlaceholder": "مثال: مدفوعة، مسودة، سري",
+        "watermarkHint": "تظهر بشكل باهت خلف الفاتورة."
+      },
+      "signature": {
+        "heading": "التوقيع والختم",
+        "showSignature": "إضافة توقيع",
+        "signatureName": "وقّع بواسطة",
+        "signatureNamePlaceholder": "الاسم الكامل",
+        "signatureImage": "صورة التوقيع",
+        "signatureImageAlt": "التوقيع",
+        "noSignatureImage": "بدون صورة",
+        "uploadSignature": "رفع",
+        "removeSignature": "إزالة صورة التوقيع",
+        "imageTypeError": "يرجى اختيار ملف صورة.",
+        "imageSizeError": "يجب أن يكون حجم صورة التوقيع أقل من 256 كيلوبايت.",
+        "imageReadError": "تعذر قراءة الملف.",
+        "showSeal": "إضافة ختم تحقق",
+        "sealHint": "رمز مقاوم للتلاعب مشتق من رقم الفاتورة والإجمالي والعملة والتاريخ.",
+        "sealCodeLabel": "الرمز",
+        "previewSignedBy": "توقيع معتمد",
+        "previewNameFallback": "التوقيع",
+        "previewVerification": "التحقق"
+      }
+    },
+    "list": {
+      "export": {
+        "csv": "تصدير CSV",
+        "pdf": "تصدير PDF",
+        "title": "الفواتير",
+        "success": "التصدير جاهز",
+        "failed": "فشل التصدير",
+        "tooMany": "يتجاوز التصدير الحد الأقصى البالغ {max} صف. ضيّق عوامل التصفية وحاول مرة أخرى.",
+        "columns": {
+          "invoiceNumber": "رقم الفاتورة",
+          "client": "العميل",
+          "project": "المشروع",
+          "status": "الحالة",
+          "subtotal": "المجموع الفرعي",
+          "tax": "الضريبة",
+          "total": "الإجمالي",
+          "currency": "العملة",
+          "dueDate": "الاستحقاق",
+          "createdAt": "تاريخ الإنشاء"
+        },
+        "meta": {
+          "generatedAt": "أُنشئ في",
+          "filters": "عوامل التصفية",
+          "locale": "اللغة"
+        }
+      },
+      "bulk": {
+        "regionLabel": "إجراءات جماعية",
+        "selected": "{count} محددة",
+        "noSelection": "حدد فواتير لتنفيذ إجراء عليها",
+        "markPaid": "تحديد كمدفوعة",
+        "send": "إرسال",
+        "applyTax": "تطبيق نسبة الضريبة",
+        "delete": "حذف",
+        "clear": "مسح التحديد",
+        "taxRateLabel": "نسبة الضريبة (%)",
+        "taxRatePlaceholder": "0–100",
+        "apply": "تطبيق",
+        "cancel": "إلغاء",
+        "confirmTitle": "حذف {count} فاتورة؟",
+        "confirmBody": "لا يمكن التراجع عن هذا الإجراء.",
+        "confirmDelete": "تأكيد الحذف",
+        "progress": "جارٍ المعالجة {completed}/{total}…",
+        "resultsTitle": "النتائج",
+        "resultSuccess": "تم",
+        "resultFailed": "فشل",
+        "toastSuccess": "تم تحديث {count} فاتورة",
+        "toastPartial": "فشل {failed} من {total}",
+        "errorSupabaseInit": "فشل تهيئة عميل Supabase",
+        "errorLoginRequired": "يجب تسجيل الدخول.",
+        "errorSendFailed": "فشل إرسال الفاتورة",
+        "errorTaxRate": "يجب أن تكون نسبة الضريبة بين 0 و100.",
+        "errorSubtotalMissing": "تعذّر تحميل المجموع الفرعي لهذه الفاتورة.",
+        "errorGeneric": "فشل الإجراء"
+      },
+      "search": {
+        "label": "البحث في الفواتير",
+        "placeholder": "ابحث في الفواتير..."
+      },
+      "filters": {
+        "status": "تصفية حسب الحالة"
+      },
+      "status": {
+        "draft": "مسودة",
+        "sent": "مرسلة",
+        "viewed": "تمت المشاهدة",
+        "paid": "مدفوعة",
+        "overdue": "متأخرة",
+        "disputed": "متنازع عليها",
+        "cancelled": "ملغاة"
+      },
+      "results": {
+        "total": "{total} فاتورة",
+        "empty": "لا توجد فواتير بعد",
+        "emptyHint": "أنشئ أول فاتورة لك للبدء.",
+        "noMatches": "لا توجد فواتير تطابق بحثك",
+        "noMatchesHint": "حاول تعديل عوامل التصفية أو كلمات البحث."
+      },
+      "row": {
+        "selectOne": "تحديد الفاتورة {number}",
+        "unknownClient": "عميل غير معروف",
+        "noProject": "بدون مشروع",
+        "dueLabel": "الاستحقاق:"
+      },
+      "errors": {
+        "retry": "حاول مرة أخرى",
+        "supabaseInit": "فشل تهيئة عميل Supabase",
+        "loginRequired": "يجب تسجيل الدخول لعرض الفواتير.",
+        "query": "فشل تحميل الفواتير."
+      }
+    },
     "title": "الفواتير",
     "create_new": "إنشاء فاتورة جديدة",
     "invoice_number": "رقم الفاتورة",
     "status": {
-      "0": "ا",
-      "1": "ل",
-      "2": "ح",
-      "3": "ا",
-      "4": "ل",
-      "5": "ة",
       "draft": "مسودة",
       "sent": "مرسلة",
       "paid": "مدفوعة",
-      "overdue": "متأخرة"
+      "overdue": "متأخرة",
+      "viewed": "تمت المشاهدة",
+      "disputed": "متنازع عليها",
+      "cancelled": "ملغاة"
     },
     "amount": "المبلغ",
     "due_date": "تاريخ الاستحقاق",
     "actions": {
-      "0": "إ",
-      "1": "ج",
-      "2": "ر",
-      "3": "ا",
-      "4": "ء",
-      "5": "ا",
-      "6": "ت",
-      "7": "n",
       "tryAgain": "حاول مرة أخرى",
       "newInvoice": "فاتورة جديدة",
       "selectPage": "تحديد الصفحة",
@@ -141,7 +458,122 @@
       "prev": "السابق",
       "next": "التالي"
     },
+    "public": {
+      "invoiceLabel": "فاتورة",
+      "loading": "جارٍ تحميل الفاتورة…",
+      "notFoundTitle": "الرابط غير موجود",
+      "notFoundHint": "هذا الرابط غير صحيح أو لم يعد موجودًا.",
+      "expiredTitle": "انتهت صلاحية الرابط",
+      "expiredHint": "اطلب من المُرسِل رابطًا محدَّثًا.",
+      "revokedTitle": "تم إبطال الرابط",
+      "revokedHint": "اطلب من المُرسِل رابطًا محدَّثًا.",
+      "errorTitle": "حدث خطأ ما",
+      "errorHint": "تعذّر تحميل هذه الفاتورة. حاول مرة أخرى.",
+      "billedTo": "فاتورة إلى",
+      "statusLabel": "الحالة",
+      "issuedLabel": "تاريخ الإصدار",
+      "dueLabel": "تاريخ الاستحقاق",
+      "description": "الوصف",
+      "quantity": "الكمية",
+      "price": "السعر",
+      "amount": "المبلغ",
+      "subtotal": "المجموع الفرعي",
+      "tax": "الضريبة",
+      "total": "الإجمالي",
+      "print": "طباعة",
+      "poweredBy": "مُشغَّل بواسطة SheetInvoicer"
+    },
     "detail": {
+      "comments": {
+        "heading": "التعليقات",
+        "subtitle": "ملاحظات داخلية لفريقك",
+        "placeholder": "أضف ملاحظة داخلية…",
+        "audienceLabel": "مدى الظهور",
+        "audienceTeam": "الفريق (داخلي)",
+        "audienceClient": "العميل",
+        "add": "إضافة تعليق",
+        "adding": "جارٍ الإضافة…",
+        "reply": "رد",
+        "replyPlaceholder": "اكتب ردًا…",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "deleting": "جارٍ الحذف…",
+        "empty": "لا توجد تعليقات بعد.",
+        "added": "تمت إضافة التعليق",
+        "deleted": "تم حذف التعليق",
+        "errorAdd": "تعذّرت إضافة التعليق.",
+        "errorDelete": "تعذّر حذف التعليق.",
+        "errorLogin": "يجب تسجيل الدخول."
+      },
+      "share": {
+        "heading": "رابط مشاركة عام",
+        "description": "أنشئ رابطًا عامًا للقراءة فقط لهذه الفاتورة.",
+        "none": "لا يوجد رابط مشاركة بعد.",
+        "create": "إنشاء رابط",
+        "creating": "جارٍ الإنشاء…",
+        "regenerate": "إعادة الإنشاء",
+        "copy": "نسخ",
+        "copied": "تم نسخ الرابط",
+        "revoke": "إبطال",
+        "revoking": "جارٍ الإبطال…",
+        "linkLabel": "الرابط العام",
+        "expiryLabel": "ينتهي خلال (أيام)",
+        "expiryHint": "اتركه فارغًا لعدم انتهاء الصلاحية.",
+        "statusActive": "نشط",
+        "statusExpired": "منتهي الصلاحية",
+        "statusRevoked": "مُبطَل",
+        "expiresLabel": "ينتهي في",
+        "neverExpires": "لا ينتهي",
+        "viewsLabel": "المشاهدات",
+        "lastViewedLabel": "آخر مشاهدة",
+        "neverViewed": "لم يُشاهَد بعد",
+        "createdToast": "تم إنشاء رابط المشاركة",
+        "revokedToast": "تم إبطال رابط المشاركة",
+        "errorCreate": "تعذّر إنشاء رابط المشاركة.",
+        "errorRevoke": "تعذّر إبطال رابط المشاركة.",
+        "errorLogin": "يجب تسجيل الدخول."
+      },
+      "print": {
+        "button": "طباعة"
+      },
+      "timeline": {
+        "heading": "المخطط الزمني للحالة"
+      },
+      "payments": {
+        "heading": "المدفوعات",
+        "total": "إجمالي الفاتورة",
+        "paid": "المدفوع",
+        "balance": "الرصيد المستحق",
+        "fullyPaid": "تم سداد هذه الفاتورة بالكامل.",
+        "recordHeading": "تسجيل دفعة",
+        "amountLabel": "المبلغ",
+        "amountPlaceholder": "0.00",
+        "kindLabel": "النوع",
+        "kindPayment": "دفعة",
+        "kindCredit": "رصيد دائن",
+        "kindAdjustment": "تسوية",
+        "noteLabel": "ملاحظة (اختياري)",
+        "notePlaceholder": "مرجع، طريقة…",
+        "submit": "تسجيل الدفعة",
+        "submitting": "جارٍ التسجيل…",
+        "listHeading": "المدفوعات المسجلة",
+        "none": "لا توجد مدفوعات مسجلة بعد.",
+        "success": "تم تسجيل الدفعة",
+        "autoPaid": "تم تسجيل الدفعة — تم وضع علامة مدفوعة على الفاتورة",
+        "errorAmount": "أدخل مبلغًا غير صفري.",
+        "errorLogin": "يجب تسجيل الدخول.",
+        "errorGeneric": "تعذّر تسجيل الدفعة"
+      },
+      "history": {
+        "heading": "السجل",
+        "empty": "لا يوجد سجل بعد.",
+        "actions": {
+          "paymentRecorded": "تم تسجيل الدفعة",
+          "invoicePaid": "تم وضع علامة مدفوعة",
+          "statusChanged": "تم تغيير الحالة",
+          "unknown": "تم التحديث"
+        }
+      },
       "createdLabel": "تاريخ الإنشاء:",
       "templateSuffix": "قالب",
       "sending": "جاري الإرسال...",
@@ -519,7 +951,82 @@
       "overdueAmount": "المبلغ المتأخر"
     },
     "vsLastMonth": "مقارنة بالشهر الماضي",
-    "loading": "جارٍ التحميل..."
+    "loading": "جارٍ التحميل...",
+    "metrics": {
+      "predicted": "تنبؤ الذكاء الاصطناعي"
+    },
+    "ai": {
+      "title": "رؤى الذكاء الاصطناعي",
+      "subtitle": "تحليل ذكي لأعمالك",
+      "poweredBy": "مدعوم بالذكاء الاصطناعي",
+      "forecast": {
+        "title": "توقع الإيرادات",
+        "nextMonth": "توقع الشهر القادم",
+        "confidence": "ثقة {value}%",
+        "trendUp": "في ارتفاع",
+        "trendDown": "في انخفاض",
+        "trendFlat": "مستقر",
+        "insufficient": "لا توجد بيانات كافية بعد لتوقع الإيرادات."
+      },
+      "anomaly": {
+        "title": "اكتشاف الحالات الشاذة",
+        "none": "لم يتم اكتشاف حالات شاذة",
+        "spike": "ارتفاع غير معتاد",
+        "drop": "انخفاض غير معتاد"
+      },
+      "recommendations": {
+        "title": "توصيات ذكية",
+        "overdue": "تابع {count} فاتورة متأخرة بقيمة {amount}.",
+        "pending": "تابع {count} فاتورة معلقة بقيمة {amount}.",
+        "expensesHigh": "المصروفات أعلى من الإيرادات — راجع تكاليفك.",
+        "revenueDown": "انخفضت الإيرادات بنسبة {pct}% عن الشهر الماضي — راجع مسار مبيعاتك.",
+        "revenueUp": "ارتفعت الإيرادات بنسبة {pct}% عن الشهر الماضي — زخم رائع!",
+        "forecastUp": "من المتوقع أن تصل الإيرادات إلى {amount} الشهر القادم.",
+        "createInvoice": "أنشئ أول فاتورة لك لبدء تتبع الإيرادات.",
+        "addClient": "أضف أول عميل لك للبدء.",
+        "allCaught": "كل شيء على ما يرام — لا إجراءات عاجلة.",
+        "actions": {
+          "review": "مراجعة",
+          "remind": "إرسال تذكير",
+          "analyze": "تحليل",
+          "create": "ابدأ"
+        }
+      }
+    },
+    "quickActions": {
+      "title": "إجراءات سريعة",
+      "newInvoice": "فاتورة جديدة",
+      "newClient": "عميل جديد",
+      "newExpense": "مصروف جديد",
+      "newEstimate": "عرض سعر جديد",
+      "recurring": "متكررة",
+      "reports": "التقارير"
+    },
+    "activity": {
+      "title": "النشاط المباشر",
+      "subtitle": "تحديثات فورية",
+      "live": "مباشر",
+      "empty": "لا يوجد نشاط بعد",
+      "emptyHint": "ستظهر الإجراءات في مساحة عملك هنا فورياً.",
+      "justNow": "الآن"
+    },
+    "chat": {
+      "title": "مساعد الذكاء الاصطناعي",
+      "subtitle": "اسأل عن أعمالك",
+      "greeting": "مرحباً! أنا مساعدك بالذكاء الاصطناعي. اسألني عن إيراداتك أو فواتيرك أو عملائك أو ما يجب التركيز عليه.",
+      "placeholder": "اسألني أي شيء...",
+      "send": "إرسال",
+      "open": "فتح مساعد الذكاء الاصطناعي",
+      "close": "إغلاق",
+      "privacy": "تبقى بياناتك خاصة",
+      "error": "تعذر الوصول إلى المساعد. حاول مرة أخرى.",
+      "locked": "مساعد الذكاء الاصطناعي متاح في خطة Pro وما فوق.",
+      "suggestions": {
+        "revenue": "كيف يتجه أداء إيراداتي؟",
+        "overdue": "ما الفواتير المتأخرة؟",
+        "focus": "علام يجب أن أركز هذا الأسبوع؟"
+      }
+    }
   },
   "recurring": {
     "title": "الفواتير المتكررة",
@@ -658,7 +1165,15 @@
       "adminAi": "ذكاء المشرف"
     },
     "planLabel": "الخطة",
-    "account": "الحساب"
+    "account": "الحساب",
+    "sections": {
+      "overview": "نظرة عامة",
+      "sales": "المبيعات",
+      "finance": "المالية",
+      "workspace": "مساحة العمل",
+      "administration": "الإدارة",
+      "account": "الحساب"
+    }
   },
   "expensesPage": {
     "title": "المصروفات",
@@ -854,7 +1369,8 @@
     "actions": {
       "pause": "إيقاف مؤقت",
       "resume": "استئناف",
-      "delete": "حذف"
+      "delete": "حذف",
+      "duplicate": "تكرار"
     },
     "unknownClient": "عميل غير معروف",
     "errors": {
@@ -873,7 +1389,8 @@
         "frequency": "التكرار",
         "nextDate": "التاريخ التالي",
         "status": "الحالة",
-        "notes": "ملاحظات"
+        "notes": "ملاحظات",
+        "exceptions": "تخطّي التواريخ"
       },
       "status": {
         "active": "نشطة",
@@ -892,6 +1409,16 @@
       },
       "errors": {
         "loginRequired": "يجب تسجيل الدخول لإنشاء فاتورة متكررة"
+      },
+      "duplicateTitle": "تكرار الفاتورة المتكررة",
+      "duplicateNotice": "راجع التفاصيل المنسوخة وعدّلها ثم احفظ لإنشاء جدول جديد.",
+      "duplicateLoadFailed": "تعذّر تحميل الجدول لتكراره.",
+      "exceptions": {
+        "hint": "لن يُنشئ الجدول فاتورة في هذه التواريخ.",
+        "add": "إضافة تاريخ",
+        "remove": "إزالة التاريخ",
+        "empty": "لا توجد تواريخ متخطّاة بعد.",
+        "duplicate": "هذا التاريخ موجود بالفعل في القائمة."
       }
     }
   },

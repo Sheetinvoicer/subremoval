@@ -1,3 +1,5 @@
+import { formatCurrencyAmount } from '@/lib/currency'
+
 export interface AccountingMapping {
   incomeAccount: string;
   taxType: string;
@@ -189,5 +191,103 @@ export function buildInvoiceExportRows(invoices: AccountingInvoice[]): unknown[]
       Number(invoice.total ?? 0).toFixed(2),
       invoice.currency ?? 'USD',
     ]),
+  ];
+}
+
+// Row shape produced by `buildInvoiceExportQuery` (INVOICE_EXPORT_COLUMNS): the
+// client/project names are the denormalized columns, not an embedded relation.
+export interface ExportInvoice {
+  id?: string | null;
+  invoice_number?: string | null;
+  client_name?: string | null;
+  project_name?: string | null;
+  status?: string | null;
+  currency?: string | null;
+  subtotal?: number | null;
+  tax_amount?: number | null;
+  total?: number | null;
+  due_date?: string | null;
+  created_at?: string | null;
+  notes?: string | null;
+  tags?: string[] | null;
+}
+
+export interface LocalizedExportLabels {
+  invoiceNumber: string;
+  client: string;
+  project: string;
+  status: string;
+  subtotal: string;
+  tax: string;
+  total: string;
+  currency: string;
+  dueDate: string;
+  createdAt: string;
+  // Metadata row labels, prepended above the table.
+  generatedAt: string;
+  filters: string;
+  locale: string;
+}
+
+export interface LocalizedExportOptions {
+  locale: string;
+  labels: LocalizedExportLabels;
+  meta: { generatedAt: string; filterSummary: string; locale: string };
+}
+
+function formatExportDate(value: string | null | undefined, locale: string): string {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  try {
+    return new Intl.DateTimeFormat(locale, { year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
+  } catch {
+    return date.toISOString().slice(0, 10);
+  }
+}
+
+// Builds a locale-aware, deterministic row matrix for the filtered invoice
+// export: a few prepended metadata rows (generated-at, filter summary, locale),
+// a blank separator, the localized header, then one row per invoice with
+// locale-formatted money (Intl.NumberFormat) and dates (Intl.DateTimeFormat).
+export function buildLocalizedInvoiceExportRows(
+  invoices: ExportInvoice[],
+  opts: LocalizedExportOptions,
+): unknown[][] {
+  const { locale, labels, meta } = opts;
+  const header = [
+    labels.invoiceNumber,
+    labels.client,
+    labels.project,
+    labels.status,
+    labels.subtotal,
+    labels.tax,
+    labels.total,
+    labels.currency,
+    labels.dueDate,
+    labels.createdAt,
+  ];
+  const body = invoices.map((invoice) => {
+    const currency = invoice.currency || 'USD';
+    return [
+      invoice.invoice_number ?? '',
+      invoice.client_name ?? '',
+      invoice.project_name ?? '',
+      invoice.status ?? '',
+      formatCurrencyAmount(Number(invoice.subtotal ?? 0), currency, locale),
+      formatCurrencyAmount(Number(invoice.tax_amount ?? 0), currency, locale),
+      formatCurrencyAmount(Number(invoice.total ?? 0), currency, locale),
+      currency,
+      formatExportDate(invoice.due_date, locale),
+      formatExportDate(invoice.created_at, locale),
+    ];
+  });
+  return [
+    [labels.generatedAt, meta.generatedAt],
+    [labels.filters, meta.filterSummary],
+    [labels.locale, meta.locale],
+    [],
+    header,
+    ...body,
   ];
 }

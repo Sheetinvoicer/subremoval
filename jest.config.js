@@ -13,7 +13,11 @@ const customJestConfig = {
     '^(\\.{1,2}/.*)\\.js$': '$1',
     '^@/(.*)$': '<rootDir>/$1',
   },
-  testMatch: ['**/__tests__/**/*.test.js', '**/__tests__/**/*.test.tsx'],
+  testMatch: [
+    '**/__tests__/**/*.test.js',
+    '**/__tests__/**/*.test.ts',
+    '**/__tests__/**/*.test.tsx',
+  ],
 }
 
 module.exports = createJestConfig(customJestConfig)

@@ -1,4 +1,96 @@
 {
+  "subscriptionPlans": {
+    "heading": "Escolha o seu plano",
+    "subheading": "Preços simples que crescem com o seu negócio",
+    "perMonth": "/mês",
+    "customPricing": "Personalizado",
+    "currentPlan": "Plano atual",
+    "mostPopular": "Mais popular",
+    "actions": {
+      "choose": "Escolher {plan}",
+      "upgrade": "Atualizar para {plan}",
+      "downgrade": "Mudar para {plan}",
+      "contactSales": "Falar com vendas",
+      "current": "Plano atual",
+      "manage": "Gerir faturação"
+    },
+    "proration": {
+      "note": "As alterações de plano são rateadas imediatamente.",
+      "upgraded": "Atualizado para {plan}. Aplica-se uma cobrança proporcional pelo restante deste período.",
+      "downgraded": "Alterado para {plan}. O tempo não utilizado é creditado na sua próxima fatura."
+    },
+    "tiers": {
+      "free": {
+        "name": "Free",
+        "tagline": "Para começar"
+      },
+      "pro": {
+        "name": "Pro",
+        "tagline": "Para freelancers em crescimento"
+      },
+      "business": {
+        "name": "Business",
+        "tagline": "Para equipas"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "tagline": "Para organizações"
+      }
+    },
+    "features": {
+      "invoicesLimited": "Até {count} faturas",
+      "clientsLimited": "Até {count} clientes",
+      "expensesLimited": "Até {count} despesas",
+      "unlimitedInvoices": "Faturas ilimitadas",
+      "unlimitedClients": "Clientes ilimitados",
+      "unlimitedExpenses": "Despesas ilimitadas",
+      "basicReports": "Relatórios básicos",
+      "aiAssistant": "Assistente de IA",
+      "multiLanguage": "Multilíngue",
+      "multiCurrency": "Multimoeda",
+      "teamMembers": "{count} membros da equipa",
+      "unlimitedTeam": "Membros da equipa ilimitados",
+      "userRoles": "Funções de utilizador",
+      "adminAi": "IA de administração",
+      "auditLog": "Registo de auditoria",
+      "bankSync": "Sincronização bancária",
+      "prioritySupport": "Suporte prioritário",
+      "sso": "SSO",
+      "customBranding": "Marca personalizada",
+      "dedicatedSupport": "Suporte dedicado",
+      "customIntegrations": "Integrações personalizadas"
+    },
+    "gate": {
+      "limitReached": "Atingiu o limite do seu plano. Atualize para adicionar mais.",
+      "featureLocked": "Esta funcionalidade não está incluída no seu plano atual.",
+      "upgradeCta": "Atualizar",
+      "learnMore": "Saber mais"
+    },
+    "team": {
+      "title": "Membros da equipa",
+      "description": "Convide colegas para colaborar.",
+      "inviteEmail": "E-mail do colega",
+      "invite": "Convidar",
+      "seatsUsed": "{used} de {total} lugares utilizados",
+      "seatsUnlimited": "Lugares ilimitados",
+      "seatLimitReached": "Utilizou todos os lugares do seu plano. Atualize para mais.",
+      "pending": "Pendente",
+      "active": "Ativo",
+      "remove": "Remover",
+      "empty": "Ainda não há membros na equipa."
+    },
+    "sso": {
+      "title": "Início de sessão único (SSO)",
+      "description": "Permita que a sua equipa inicie sessão com o seu fornecedor de identidade.",
+      "domain": "Domínio da empresa",
+      "register": "Registar domínio",
+      "signInWithSso": "Iniciar sessão com SSO",
+      "status": "Estado",
+      "pending": "Configuração pendente",
+      "active": "Ativo",
+      "locked": "O SSO está disponível nos planos Business e Enterprise."
+    }
+  },
   "subscription": {
     "title": "Assinatura",
     "subtitle": "Gerencie seu plano e faturamento",
@@ -45,32 +137,257 @@
     "search": "Pesquisar"
   },
   "invoices": {
+    "editor": {
+      "createTitle": "Criar fatura",
+      "editTitle": "Editar fatura {number}",
+      "createCta": "Criar fatura",
+      "saveCta": "Guardar alterações",
+      "creating": "A criar...",
+      "saving": "A guardar...",
+      "moneyHeading": "Imposto e desconto",
+      "taxMode": "Modo de imposto",
+      "taxModeExclusive": "Adicionar imposto (exclusivo)",
+      "taxModeInclusive": "Preços com imposto incluído (inclusivo)",
+      "lineTaxRate": "Imp. %",
+      "lineTaxRateHint": "Deixe em branco para usar o imposto da fatura.",
+      "discountType": "Tipo de desconto",
+      "discountPercent": "Percentagem (%)",
+      "discountFixed": "Valor fixo",
+      "discountValue": "Valor do desconto",
+      "rounding": "Arredondar total",
+      "roundingNone": "Sem arredondamento",
+      "roundingHint": "Arredonda o total para o incremento mais próximo.",
+      "subtotalLabel": "Subtotal:",
+      "discountLabel": "Desconto:",
+      "taxLabel": "Imposto:",
+      "roundingLabel": "Arredondamento:",
+      "totalLabel": "Total:",
+      "effectiveTax": "Taxa de imposto efetiva {rate}%",
+      "updatedToast": "Fatura atualizada com sucesso.",
+      "autosave": {
+        "saving": "A guardar rascunho...",
+        "saved": "Rascunho guardado",
+        "savedAt": "Rascunho guardado às {time}",
+        "error": "Não foi possível guardar o rascunho",
+        "idle": "As alterações são guardadas automaticamente"
+      },
+      "draft": {
+        "restoreTitle": "Restaurar rascunho não guardado?",
+        "restoreBody": "Encontrámos um rascunho guardado automaticamente de {time}.",
+        "restoreAction": "Restaurar rascunho",
+        "discardAction": "Descartar",
+        "restored": "Rascunho restaurado.",
+        "discarded": "Rascunho descartado."
+      },
+      "errors": {
+        "projectInvalid": "O projeto selecionado é inválido.",
+        "loadFailed": "Falha ao carregar a fatura.",
+        "notFound": "Fatura não encontrada.",
+        "updateFailed": "Falha ao atualizar a fatura."
+      },
+      "template": {
+        "heading": "Modelo",
+        "style": "Estilo",
+        "classic": "Clássico",
+        "modern": "Moderno",
+        "minimal": "Minimalista",
+        "accent": "Cor de destaque",
+        "sections": "Seções visíveis",
+        "showBusinessDetails": "Dados da empresa",
+        "showClientDetails": "Dados do cliente",
+        "showDueDate": "Data de vencimento",
+        "showNotes": "Notas",
+        "showStatusBadge": "Selo de status",
+        "usingGlobal": "Partindo do seu modelo padrão"
+      },
+      "preview": {
+        "heading": "Pré-visualização ao vivo",
+        "title": "Fatura",
+        "from": "De",
+        "businessPlaceholder": "Sua empresa",
+        "billTo": "Faturar para",
+        "noClient": "Nenhum cliente selecionado",
+        "due": "Vencimento",
+        "description": "Descrição",
+        "qty": "Qtd",
+        "price": "Preço",
+        "amount": "Valor",
+        "subtotal": "Subtotal",
+        "discount": "Desconto",
+        "tax": "Imposto",
+        "total": "Total",
+        "notes": "Notas",
+        "draft": "Rascunho",
+        "empty": "Adicione itens para pré-visualizar esta fatura."
+      },
+      "ai": {
+        "heading": "Itens com IA",
+        "description": "Descreva o trabalho e deixe a IA redigir itens profissionais e uma nota.",
+        "briefLabel": "Descreva o trabalho",
+        "briefPlaceholder": "ex. Criação de um site de 5 páginas com logótipo e 2 rondas de revisões",
+        "generate": "Gerar",
+        "generating": "A gerar…",
+        "resultHeading": "{count} itens sugeridos",
+        "notesLabel": "Nota sugerida",
+        "apply": "Adicionar à fatura",
+        "dismiss": "Dispensar",
+        "errors": {
+          "briefRequired": "Descreva primeiro o trabalho.",
+          "locked": "A geração com IA está disponível no plano Pro ou superior.",
+          "login": "Tem de iniciar sessão.",
+          "unavailable": "A geração com IA não está configurada.",
+          "generic": "Não foi possível gerar o conteúdo. Tente novamente ou adicione itens manualmente."
+        }
+      },
+      "branding": {
+        "heading": "Marca",
+        "locked": "A personalização de marca está disponível no plano Enterprise.",
+        "logo": "Logótipo",
+        "logoPreviewAlt": "Logótipo da fatura",
+        "noLogo": "Sem logótipo",
+        "uploadLogo": "Carregar logótipo",
+        "removeLogo": "Remover logótipo",
+        "logoTypeError": "Escolha um ficheiro de imagem.",
+        "logoSizeError": "O logótipo deve ter menos de 512 KB.",
+        "logoReadError": "Não foi possível ler o ficheiro.",
+        "secondaryColor": "Cor secundária",
+        "typography": "Tipografia",
+        "fonts": {
+          "sans": "Sem serifa",
+          "serif": "Com serifa",
+          "mono": "Monoespaçada"
+        },
+        "watermark": "Marca de água",
+        "watermarkPlaceholder": "ex. PAGA, RASCUNHO, CONFIDENCIAL",
+        "watermarkHint": "Apresentada de forma ténue por trás da fatura."
+      },
+      "signature": {
+        "heading": "Assinatura e selo",
+        "showSignature": "Adicionar uma assinatura",
+        "signatureName": "Assinado por",
+        "signatureNamePlaceholder": "Nome completo",
+        "signatureImage": "Imagem da assinatura",
+        "signatureImageAlt": "Assinatura",
+        "noSignatureImage": "Sem imagem",
+        "uploadSignature": "Carregar",
+        "removeSignature": "Remover imagem da assinatura",
+        "imageTypeError": "Escolha um ficheiro de imagem.",
+        "imageSizeError": "A imagem da assinatura deve ter menos de 256 KB.",
+        "imageReadError": "Não foi possível ler o ficheiro.",
+        "showSeal": "Adicionar um selo de verificação",
+        "sealHint": "Um código à prova de adulteração derivado do número da fatura, total, moeda e data.",
+        "sealCodeLabel": "Código",
+        "previewSignedBy": "Assinatura autorizada",
+        "previewNameFallback": "Assinatura",
+        "previewVerification": "Verificação"
+      }
+    },
+    "list": {
+      "export": {
+        "csv": "Exportar CSV",
+        "pdf": "Exportar PDF",
+        "title": "Faturas",
+        "success": "Exportação pronta",
+        "failed": "Falha na exportação",
+        "tooMany": "A exportação excede o máximo de {max} linhas. Restrinja os filtros e tente novamente.",
+        "columns": {
+          "invoiceNumber": "Número da fatura",
+          "client": "Cliente",
+          "project": "Projeto",
+          "status": "Status",
+          "subtotal": "Subtotal",
+          "tax": "Imposto",
+          "total": "Total",
+          "currency": "Moeda",
+          "dueDate": "Vencimento",
+          "createdAt": "Criada"
+        },
+        "meta": {
+          "generatedAt": "Gerado em",
+          "filters": "Filtros",
+          "locale": "Idioma"
+        }
+      },
+      "bulk": {
+        "regionLabel": "Ações em massa",
+        "selected": "{count} selecionadas",
+        "noSelection": "Selecione faturas para agir sobre elas",
+        "markPaid": "Marcar como paga",
+        "send": "Enviar",
+        "applyTax": "Aplicar taxa de imposto",
+        "delete": "Excluir",
+        "clear": "Limpar seleção",
+        "taxRateLabel": "Taxa de imposto (%)",
+        "taxRatePlaceholder": "0–100",
+        "apply": "Aplicar",
+        "cancel": "Cancelar",
+        "confirmTitle": "Excluir {count} faturas?",
+        "confirmBody": "Esta ação não pode ser desfeita.",
+        "confirmDelete": "Confirmar exclusão",
+        "progress": "Processando {completed}/{total}…",
+        "resultsTitle": "Resultados",
+        "resultSuccess": "Concluído",
+        "resultFailed": "Falhou",
+        "toastSuccess": "{count} faturas atualizadas",
+        "toastPartial": "{failed} de {total} falharam",
+        "errorSupabaseInit": "Falha ao inicializar o cliente Supabase",
+        "errorLoginRequired": "Você precisa estar conectado.",
+        "errorSendFailed": "Falha ao enviar a fatura",
+        "errorTaxRate": "A taxa de imposto deve estar entre 0 e 100.",
+        "errorSubtotalMissing": "Não foi possível carregar o subtotal desta fatura.",
+        "errorGeneric": "A ação falhou"
+      },
+      "search": {
+        "label": "Pesquisar faturas",
+        "placeholder": "Pesquisar faturas..."
+      },
+      "filters": {
+        "status": "Filtrar por status"
+      },
+      "status": {
+        "draft": "Rascunho",
+        "sent": "Enviada",
+        "viewed": "Visualizada",
+        "paid": "Paga",
+        "overdue": "Atrasada",
+        "disputed": "Contestada",
+        "cancelled": "Cancelada"
+      },
+      "results": {
+        "total": "{total} faturas",
+        "empty": "Ainda não há faturas",
+        "emptyHint": "Crie sua primeira fatura para começar.",
+        "noMatches": "Nenhuma fatura corresponde à sua pesquisa",
+        "noMatchesHint": "Tente ajustar os filtros ou os termos de pesquisa."
+      },
+      "row": {
+        "selectOne": "Selecionar fatura {number}",
+        "unknownClient": "Cliente desconhecido",
+        "noProject": "Sem projeto",
+        "dueLabel": "Vencimento:"
+      },
+      "errors": {
+        "retry": "Tentar novamente",
+        "supabaseInit": "Falha ao inicializar o cliente Supabase",
+        "loginRequired": "Você precisa estar conectado para ver as faturas.",
+        "query": "Falha ao carregar as faturas."
+      }
+    },
     "title": "Faturas",
     "create_new": "Criar nova fatura",
     "invoice_number": "Número da fatura",
     "status": {
-      "0": "S",
-      "1": "t",
-      "2": "a",
-      "3": "t",
-      "4": "u",
-      "5": "s",
       "draft": "Rascunho",
       "sent": "Enviada",
       "paid": "Paga",
-      "overdue": "Atrasada"
+      "overdue": "Atrasada",
+      "viewed": "Visualizada",
+      "disputed": "Contestada",
+      "cancelled": "Cancelada"
     },
     "amount": "Valor",
     "due_date": "Data de vencimento",
     "actions": {
-      "0": "A",
-      "1": "ç",
-      "2": "õ",
-      "3": "e",
-      "4": "s",
-      "5": "",
-      "6": "s",
-      "7": "n",
       "tryAgain": "Tentar novamente",
       "newInvoice": "Nova fatura",
       "selectPage": "Selecionar página",
@@ -192,7 +509,122 @@
       "csvUploadLabel": "Importar itens de CSV (opcional)",
       "successAnimation": "Fatura criada!"
     },
+    "public": {
+      "invoiceLabel": "Fatura",
+      "loading": "A carregar fatura…",
+      "notFoundTitle": "Link não encontrado",
+      "notFoundHint": "Este link está incorreto ou já não existe.",
+      "expiredTitle": "Link expirado",
+      "expiredHint": "Peça ao remetente um link atualizado.",
+      "revokedTitle": "Link revogado",
+      "revokedHint": "Peça ao remetente um link atualizado.",
+      "errorTitle": "Algo correu mal",
+      "errorHint": "Não foi possível carregar esta fatura. Tente novamente.",
+      "billedTo": "Faturado a",
+      "statusLabel": "Estado",
+      "issuedLabel": "Emitida",
+      "dueLabel": "Vencimento",
+      "description": "Descrição",
+      "quantity": "Qtd",
+      "price": "Preço",
+      "amount": "Valor",
+      "subtotal": "Subtotal",
+      "tax": "Imposto",
+      "total": "Total",
+      "print": "Imprimir",
+      "poweredBy": "Desenvolvido por SheetInvoicer"
+    },
     "detail": {
+      "comments": {
+        "heading": "Comentários",
+        "subtitle": "Notas internas para a sua equipa",
+        "placeholder": "Adicionar uma nota interna…",
+        "audienceLabel": "Visibilidade",
+        "audienceTeam": "Equipa (interno)",
+        "audienceClient": "Cliente",
+        "add": "Adicionar comentário",
+        "adding": "A adicionar…",
+        "reply": "Responder",
+        "replyPlaceholder": "Escreva uma resposta…",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "deleting": "A eliminar…",
+        "empty": "Ainda não há comentários.",
+        "added": "Comentário adicionado",
+        "deleted": "Comentário eliminado",
+        "errorAdd": "Não foi possível adicionar o comentário.",
+        "errorDelete": "Não foi possível eliminar o comentário.",
+        "errorLogin": "Tem de iniciar sessão."
+      },
+      "share": {
+        "heading": "Link público de partilha",
+        "description": "Crie um link público só de leitura para esta fatura.",
+        "none": "Ainda não há link de partilha.",
+        "create": "Criar link",
+        "creating": "A criar…",
+        "regenerate": "Regenerar",
+        "copy": "Copiar",
+        "copied": "Link copiado",
+        "revoke": "Revogar",
+        "revoking": "A revogar…",
+        "linkLabel": "Link público",
+        "expiryLabel": "Expira em (dias)",
+        "expiryHint": "Deixe vazio para não expirar.",
+        "statusActive": "Ativo",
+        "statusExpired": "Expirado",
+        "statusRevoked": "Revogado",
+        "expiresLabel": "Expira",
+        "neverExpires": "Nunca expira",
+        "viewsLabel": "Visualizações",
+        "lastViewedLabel": "Última visualização",
+        "neverViewed": "Ainda não visualizado",
+        "createdToast": "Link de partilha criado",
+        "revokedToast": "Link de partilha revogado",
+        "errorCreate": "Não foi possível criar o link de partilha.",
+        "errorRevoke": "Não foi possível revogar o link de partilha.",
+        "errorLogin": "Tem de iniciar sessão."
+      },
+      "print": {
+        "button": "Imprimir"
+      },
+      "timeline": {
+        "heading": "Cronologia do estado"
+      },
+      "payments": {
+        "heading": "Pagamentos",
+        "total": "Total da fatura",
+        "paid": "Pago",
+        "balance": "Saldo em dívida",
+        "fullyPaid": "Esta fatura está totalmente paga.",
+        "recordHeading": "Registar um pagamento",
+        "amountLabel": "Montante",
+        "amountPlaceholder": "0,00",
+        "kindLabel": "Tipo",
+        "kindPayment": "Pagamento",
+        "kindCredit": "Crédito",
+        "kindAdjustment": "Ajuste",
+        "noteLabel": "Nota (opcional)",
+        "notePlaceholder": "Referência, método…",
+        "submit": "Registar pagamento",
+        "submitting": "A registar…",
+        "listHeading": "Pagamentos registados",
+        "none": "Ainda não há pagamentos registados.",
+        "success": "Pagamento registado",
+        "autoPaid": "Pagamento registado — fatura marcada como paga",
+        "errorAmount": "Introduza um montante diferente de zero.",
+        "errorLogin": "Tem de iniciar sessão.",
+        "errorGeneric": "Não foi possível registar o pagamento"
+      },
+      "history": {
+        "heading": "Histórico",
+        "empty": "Ainda não há histórico.",
+        "actions": {
+          "paymentRecorded": "Pagamento registado",
+          "invoicePaid": "Marcada como paga",
+          "statusChanged": "Estado alterado",
+          "unknown": "Atualizada"
+        }
+      },
       "createdLabel": "Created:",
       "templateSuffix": "TEMPLATE",
       "sending": "Sending...",
@@ -472,7 +904,15 @@
       "adminAi": "IA Admin"
     },
     "planLabel": "Plano",
-    "account": "Conta"
+    "account": "Conta",
+    "sections": {
+      "overview": "Visão geral",
+      "sales": "Vendas",
+      "finance": "Finanças",
+      "workspace": "Espaço",
+      "administration": "Administração",
+      "account": "Conta"
+    }
   },
   "clientsPage": {
     "clients": "Clientes",
@@ -610,7 +1050,82 @@
       "overdueAmount": "Valor em atraso"
     },
     "vsLastMonth": "vs mês passado",
-    "loading": "Carregando..."
+    "loading": "Carregando...",
+    "metrics": {
+      "predicted": "Previsão de IA"
+    },
+    "ai": {
+      "title": "Insights de IA",
+      "subtitle": "Análise inteligente do seu negócio",
+      "poweredBy": "Com tecnologia de IA",
+      "forecast": {
+        "title": "Previsão de receita",
+        "nextMonth": "Projeção do próximo mês",
+        "confidence": "{value}% de confiança",
+        "trendUp": "Em alta",
+        "trendDown": "Em baixa",
+        "trendFlat": "Estável",
+        "insufficient": "Ainda não há dados suficientes para prever a receita."
+      },
+      "anomaly": {
+        "title": "Detecção de anomalias",
+        "none": "Nenhuma anomalia detectada",
+        "spike": "Pico incomum",
+        "drop": "Queda incomum"
+      },
+      "recommendations": {
+        "title": "Recomendações inteligentes",
+        "overdue": "Cobre {count} fatura(s) vencida(s) no valor de {amount}.",
+        "pending": "Acompanhe {count} fatura(s) pendente(s) no valor de {amount}.",
+        "expensesHigh": "As despesas superam a receita — revise seus custos.",
+        "revenueDown": "A receita caiu {pct}% em relação ao mês passado — revise seu pipeline.",
+        "revenueUp": "A receita subiu {pct}% em relação ao mês passado — ótimo ritmo!",
+        "forecastUp": "A receita deve atingir {amount} no próximo mês.",
+        "createInvoice": "Crie sua primeira fatura para começar a acompanhar a receita.",
+        "addClient": "Adicione seu primeiro cliente para começar.",
+        "allCaught": "Tudo em dia — nenhuma ação urgente.",
+        "actions": {
+          "review": "Revisar",
+          "remind": "Enviar lembrete",
+          "analyze": "Analisar",
+          "create": "Começar"
+        }
+      }
+    },
+    "quickActions": {
+      "title": "Ações rápidas",
+      "newInvoice": "Nova fatura",
+      "newClient": "Novo cliente",
+      "newExpense": "Nova despesa",
+      "newEstimate": "Novo orçamento",
+      "recurring": "Recorrentes",
+      "reports": "Relatórios"
+    },
+    "activity": {
+      "title": "Atividade ao vivo",
+      "subtitle": "Atualizações em tempo real",
+      "live": "Ao vivo",
+      "empty": "Ainda sem atividade",
+      "emptyHint": "As ações do seu espaço aparecerão aqui em tempo real.",
+      "justNow": "agora mesmo"
+    },
+    "chat": {
+      "title": "Assistente de IA",
+      "subtitle": "Pergunte sobre o seu negócio",
+      "greeting": "Olá! Sou seu assistente de IA. Pergunte sobre receita, faturas, clientes ou no que focar.",
+      "placeholder": "Pergunte-me qualquer coisa...",
+      "send": "Enviar",
+      "open": "Abrir assistente de IA",
+      "close": "Fechar",
+      "privacy": "Seus dados permanecem privados",
+      "error": "Não consegui contatar o assistente. Tente novamente.",
+      "locked": "O assistente de IA está disponível no plano Pro e superiores.",
+      "suggestions": {
+        "revenue": "Como está a tendência da minha receita?",
+        "overdue": "Quais faturas estão vencidas?",
+        "focus": "Em que devo focar esta semana?"
+      }
+    }
   },
   "expensesPage": {
     "title": "Despesas",
@@ -806,7 +1321,8 @@
     "actions": {
       "pause": "Pausar",
       "resume": "Retomar",
-      "delete": "Excluir"
+      "delete": "Excluir",
+      "duplicate": "Duplicar"
     },
     "unknownClient": "Cliente desconhecido",
     "errors": {
@@ -825,7 +1341,8 @@
         "frequency": "Frequência",
         "nextDate": "Próxima data",
         "status": "Status",
-        "notes": "Notas"
+        "notes": "Notas",
+        "exceptions": "Pular datas"
       },
       "status": {
         "active": "Ativa",
@@ -844,6 +1361,16 @@
       },
       "errors": {
         "loginRequired": "Você precisa estar conectado para criar uma fatura recorrente"
+      },
+      "duplicateTitle": "Duplicar fatura recorrente",
+      "duplicateNotice": "Revise e ajuste os detalhes copiados e salve para criar um novo agendamento.",
+      "duplicateLoadFailed": "Não foi possível carregar o agendamento para duplicar.",
+      "exceptions": {
+        "hint": "O agendamento não gerará uma fatura nestas datas.",
+        "add": "Adicionar data",
+        "remove": "Remover data",
+        "empty": "Nenhuma data ignorada ainda.",
+        "duplicate": "Essa data já está na lista."
       }
     }
   },

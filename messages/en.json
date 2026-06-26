@@ -1,4 +1,96 @@
 {
+  "subscriptionPlans": {
+    "heading": "Choose your plan",
+    "subheading": "Simple pricing that scales with your business",
+    "perMonth": "/mo",
+    "customPricing": "Custom",
+    "currentPlan": "Current plan",
+    "mostPopular": "Most popular",
+    "actions": {
+      "choose": "Choose {plan}",
+      "upgrade": "Upgrade to {plan}",
+      "downgrade": "Switch to {plan}",
+      "contactSales": "Contact sales",
+      "current": "Current plan",
+      "manage": "Manage billing"
+    },
+    "proration": {
+      "note": "Plan changes are prorated immediately.",
+      "upgraded": "Upgraded to {plan}. A prorated charge applies for the rest of this period.",
+      "downgraded": "Switched to {plan}. Unused time is credited to your next invoice."
+    },
+    "tiers": {
+      "free": {
+        "name": "Free",
+        "tagline": "For getting started"
+      },
+      "pro": {
+        "name": "Pro",
+        "tagline": "For growing freelancers"
+      },
+      "business": {
+        "name": "Business",
+        "tagline": "For teams"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "tagline": "For organizations"
+      }
+    },
+    "features": {
+      "invoicesLimited": "Up to {count} invoices",
+      "clientsLimited": "Up to {count} clients",
+      "expensesLimited": "Up to {count} expenses",
+      "unlimitedInvoices": "Unlimited invoices",
+      "unlimitedClients": "Unlimited clients",
+      "unlimitedExpenses": "Unlimited expenses",
+      "basicReports": "Basic reports",
+      "aiAssistant": "AI Assistant",
+      "multiLanguage": "Multi-language",
+      "multiCurrency": "Multi-currency",
+      "teamMembers": "{count} team members",
+      "unlimitedTeam": "Unlimited team members",
+      "userRoles": "User roles",
+      "adminAi": "Admin AI",
+      "auditLog": "Audit log",
+      "bankSync": "Bank sync",
+      "prioritySupport": "Priority support",
+      "sso": "SSO",
+      "customBranding": "Custom branding",
+      "dedicatedSupport": "Dedicated support",
+      "customIntegrations": "Custom integrations"
+    },
+    "gate": {
+      "limitReached": "You've reached your plan limit. Upgrade to add more.",
+      "featureLocked": "This feature isn't included in your current plan.",
+      "upgradeCta": "Upgrade",
+      "learnMore": "Learn more"
+    },
+    "team": {
+      "title": "Team members",
+      "description": "Invite teammates to collaborate.",
+      "inviteEmail": "Teammate email",
+      "invite": "Invite",
+      "seatsUsed": "{used} of {total} seats used",
+      "seatsUnlimited": "Unlimited seats",
+      "seatLimitReached": "You've used all seats in your plan. Upgrade for more.",
+      "pending": "Pending",
+      "active": "Active",
+      "remove": "Remove",
+      "empty": "No team members yet."
+    },
+    "sso": {
+      "title": "Single sign-on (SSO)",
+      "description": "Let your team sign in with your identity provider.",
+      "domain": "Company domain",
+      "register": "Register domain",
+      "signInWithSso": "Sign in with SSO",
+      "status": "Status",
+      "pending": "Pending setup",
+      "active": "Active",
+      "locked": "SSO is available on the Business and Enterprise plans."
+    }
+  },
   "subscription": {
     "title": "Subscription",
     "subtitle": "Manage your plan and billing",
@@ -53,32 +145,257 @@
     "parseError": "Error parsing CSV: {message}"
   },
   "invoices": {
+    "editor": {
+      "createTitle": "Create Invoice",
+      "editTitle": "Edit Invoice {number}",
+      "createCta": "Create Invoice",
+      "saveCta": "Save changes",
+      "creating": "Creating...",
+      "saving": "Saving...",
+      "moneyHeading": "Tax & discount",
+      "taxMode": "Tax mode",
+      "taxModeExclusive": "Add tax on top (exclusive)",
+      "taxModeInclusive": "Prices include tax (inclusive)",
+      "lineTaxRate": "Tax %",
+      "lineTaxRateHint": "Leave blank to use the invoice tax rate.",
+      "discountType": "Discount type",
+      "discountPercent": "Percentage (%)",
+      "discountFixed": "Fixed amount",
+      "discountValue": "Discount value",
+      "rounding": "Round total",
+      "roundingNone": "No rounding",
+      "roundingHint": "Round the grand total to the nearest increment.",
+      "subtotalLabel": "Subtotal:",
+      "discountLabel": "Discount:",
+      "taxLabel": "Tax:",
+      "roundingLabel": "Rounding:",
+      "totalLabel": "Total:",
+      "effectiveTax": "Effective tax rate {rate}%",
+      "updatedToast": "Invoice updated successfully.",
+      "autosave": {
+        "saving": "Saving draft...",
+        "saved": "Draft saved",
+        "savedAt": "Draft saved at {time}",
+        "error": "Couldn't save draft",
+        "idle": "Changes are saved automatically"
+      },
+      "draft": {
+        "restoreTitle": "Restore unsaved draft?",
+        "restoreBody": "We found an auto-saved draft from {time}.",
+        "restoreAction": "Restore draft",
+        "discardAction": "Discard",
+        "restored": "Draft restored.",
+        "discarded": "Draft discarded."
+      },
+      "errors": {
+        "projectInvalid": "The selected project is invalid.",
+        "loadFailed": "Failed to load the invoice.",
+        "notFound": "Invoice not found.",
+        "updateFailed": "Failed to update the invoice."
+      },
+      "template": {
+        "heading": "Template",
+        "style": "Style",
+        "classic": "Classic",
+        "modern": "Modern",
+        "minimal": "Minimal",
+        "accent": "Accent color",
+        "sections": "Visible sections",
+        "showBusinessDetails": "Business details",
+        "showClientDetails": "Client details",
+        "showDueDate": "Due date",
+        "showNotes": "Notes",
+        "showStatusBadge": "Status badge",
+        "usingGlobal": "Starting from your default template"
+      },
+      "preview": {
+        "heading": "Live preview",
+        "title": "Invoice",
+        "from": "From",
+        "businessPlaceholder": "Your business",
+        "billTo": "Bill to",
+        "noClient": "No client selected",
+        "due": "Due",
+        "description": "Description",
+        "qty": "Qty",
+        "price": "Price",
+        "amount": "Amount",
+        "subtotal": "Subtotal",
+        "discount": "Discount",
+        "tax": "Tax",
+        "total": "Total",
+        "notes": "Notes",
+        "draft": "Draft",
+        "empty": "Add line items to preview this invoice."
+      },
+      "ai": {
+        "heading": "AI line items",
+        "description": "Describe the work and let AI draft professional line items and a note.",
+        "briefLabel": "Describe the work",
+        "briefPlaceholder": "e.g. Designed a 5-page marketing website with logo and 2 rounds of revisions",
+        "generate": "Generate",
+        "generating": "Generating…",
+        "resultHeading": "{count} suggested line items",
+        "notesLabel": "Suggested note",
+        "apply": "Add to invoice",
+        "dismiss": "Dismiss",
+        "errors": {
+          "briefRequired": "Describe the work first.",
+          "locked": "AI generation is available on the Pro plan and above.",
+          "login": "You must be logged in.",
+          "unavailable": "AI generation is not configured.",
+          "generic": "Couldn't generate content. Please try again or add items manually."
+        }
+      },
+      "branding": {
+        "heading": "Branding",
+        "locked": "Custom branding is available on the Enterprise plan.",
+        "logo": "Logo",
+        "logoPreviewAlt": "Invoice logo",
+        "noLogo": "No logo",
+        "uploadLogo": "Upload logo",
+        "removeLogo": "Remove logo",
+        "logoTypeError": "Please choose an image file.",
+        "logoSizeError": "Logo must be under 512 KB.",
+        "logoReadError": "Couldn't read that file.",
+        "secondaryColor": "Secondary color",
+        "typography": "Typography",
+        "fonts": {
+          "sans": "Sans-serif",
+          "serif": "Serif",
+          "mono": "Monospace"
+        },
+        "watermark": "Watermark",
+        "watermarkPlaceholder": "e.g. PAID, DRAFT, CONFIDENTIAL",
+        "watermarkHint": "Shown faintly behind the invoice."
+      },
+      "signature": {
+        "heading": "Signature & seal",
+        "showSignature": "Add a signature",
+        "signatureName": "Signed by",
+        "signatureNamePlaceholder": "Full name",
+        "signatureImage": "Signature image",
+        "signatureImageAlt": "Signature",
+        "noSignatureImage": "No image",
+        "uploadSignature": "Upload",
+        "removeSignature": "Remove signature image",
+        "imageTypeError": "Please choose an image file.",
+        "imageSizeError": "Signature image must be under 256 KB.",
+        "imageReadError": "Couldn't read that file.",
+        "showSeal": "Add a verification seal",
+        "sealHint": "A tamper-evident code derived from the invoice number, total, currency and date.",
+        "sealCodeLabel": "Code",
+        "previewSignedBy": "Authorized signature",
+        "previewNameFallback": "Signature",
+        "previewVerification": "Verification"
+      }
+    },
+    "list": {
+      "export": {
+        "csv": "Export CSV",
+        "pdf": "Export PDF",
+        "title": "Invoices",
+        "success": "Export ready",
+        "failed": "Export failed",
+        "tooMany": "Export exceeds the maximum of {max} rows. Narrow your filters and try again.",
+        "columns": {
+          "invoiceNumber": "Invoice number",
+          "client": "Client",
+          "project": "Project",
+          "status": "Status",
+          "subtotal": "Subtotal",
+          "tax": "Tax",
+          "total": "Total",
+          "currency": "Currency",
+          "dueDate": "Due date",
+          "createdAt": "Created"
+        },
+        "meta": {
+          "generatedAt": "Generated at",
+          "filters": "Filters",
+          "locale": "Language"
+        }
+      },
+      "bulk": {
+        "regionLabel": "Bulk actions",
+        "selected": "{count} selected",
+        "noSelection": "Select invoices to act on them",
+        "markPaid": "Mark as paid",
+        "send": "Send",
+        "applyTax": "Apply tax rate",
+        "delete": "Delete",
+        "clear": "Clear selection",
+        "taxRateLabel": "Tax rate (%)",
+        "taxRatePlaceholder": "0–100",
+        "apply": "Apply",
+        "cancel": "Cancel",
+        "confirmTitle": "Delete {count} invoices?",
+        "confirmBody": "This action cannot be undone.",
+        "confirmDelete": "Confirm delete",
+        "progress": "Processing {completed}/{total}…",
+        "resultsTitle": "Results",
+        "resultSuccess": "Done",
+        "resultFailed": "Failed",
+        "toastSuccess": "{count} invoices updated",
+        "toastPartial": "{failed} of {total} failed",
+        "errorSupabaseInit": "Failed to initialize Supabase client",
+        "errorLoginRequired": "You must be logged in.",
+        "errorSendFailed": "Failed to send invoice",
+        "errorTaxRate": "Tax rate must be between 0 and 100.",
+        "errorSubtotalMissing": "Could not load this invoice's subtotal.",
+        "errorGeneric": "Action failed"
+      },
+      "search": {
+        "label": "Search invoices",
+        "placeholder": "Search invoices..."
+      },
+      "filters": {
+        "status": "Filter by status"
+      },
+      "status": {
+        "draft": "Draft",
+        "sent": "Sent",
+        "viewed": "Viewed",
+        "paid": "Paid",
+        "overdue": "Overdue",
+        "disputed": "Disputed",
+        "cancelled": "Cancelled"
+      },
+      "results": {
+        "total": "{total} invoices",
+        "empty": "No invoices yet",
+        "emptyHint": "Create your first invoice to get started.",
+        "noMatches": "No invoices match your search",
+        "noMatchesHint": "Try adjusting your filters or search terms."
+      },
+      "row": {
+        "selectOne": "Select invoice {number}",
+        "unknownClient": "Unknown client",
+        "noProject": "No project",
+        "dueLabel": "Due:"
+      },
+      "errors": {
+        "retry": "Try again",
+        "supabaseInit": "Failed to initialize Supabase client",
+        "loginRequired": "You must be logged in to view invoices.",
+        "query": "Failed to load invoices."
+      }
+    },
     "title": "Invoices",
     "create_new": "Create New Invoice",
     "invoice_number": "Invoice Number",
     "status": {
-      "0": "S",
-      "1": "t",
-      "2": "a",
-      "3": "t",
-      "4": "u",
-      "5": "s",
       "draft": "Draft",
       "sent": "Sent",
       "paid": "Paid",
-      "overdue": "Overdue"
+      "overdue": "Overdue",
+      "viewed": "Viewed",
+      "disputed": "Disputed",
+      "cancelled": "Cancelled"
     },
     "amount": "Amount",
     "due_date": "Due Date",
     "actions": {
-      "0": "A",
-      "1": "c",
-      "2": "t",
-      "3": "i",
-      "4": "o",
-      "5": "n",
-      "6": "s",
-      "7": "n",
       "tryAgain": "Try Again",
       "newInvoice": "New Invoice",
       "selectPage": "Select page",
@@ -141,7 +458,122 @@
       "prev": "Prev",
       "next": "Next"
     },
+    "public": {
+      "invoiceLabel": "Invoice",
+      "loading": "Loading invoice…",
+      "notFoundTitle": "Link not found",
+      "notFoundHint": "This link is incorrect or no longer exists.",
+      "expiredTitle": "Link expired",
+      "expiredHint": "Ask the sender for an updated link.",
+      "revokedTitle": "Link revoked",
+      "revokedHint": "Ask the sender for an updated link.",
+      "errorTitle": "Something went wrong",
+      "errorHint": "We couldn't load this invoice. Please try again.",
+      "billedTo": "Billed to",
+      "statusLabel": "Status",
+      "issuedLabel": "Issued",
+      "dueLabel": "Due",
+      "description": "Description",
+      "quantity": "Qty",
+      "price": "Price",
+      "amount": "Amount",
+      "subtotal": "Subtotal",
+      "tax": "Tax",
+      "total": "Total",
+      "print": "Print",
+      "poweredBy": "Powered by SheetInvoicer"
+    },
     "detail": {
+      "comments": {
+        "heading": "Comments",
+        "subtitle": "Internal notes for your team",
+        "placeholder": "Add an internal note…",
+        "audienceLabel": "Visibility",
+        "audienceTeam": "Team (internal)",
+        "audienceClient": "Client",
+        "add": "Add comment",
+        "adding": "Adding…",
+        "reply": "Reply",
+        "replyPlaceholder": "Write a reply…",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "deleting": "Deleting…",
+        "empty": "No comments yet.",
+        "added": "Comment added",
+        "deleted": "Comment deleted",
+        "errorAdd": "Couldn't add the comment.",
+        "errorDelete": "Couldn't delete the comment.",
+        "errorLogin": "You must be logged in."
+      },
+      "share": {
+        "heading": "Public share link",
+        "description": "Create a read-only public link to this invoice.",
+        "none": "No share link yet.",
+        "create": "Create link",
+        "creating": "Creating…",
+        "regenerate": "Regenerate",
+        "copy": "Copy",
+        "copied": "Link copied",
+        "revoke": "Revoke",
+        "revoking": "Revoking…",
+        "linkLabel": "Public link",
+        "expiryLabel": "Expires in (days)",
+        "expiryHint": "Leave blank for no expiry.",
+        "statusActive": "Active",
+        "statusExpired": "Expired",
+        "statusRevoked": "Revoked",
+        "expiresLabel": "Expires",
+        "neverExpires": "Never expires",
+        "viewsLabel": "Views",
+        "lastViewedLabel": "Last viewed",
+        "neverViewed": "Not viewed yet",
+        "createdToast": "Share link created",
+        "revokedToast": "Share link revoked",
+        "errorCreate": "Couldn't create the share link.",
+        "errorRevoke": "Couldn't revoke the share link.",
+        "errorLogin": "You must be logged in."
+      },
+      "print": {
+        "button": "Print"
+      },
+      "timeline": {
+        "heading": "Status timeline"
+      },
+      "payments": {
+        "heading": "Payments",
+        "total": "Invoice total",
+        "paid": "Paid",
+        "balance": "Balance due",
+        "fullyPaid": "This invoice is fully paid.",
+        "recordHeading": "Record a payment",
+        "amountLabel": "Amount",
+        "amountPlaceholder": "0.00",
+        "kindLabel": "Type",
+        "kindPayment": "Payment",
+        "kindCredit": "Credit",
+        "kindAdjustment": "Adjustment",
+        "noteLabel": "Note (optional)",
+        "notePlaceholder": "Reference, method…",
+        "submit": "Record payment",
+        "submitting": "Recording…",
+        "listHeading": "Recorded payments",
+        "none": "No payments recorded yet.",
+        "success": "Payment recorded",
+        "autoPaid": "Payment recorded — invoice marked paid",
+        "errorAmount": "Enter a non-zero amount.",
+        "errorLogin": "You must be logged in.",
+        "errorGeneric": "Failed to record payment"
+      },
+      "history": {
+        "heading": "History",
+        "empty": "No history recorded yet.",
+        "actions": {
+          "paymentRecorded": "Payment recorded",
+          "invoicePaid": "Marked as paid",
+          "statusChanged": "Status changed",
+          "unknown": "Updated"
+        }
+      },
       "createdLabel": "Created:",
       "templateSuffix": "TEMPLATE",
       "sending": "Sending...",
@@ -546,7 +978,15 @@
       "adminAi": "AI Admin"
     },
     "planLabel": "Plan",
-    "account": "Account"
+    "account": "Account",
+    "sections": {
+      "overview": "Overview",
+      "sales": "Sales",
+      "finance": "Finance",
+      "workspace": "Workspace",
+      "administration": "Administration",
+      "account": "Account"
+    }
   },
   "dashboard": {
     "title": "Dashboard",
@@ -618,7 +1058,82 @@
       "overdueAmount": "Overdue Amount"
     },
     "vsLastMonth": "vs last month",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "metrics": {
+      "predicted": "AI prediction"
+    },
+    "ai": {
+      "title": "AI Insights",
+      "subtitle": "Smart analysis of your business",
+      "poweredBy": "AI-powered",
+      "forecast": {
+        "title": "Revenue forecast",
+        "nextMonth": "Projected next month",
+        "confidence": "{value}% confidence",
+        "trendUp": "Trending up",
+        "trendDown": "Trending down",
+        "trendFlat": "Steady",
+        "insufficient": "Not enough data yet to forecast revenue."
+      },
+      "anomaly": {
+        "title": "Anomaly detection",
+        "none": "No anomalies detected",
+        "spike": "Unusual spike",
+        "drop": "Unusual drop"
+      },
+      "recommendations": {
+        "title": "Smart recommendations",
+        "overdue": "Chase {count} overdue invoice(s) worth {amount}.",
+        "pending": "Follow up on {count} pending invoice(s) worth {amount}.",
+        "expensesHigh": "Expenses are higher than revenue — review your costs.",
+        "revenueDown": "Revenue is down {pct}% vs last month — review your pipeline.",
+        "revenueUp": "Revenue is up {pct}% vs last month — great momentum!",
+        "forecastUp": "Revenue is projected to reach {amount} next month.",
+        "createInvoice": "Create your first invoice to start tracking revenue.",
+        "addClient": "Add your first client to get started.",
+        "allCaught": "You're all caught up — no urgent actions.",
+        "actions": {
+          "review": "Review",
+          "remind": "Send reminder",
+          "analyze": "Analyze",
+          "create": "Get started"
+        }
+      }
+    },
+    "quickActions": {
+      "title": "Quick actions",
+      "newInvoice": "New invoice",
+      "newClient": "New client",
+      "newExpense": "New expense",
+      "newEstimate": "New estimate",
+      "recurring": "Recurring",
+      "reports": "Reports"
+    },
+    "activity": {
+      "title": "Live activity",
+      "subtitle": "Real-time updates",
+      "live": "Live",
+      "empty": "No activity yet",
+      "emptyHint": "Actions across your workspace will appear here in real time.",
+      "justNow": "just now"
+    },
+    "chat": {
+      "title": "AI Assistant",
+      "subtitle": "Ask about your business",
+      "greeting": "Hi! I'm your AI assistant. Ask me about your revenue, invoices, clients, or what to focus on next.",
+      "placeholder": "Ask me anything...",
+      "send": "Send",
+      "open": "Open AI assistant",
+      "close": "Close",
+      "privacy": "Your data stays private",
+      "error": "I couldn't reach the assistant. Please try again.",
+      "locked": "The AI assistant is available on the Pro plan and above.",
+      "suggestions": {
+        "revenue": "How is my revenue trending?",
+        "overdue": "Which invoices are overdue?",
+        "focus": "What should I focus on this week?"
+      }
+    }
   },
   "expensesPage": {
     "title": "Expenses",
@@ -814,7 +1329,8 @@
     "actions": {
       "pause": "Pause",
       "resume": "Resume",
-      "delete": "Delete"
+      "delete": "Delete",
+      "duplicate": "Duplicate"
     },
     "unknownClient": "Unknown Client",
     "errors": {
@@ -833,7 +1349,8 @@
         "frequency": "Frequency",
         "nextDate": "Next Date",
         "status": "Status",
-        "notes": "Notes"
+        "notes": "Notes",
+        "exceptions": "Skip dates"
       },
       "status": {
         "active": "Active",
@@ -852,6 +1369,16 @@
       },
       "errors": {
         "loginRequired": "You must be logged in to create a recurring invoice"
+      },
+      "duplicateTitle": "Duplicate Recurring Invoice",
+      "duplicateNotice": "Review and adjust the copied details, then save to create a new schedule.",
+      "duplicateLoadFailed": "Couldn't load the schedule to duplicate.",
+      "exceptions": {
+        "hint": "The schedule won't generate an invoice on these dates.",
+        "add": "Add date",
+        "remove": "Remove date",
+        "empty": "No skipped dates yet.",
+        "duplicate": "That date is already in the list."
       }
     }
   },

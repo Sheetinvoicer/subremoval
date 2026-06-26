@@ -5,6 +5,10 @@ import {
   type InvoiceTemplateSettings,
   sanitizeAccentColor,
 } from '@/lib/invoiceTemplate';
+import { computeInvoiceSeal } from '@/lib/invoices/seal';
+
+// Map the brand typography choice to a @react-pdf built-in font family.
+const PDF_FONT_FAMILIES: Record<string, string> = { sans: 'Helvetica', serif: 'Times-Roman', mono: 'Courier' };
 
 // Currency symbols for ALL 10 currencies
 const CURRENCY_SYMBOLS = {
@@ -53,7 +57,17 @@ const styles = StyleSheet.create({
   clientBox: { padding: 10, backgroundColor: '#f5f5f5', borderRadius: 5, marginBottom: 20 },
   statusBadge: { padding: 5, borderRadius: 5, alignSelf: 'flex-start', marginBottom: 10 },
   statusText: { fontSize: 10, fontWeight: 'bold', color: 'white' },
-  footer: { position: 'absolute', bottom: 30, left: 40, right: 40, textAlign: 'center', fontSize: 10, color: '#999', borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 10 }
+  footer: { position: 'absolute', bottom: 30, left: 40, right: 40, textAlign: 'center', fontSize: 10, color: '#999', borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 10 },
+  watermark: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },
+  watermarkText: { fontSize: 64, fontWeight: 'bold', opacity: 0.08 },
+  signatureRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 36 },
+  signatureBox: { width: 180 },
+  signatureLine: { borderTopWidth: 1, borderTopColor: '#333', width: 160, marginTop: 24, marginBottom: 4 },
+  signatureName: { fontSize: 11, fontWeight: 'bold' },
+  signatureCaption: { fontSize: 9, color: '#888' },
+  sealBox: { borderWidth: 1, borderRadius: 4, paddingVertical: 6, paddingHorizontal: 8, alignItems: 'flex-end' },
+  sealLabel: { fontSize: 8, fontWeight: 'bold' },
+  sealCode: { fontSize: 11, fontFamily: 'Courier', color: '#333', marginTop: 2 }
 });
 
 export default function InvoicePDF({ invoice, business, templateSettings = DEFAULT_INVOICE_TEMPLATE_SETTINGS }) {
@@ -67,7 +81,22 @@ export default function InvoicePDF({ invoice, business, templateSettings = DEFAU
       ...(templateSettings?.fields || {}),
     },
     accentColor: sanitizeAccentColor(templateSettings?.accentColor),
+    branding: {
+      ...DEFAULT_INVOICE_TEMPLATE_SETTINGS.branding,
+      ...(templateSettings?.branding || {}),
+    },
+    signature: {
+      ...DEFAULT_INVOICE_TEMPLATE_SETTINGS.signature,
+      ...(templateSettings?.signature || {}),
+    },
   }
+  const pdfFont = PDF_FONT_FAMILIES[normalizedSettings.branding.fontFamily] || 'Helvetica';
+  const seal = computeInvoiceSeal({
+    invoiceNumber: invoice.invoice_number,
+    total: invoice.total,
+    currency,
+    issueDate: invoice.created_at || invoice.due_date,
+  });
   
   const getStatusColor = (status) => {
     switch(status) {
@@ -79,7 +108,14 @@ export default function InvoicePDF({ invoice, business, templateSettings = DEFAU
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={[styles.page, { fontFamily: pdfFont }]}>
+        {normalizedSettings.branding.watermarkText ? (
+          <View style={styles.watermark} fixed>
+            <Text style={[styles.watermarkText, { color: normalizedSettings.branding.secondaryColor }]}>
+              {normalizedSettings.branding.watermarkText}
+            </Text>
+          </View>
+        ) : null}
         {/* Header */}
         <View style={{ ...styles.header, borderBottomColor: normalizedSettings.accentColor }}>
           <Text style={styles.title}>INVOICE</Text>
@@ -180,6 +216,32 @@ export default function InvoicePDF({ invoice, business, templateSettings = DEFAU
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Notes</Text>
             <Text>{invoice.notes}</Text>
+          </View>
+        )}
+
+        {/* Signature + verification seal */}
+        {(normalizedSettings.signature.showSignature || normalizedSettings.signature.showSeal) && (
+          <View style={styles.signatureRow}>
+            {normalizedSettings.signature.showSignature ? (
+              <View style={styles.signatureBox}>
+                {normalizedSettings.signature.signatureDataUrl ? (
+                  // @ts-ignore - Image support for react-pdf can vary by versions
+                  <Image src={normalizedSettings.signature.signatureDataUrl} style={{ width: 140, height: 44, objectFit: 'contain' }} />
+                ) : (
+                  <View style={styles.signatureLine} />
+                )}
+                <Text style={styles.signatureName}>{normalizedSettings.signature.signatureName || ' '}</Text>
+                <Text style={styles.signatureCaption}>Authorized signature</Text>
+              </View>
+            ) : (
+              <View />
+            )}
+            {normalizedSettings.signature.showSeal ? (
+              <View style={[styles.sealBox, { borderColor: normalizedSettings.accentColor }]}>
+                <Text style={[styles.sealLabel, { color: normalizedSettings.accentColor }]}>VERIFICATION</Text>
+                <Text style={styles.sealCode}>{seal.code}</Text>
+              </View>
+            ) : null}
           </View>
         )}
 

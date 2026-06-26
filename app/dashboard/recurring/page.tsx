@@ -232,6 +232,12 @@ export default function RecurringPage() {
                         {invoice.status === 'active' ? t('actions.pause') : t('actions.resume')}
                       </button>
                       <button
+                        onClick={() => router.push(`/dashboard/recurring/new?duplicateFrom=${invoice.id}`)}
+                        className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm mr-3"
+                      >
+                        {t('actions.duplicate')}
+                      </button>
+                      <button
                         onClick={() => deleteTemplate(invoice.id)}
                         className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 text-sm"
                       >

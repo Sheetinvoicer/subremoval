@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
@@ -28,63 +28,11 @@ import {
   ArrowRight,
   Inbox,
   FileText,
+  type LucideIcon,
 } from 'lucide-react';
-
-// Animated number that counts up on mount / value change.
-function AnimatedNumber({
-  value,
-  prefix = '',
-  decimals = 0,
-}: {
-  value: number;
-  prefix?: string;
-  decimals?: number;
-}) {
-  const [display, setDisplay] = useState(0);
-  const rafRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    const duration = 900;
-    const start = performance.now();
-    const from = 0;
-    const animate = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplay(from + (value - from) * eased);
-      if (progress < 1) {
-        rafRef.current = requestAnimationFrame(animate);
-      }
-    };
-    rafRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [value]);
-
-  return (
-    <span>
-      {prefix}
-      {display.toLocaleString(undefined, {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-      })}
-    </span>
-  );
-}
-
-function ChangeIndicator({ change }: { change: number }) {
-  const positive = change >= 0;
-  return (
-    <span
-      className={`inline-flex items-center gap-0.5 text-xs font-medium ${
-        positive ? 'text-success' : 'text-red-400'
-      }`}
-    >
-      {positive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-      {Math.abs(change).toFixed(0)}%
-    </span>
-  );
-}
+import { MetricCard, AIInsights, QuickActions, RealtimeActivityFeed } from '@/components/dashboard';
+import { forecastSeries, detectAnomalies, generateRecommendations } from '@/lib/dashboard/insights';
+import { setAssistantContext } from '@/lib/dashboard/assistant-context';
 
 // ===== TYPE DEFINITIONS =====
 interface Invoice {
@@ -159,6 +107,8 @@ export default function DashboardPage() {
   const [recentInvoices, setRecentInvoices] = useState<Invoice[]>([]);
   const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
   const [statusData, setStatusData] = useState<StatusDataPoint[]>([]);
+  const [monthlySeries, setMonthlySeries] = useState<{ label: string; value: number }[]>([]);
+  const [currency, setCurrency] = useState('USD');
   const [downloading, setDownloading] = useState(false);
   const dashboardRef = useRef<HTMLDivElement>(null);
 
@@ -374,7 +324,25 @@ export default function DashboardPage() {
         }
       }
       setRevenueData(chartData);
-      
+
+      // Stable 6-month paid-revenue series for the AI insights, independent of
+      // the selected chart period.
+      const monthly: { label: string; value: number }[] = [];
+      for (let i = 5; i >= 0; i--) {
+        const date = subMonths(now, i);
+        const ms = startOfMonth(date);
+        const me = endOfMonth(date);
+        const paid = paidInvoices
+          .filter((inv: Invoice) => {
+            const d = new Date(inv.created_at);
+            return d >= ms && d <= me;
+          })
+          .reduce((s: number, inv: Invoice) => s + (inv.total || 0), 0);
+        monthly.push({ label: format(date, 'MMM'), value: paid });
+      }
+      setMonthlySeries(monthly);
+      setCurrency(invoices.find((i: Invoice) => i.currency)?.currency || 'USD');
+
       setStatusData([
         { name: t('paid'), value: paidInvoices.length, color: '#10b981', link: '/dashboard/invoices?status=paid' },
         { name: t('pending'), value: pendingInvoices.length, color: '#f59e0b', link: '/dashboard/invoices?status=pending' },
@@ -392,6 +360,48 @@ export default function DashboardPage() {
   useEffect(() => {
     loadAllData();
   }, [loadAllData]);
+
+  // ===== AI INSIGHTS (computed from loaded data) =====
+  const revenueValues = useMemo(() => monthlySeries.map((m) => m.value), [monthlySeries]);
+  const revenueForecast = useMemo(() => forecastSeries(revenueValues), [revenueValues]);
+  const anomalies = useMemo(() => detectAnomalies(monthlySeries), [monthlySeries]);
+  const recommendations = useMemo(
+    () =>
+      generateRecommendations({
+        overdueAmount: stats.overdueAmount,
+        overdueCount: stats.overdueInvoices,
+        pendingAmount: stats.pendingAmount,
+        pendingCount: stats.pendingCount,
+        totalClients: stats.totalClients,
+        totalInvoices: stats.totalInvoices,
+        totalRevenue: stats.totalRevenue,
+        totalExpenses: stats.totalExpenses,
+        netProfit: stats.netProfit,
+        revenueChange: stats.revenueChange,
+        forecast: revenueForecast,
+      }),
+    [stats, revenueForecast],
+  );
+
+  // Publish a compact metrics snapshot for the layout's AI chat widget.
+  useEffect(() => {
+    setAssistantContext({
+      currency,
+      totalRevenue: stats.totalRevenue,
+      netProfit: stats.netProfit,
+      totalExpenses: stats.totalExpenses,
+      pendingAmount: stats.pendingAmount,
+      pendingCount: stats.pendingCount,
+      overdueAmount: stats.overdueAmount,
+      overdueCount: stats.overdueInvoices,
+      paidThisMonth: stats.paidThisMonth,
+      totalInvoices: stats.totalInvoices,
+      totalClients: stats.totalClients,
+      revenueChangePct: stats.revenueChange,
+      forecastNextMonth: revenueForecast.forecast,
+    });
+    return () => setAssistantContext(null);
+  }, [stats, currency, revenueForecast.forecast]);
 
   // Loading state
   if (loading) {
@@ -428,7 +438,20 @@ export default function DashboardPage() {
     day: 'numeric',
   });
 
-  const kpiCards = [
+  const predictedNext = revenueForecast.sufficient ? revenueForecast.forecast : undefined;
+
+  const kpiCards: {
+    label: string;
+    value: number;
+    prefix: string;
+    change: number;
+    Icon: LucideIcon;
+    iconClass: string;
+    link: string;
+    filter: string;
+    predicted?: number;
+    spark?: number[];
+  }[] = [
     {
       label: t('kpi.totalRevenue'),
       value: stats.totalRevenue,
@@ -438,6 +461,8 @@ export default function DashboardPage() {
       iconClass: 'text-success bg-success/10',
       link: '/dashboard/invoices',
       filter: 'paid',
+      predicted: predictedNext,
+      spark: revenueValues,
     },
     {
       label: t('kpi.pendingInvoices'),
@@ -458,6 +483,8 @@ export default function DashboardPage() {
       iconClass: 'text-accent bg-accent/10',
       link: '/dashboard/invoices',
       filter: 'paid',
+      predicted: predictedNext,
+      spark: revenueValues,
     },
     {
       label: t('kpi.overdueAmount'),
@@ -480,24 +507,28 @@ export default function DashboardPage() {
   return (
     <TooltipProvider>
       <div ref={dashboardRef} className="min-h-screen bg-background text-text-primary">
-        {/* Header section */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-text-primary">
-              {t(`greeting.${greetingKey}`)}
-              {userName ? `, ${userName}` : ''} <span className="inline-block">👋</span>
-            </h1>
-            <p className="mt-1 text-sm text-text-secondary">{todayLabel}</p>
-          </div>
-          <div className="flex items-center gap-2" data-html2canvas-ignore="true">
-            <Button variant="secondary" loading={downloading} onClick={downloadDashboard}>
-              {!downloading && <Download size={16} />}
-              {downloading ? t('actions.downloadingDashboard') : t('actions.downloadDashboard')}
-            </Button>
-            <Button onClick={() => navigateTo('/dashboard/invoices/new')}>
-              <Plus size={16} />
-              {t('actions.createInvoice')}
-            </Button>
+        {/* Header hero (glass-morphism) */}
+        <div className="relative mb-8 overflow-hidden rounded-card border border-border bg-gradient-to-br from-accent/10 via-card/40 to-transparent p-5 backdrop-blur-md sm:p-6">
+          <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-accent/15 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-16 left-1/3 h-40 w-40 rounded-full bg-accent-secondary/10 blur-3xl" />
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-text-primary">
+                {t(`greeting.${greetingKey}`)}
+                {userName ? `, ${userName}` : ''} <span className="inline-block">👋</span>
+              </h1>
+              <p className="mt-1 text-sm text-text-secondary">{todayLabel}</p>
+            </div>
+            <div className="flex items-center gap-2" data-html2canvas-ignore="true">
+              <Button variant="secondary" loading={downloading} onClick={downloadDashboard}>
+                {!downloading && <Download size={16} />}
+                {downloading ? t('actions.downloadingDashboard') : t('actions.downloadDashboard')}
+              </Button>
+              <Button onClick={() => navigateTo('/dashboard/invoices/new')}>
+                <Plus size={16} />
+                {t('actions.createInvoice')}
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -518,32 +549,41 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* KPI Cards */}
+        {/* KPI Cards with AI predictions */}
         <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {kpiCards.map((kpi) => {
-            const Icon = kpi.Icon;
-            return (
-              <Card
-                key={kpi.label}
-                onClick={() => navigateTo(kpi.link, kpi.filter)}
-                className="cursor-pointer"
-              >
-                <div className="flex items-start justify-between">
-                  <div className={`rounded-button p-2 ${kpi.iconClass}`}>
-                    <Icon size={20} />
-                  </div>
-                  <ChangeIndicator change={kpi.change} />
-                </div>
-                <p className="mt-4 text-xs uppercase tracking-wide text-text-secondary">
-                  {kpi.label}
-                </p>
-                <p className="mt-1 text-2xl font-bold text-text-primary">
-                  <AnimatedNumber value={kpi.value} prefix={kpi.prefix} />
-                </p>
-                <p className="mt-1 text-[11px] text-text-secondary">{t('vsLastMonth')}</p>
-              </Card>
-            );
-          })}
+          {kpiCards.map((kpi) => (
+            <MetricCard
+              key={kpi.label}
+              label={kpi.label}
+              value={kpi.value}
+              prefix={kpi.prefix}
+              change={kpi.change}
+              icon={kpi.Icon}
+              iconClass={kpi.iconClass}
+              predicted={kpi.predicted}
+              predictionLabel={kpi.predicted !== undefined ? t('metrics.predicted') : undefined}
+              spark={kpi.spark}
+              vsLabel={t('vsLastMonth')}
+              onClick={() => navigateTo(kpi.link, kpi.filter)}
+            />
+          ))}
+        </div>
+
+        {/* AI insights + quick actions + live activity */}
+        <div className="mb-8 grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <AIInsights
+              forecast={revenueForecast}
+              anomalies={anomalies}
+              recommendations={recommendations}
+              currency={currency}
+              monthlySeries={monthlySeries}
+            />
+          </div>
+          <div className="space-y-6">
+            <QuickActions />
+            <RealtimeActivityFeed />
+          </div>
         </div>
 
         {/* Quick Stats Chart */}

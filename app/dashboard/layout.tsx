@@ -11,7 +11,7 @@ import { useLocale } from 'next-intl'
 import { DashboardChromeSkeleton } from '@/components/LoadingSkeleton'
 
 // Lazy-load non-critical widgets so they don't block dashboard page transitions
-const AIAssistant = dynamic(() => import('@/components/AIAssistant'), { ssr: false })
+const AIChatWidget = dynamic(() => import('@/components/dashboard/AIChatWidget'), { ssr: false })
 const OnboardingTour = dynamic(() => import('@/components/OnboardingTour'), { ssr: false })
 
 export default function DashboardLayout({
@@ -34,7 +34,13 @@ export default function DashboardLayout({
   if (!mounted) return <DashboardChromeSkeleton />
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="relative flex flex-col min-h-screen">
+      {/* Ambient glass-morphism backdrop: soft accent glows behind the chrome. */}
+      <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute -top-32 left-1/4 h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
+        <div className="absolute top-1/3 -right-24 h-80 w-80 rounded-full bg-accent-secondary/10 blur-3xl" />
+        <div className="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-accent/5 blur-3xl" />
+      </div>
       <div className="flex flex-1">
         <Sidebar />
         <div className="flex flex-1 flex-col min-w-0">
@@ -59,7 +65,7 @@ export default function DashboardLayout({
               />
               {children}
             </div>
-            <AIAssistant />
+            <AIChatWidget />
             <OnboardingTour />
           </main>
         </div>

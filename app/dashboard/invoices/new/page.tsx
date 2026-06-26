@@ -13,6 +13,8 @@ import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import SmartCurrencyTax from '@/components/SmartCurrencyTax'
 import { useSmartDetection } from '@/hooks/useSmartDetection'
+import { isFeatureEnabled } from '@/lib/featureFlags'
+import InvoiceEditor from '@/components/invoices/InvoiceEditor'
 import {
   ArrowLeft,
   Users,
@@ -47,7 +49,9 @@ const inputClass =
   'w-full rounded-button border border-border bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-secondary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40'
 const labelClass = 'block text-sm font-medium mb-1 text-text-secondary'
 
-export default function NewInvoicePage() {
+// Lean fallback shown when the `invoiceEditorV2` flag is OFF; the unified
+// InvoiceEditor (multi-rate tax, discount, autosave, ...) is the default.
+function LegacyNewInvoicePage() {
   const t = useTranslations('invoices')
   const router = useRouter()
   const [clients, setClients] = useState<ClientItem[]>([])
@@ -453,4 +457,14 @@ export default function NewInvoicePage() {
       </AnimatePresence>
     </div>
   )
+}
+
+// Renders the unified, localized editor (multi-rate tax, discount, rounding,
+// draft auto-save) by default; falls back to the lean legacy form when the
+// `invoiceEditorV2` flag is turned off for a safe rollback.
+export default function NewInvoicePage() {
+  if (isFeatureEnabled('invoiceEditorV2')) {
+    return <InvoiceEditor mode="create" />
+  }
+  return <LegacyNewInvoicePage />
 }

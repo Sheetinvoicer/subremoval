@@ -7,6 +7,7 @@ import {
   detectAnomalies,
   generateAdminReport,
 } from '@/lib/ai/admin'
+import { adminAiErrorResponse } from '@/lib/ai/route-helpers'
 
 // This route reads SUPABASE_SERVICE_ROLE_KEY and calls the Supabase and Anthropic/
 // OpenAI Node SDKs, so pin the Node.js runtime (never Edge) and force dynamic so
@@ -32,8 +33,7 @@ export async function GET() {
       anomalies: detectAnomalies(ctx),
     })
   } catch (error) {
-    const messageText = error instanceof Error ? error.message : 'Failed to load admin analytics'
-    return NextResponse.json({ error: messageText }, { status: 500 })
+    return adminAiErrorResponse(error, 'Failed to load admin analytics')
   }
 }
 
@@ -48,7 +48,6 @@ export async function POST() {
     const report = await generateAdminReport()
     return NextResponse.json({ report })
   } catch (error) {
-    const messageText = error instanceof Error ? error.message : 'Failed to generate admin report'
-    return NextResponse.json({ error: messageText }, { status: 500 })
+    return adminAiErrorResponse(error, 'Failed to generate admin report')
   }
 }

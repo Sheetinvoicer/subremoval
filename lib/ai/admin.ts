@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { OpenAI } from 'openai'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { normalizePlanName } from '@/lib/subscriptions/plans'
 
 /**
  * Admin AI library.
@@ -34,6 +35,7 @@ const MAX_USERS = 1000
 const MAX_AUDIT_LOGS = 1000
 const MAX_INVOICES = 2000
 const MAX_EXPENSES = 2000
+const MAX_SUBSCRIPTIONS = 2000
 
 // Frozen system instructions. Do NOT interpolate anything dynamic here — keeping
 // the bytes stable is what lets the prompt cache hit across requests.
@@ -65,6 +67,16 @@ Return a plain markdown bullet list only — no preamble, no headings.`
 // ---------------------------------------------------------------------------
 
 export type Role = 'admin' | 'staff' | 'viewer'
+
+// The four canonical subscription tiers (see lib/subscriptions/plans.js). Mirrors
+// the subscriptions.plan column constrained by the subscription_tiers migration.
+export type PlanName = 'Free' | 'Pro' | 'Business' | 'Enterprise'
+
+export interface SubscriptionRow {
+  user_id: string | null
+  plan: PlanName
+  status: string | null
+}
 
 export interface AdminUser {
   id: string
@@ -101,6 +113,7 @@ export interface AdminContext {
   users: AdminUser[]
   auditLogs: AuditEntry[]
   invoices: InvoiceRow[]
+  subscriptions: SubscriptionRow[]
   expensesTotal: number
   expensesCount: number
   clientsCount: number
@@ -109,6 +122,8 @@ export interface AdminContext {
 export interface UsageMetrics {
   totalUsers: number
   usersByRole: Record<Role, number>
+  usersByPlan: Record<PlanName, number>
+  paidSubscriptions: number
   newUsers30d: number
   activeUsers30d: number
   totalClients: number
@@ -169,19 +184,75 @@ export interface ChatTurn {
 }
 
 // ---------------------------------------------------------------------------
+// Errors
+// ---------------------------------------------------------------------------
+
+// Raised when a required environment variable / credential is missing or the
+// backing service rejects our credentials (e.g. a bad SUPABASE_SERVICE_ROLE_KEY
+// surfaces from PostgREST as "Invalid API key"). Callers map this to a 503 with
+// an actionable message instead of an opaque 500, so an operator can see that
+// the deployment is mis-configured rather than the code being broken.
+export class AdminConfigError extends Error {
+  readonly code = 'ADMIN_CONFIG_ERROR'
+  readonly missing: string[]
+  constructor(message: string, missing: string[] = []) {
+    super(message)
+    this.name = 'AdminConfigError'
+    this.missing = missing
+    // Restore the prototype chain: when this class is transpiled down to ES5,
+    // extending the built-in Error otherwise breaks `instanceof` checks (which
+    // the route helper relies on to map this to a 503).
+    Object.setPrototypeOf(this, AdminConfigError.prototype)
+  }
+}
+
+// Heuristic: does a thrown error look like a credentials/permission problem
+// (bad key, RLS/permission denied) rather than a transient/code error? Supabase
+// returns "Invalid API key" for a wrong service-role key and "permission denied"
+// when RLS blocks the read.
+export function isCredentialError(error: unknown): boolean {
+  // Accept Error instances, Supabase's plain `{ message }` error objects, or raw
+  // strings — pull a message out of whichever shape we were handed.
+  const raw =
+    error instanceof Error
+      ? error.message
+      : error && typeof error === 'object' && 'message' in error
+        ? String((error as { message: unknown }).message ?? '')
+        : String(error ?? '')
+  const message = raw.toLowerCase()
+  return (
+    message.includes('invalid api key') ||
+    message.includes('invalid_api_key') ||
+    message.includes('permission denied') ||
+    message.includes('jwt') ||
+    message.includes('unauthorized') ||
+    message.includes('not authorized') ||
+    message.includes('401')
+  )
+}
+
+// Wrap a Supabase query error for a critical table. Credential/permission
+// failures (e.g. a bad SUPABASE_SERVICE_ROLE_KEY → "Invalid API key") become an
+// AdminConfigError so routes answer with an actionable 503; anything else stays
+// a generic Error (true 500).
+function toContextError(label: string, error: { message: string }): Error {
+  const message = `Failed to load ${label}: ${error.message}`
+  return isCredentialError(error) ? new AdminConfigError(message) : new Error(message)
+}
+
+// ---------------------------------------------------------------------------
 // Clients
 // ---------------------------------------------------------------------------
+function getOpenAI(): OpenAI | null {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) return null
+  return new OpenAI({ apiKey, timeout: AI_TIMEOUT_MS, maxRetries: AI_MAX_RETRIES })
+}
 
 function getAnthropic(): Anthropic | null {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) return null
   return new Anthropic({ apiKey, timeout: AI_TIMEOUT_MS, maxRetries: AI_MAX_RETRIES })
-}
-
-function getOpenAI(): OpenAI | null {
-  const apiKey = process.env.OPENAI_API_KEY
-  if (!apiKey) return null
-  return new OpenAI({ apiKey, timeout: AI_TIMEOUT_MS, maxRetries: AI_MAX_RETRIES })
 }
 
 // Service-role client so admin analytics can read across every tenant. Mirrors
@@ -190,8 +261,14 @@ function createAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error('Missing Supabase admin environment variables')
+  const missing: string[] = []
+  if (!supabaseUrl) missing.push('NEXT_PUBLIC_SUPABASE_URL')
+  if (!serviceRoleKey) missing.push('SUPABASE_SERVICE_ROLE_KEY')
+  if (missing.length > 0) {
+    throw new AdminConfigError(
+      `Missing Supabase admin environment variables: ${missing.join(', ')}`,
+      missing
+    )
   }
 
   // A service-role client authenticates with the key itself rather than a user
@@ -233,7 +310,7 @@ function parseDate(input?: string | null): Date | null {
 export async function gatherAdminContext(): Promise<AdminContext> {
   const supabase = createAdminClient()
 
-  const [usersRes, auditRes, invoicesRes, clientsRes, expensesRes] = await Promise.all([
+  const [usersRes, auditRes, invoicesRes, clientsRes, expensesRes, subscriptionsRes] = await Promise.all([
     supabase
       .from('users')
       .select('id, email, full_name, role, created_at')
@@ -255,6 +332,14 @@ export async function gatherAdminContext(): Promise<AdminContext> {
       .select('amount')
       .order('created_at', { ascending: false })
       .limit(MAX_EXPENSES),
+    // Subscription tiers feed the plan-distribution metric. Read the canonical
+    // `plan` column (Free/Pro/Business/Enterprise) added by the subscription
+    // overhaul. This is a plain list read (never .single()) so a user without a
+    // row simply doesn't appear here — it can't trigger a PostgREST 406.
+    supabase
+      .from('subscriptions')
+      .select('user_id, plan, status')
+      .limit(MAX_SUBSCRIPTIONS),
   ])
 
   // Surface query failures instead of silently degrading to empty data. Invoices
@@ -263,15 +348,16 @@ export async function gatherAdminContext(): Promise<AdminContext> {
   // platform has "0 invoices / no data" while hiding the real cause. The remaining
   // tables are non-critical, so we log and continue if one is unavailable.
   if (usersRes.error) {
-    throw new Error(`Failed to load users: ${usersRes.error.message}`)
+    throw toContextError('users', usersRes.error)
   }
   if (invoicesRes.error) {
-    throw new Error(`Failed to load invoices: ${invoicesRes.error.message}`)
+    throw toContextError('invoices', invoicesRes.error)
   }
   const optionalQueries: Array<{ label: string; error: { message: string } | null }> = [
     { label: 'audit_logs', error: auditRes.error },
     { label: 'clients', error: clientsRes.error },
     { label: 'expenses', error: expensesRes.error },
+    { label: 'subscriptions', error: subscriptionsRes.error },
   ]
   for (const query of optionalQueries) {
     if (query.error) {
@@ -315,11 +401,20 @@ export async function gatherAdminContext(): Promise<AdminContext> {
     0
   )
 
+  const subscriptions: SubscriptionRow[] = (subscriptionsRes.data || []).map(
+    (s: Record<string, unknown>) => ({
+      user_id: (s.user_id as string) ?? null,
+      plan: normalizePlanName(s.plan) as PlanName,
+      status: (s.status as string) ?? null,
+    })
+  )
+
   return {
     generatedAt: new Date().toISOString(),
     users,
     auditLogs,
     invoices,
+    subscriptions,
     expensesTotal,
     expensesCount: expensesRows.length,
     clientsCount: clientsRes.count || 0,
@@ -370,9 +465,22 @@ export function computeMetrics(ctx: AdminContext): UsageMetrics {
     }
   }
 
+  // Plan distribution from the subscriptions table. Users without a subscription
+  // row are treated as Free (matches DEFAULT_PLAN and the migration's Free
+  // backfill), so the tiers always reflect the known subscription rows.
+  const usersByPlan: Record<PlanName, number> = { Free: 0, Pro: 0, Business: 0, Enterprise: 0 }
+  for (const sub of ctx.subscriptions || []) {
+    usersByPlan[sub.plan] = (usersByPlan[sub.plan] || 0) + 1
+  }
+  const usersWithoutSubscription = Math.max(0, ctx.users.length - (ctx.subscriptions?.length || 0))
+  usersByPlan.Free += usersWithoutSubscription
+  const paidSubscriptions = usersByPlan.Pro + usersByPlan.Business + usersByPlan.Enterprise
+
   return {
     totalUsers: ctx.users.length,
     usersByRole,
+    usersByPlan,
+    paidSubscriptions,
     newUsers30d,
     activeUsers30d: activeUserIds.size,
     totalClients: ctx.clientsCount,
@@ -625,7 +733,7 @@ interface RunModelOptions {
   maxTokens?: number
 }
 
-async function runModel({ system, userContent, history = [], maxTokens = ADMIN_AI_MAX_TOKENS }: RunModelOptions): Promise<string> {
+async function runModel({ system, userContent, history = [], maxTokens = ADMIN_AI_MAX_TOKENS }: RunModelOptions): Promise<string | null> {
   const claude = getAnthropic()
 
   if (claude) {
@@ -676,7 +784,11 @@ async function runModel({ system, userContent, history = [], maxTokens = ADMIN_A
     }
   }
 
-  throw new Error('AI is not configured. Set ANTHROPIC_API_KEY (or OPENAI_API_KEY) to enable admin AI.')
+  // No model produced output — either no key is configured or every provider
+  // errored (an invalid/expired API key surfaces here as a caught 401). Return
+  // null so callers can degrade to deterministic output instead of turning a
+  // missing/broken key into a user-facing 500.
+  return null
 }
 
 // Compact, model-friendly view of the platform state shared with every AI call.
@@ -697,23 +809,196 @@ function buildDataSnapshot(ctx: AdminContext): Record<string, unknown> {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Deterministic fallbacks
+//
+// When no model is available (no key configured, or every provider errored —
+// e.g. an invalid/expired key), the admin AI must still return useful output
+// instead of failing the request. These builders reuse the same deterministic
+// metrics the dashboard already shows, so the report, tips and chat endpoints
+// degrade gracefully (HTTP 200) rather than surfacing a 500 / "Invalid API key".
+// ---------------------------------------------------------------------------
+
+const MODEL_UNAVAILABLE_NOTE =
+  '_AI model unavailable — showing computed analytics. Configure ANTHROPIC_API_KEY or OPENAI_API_KEY for AI-written insights._'
+
+function buildDeterministicReport(ctx: AdminContext): string {
+  const metrics = computeMetrics(ctx)
+  const activity = analyzeActivity(ctx, 30)
+  const anomalies = detectAnomalies(ctx)
+  const recommendations = buildRecommendations(ctx)
+
+  const lines: string[] = []
+  lines.push('## Overview')
+  lines.push(`- Total users: ${metrics.totalUsers} (admins ${metrics.usersByRole.admin}, staff ${metrics.usersByRole.staff}, viewers ${metrics.usersByRole.viewer})`)
+  lines.push(`- Plans: Free ${metrics.usersByPlan.Free}, Pro ${metrics.usersByPlan.Pro}, Business ${metrics.usersByPlan.Business}, Enterprise ${metrics.usersByPlan.Enterprise} (${metrics.paidSubscriptions} paid)`)
+  lines.push(`- New users (30d): ${metrics.newUsers30d}; active (30d): ${metrics.activeUsers30d}`)
+  lines.push(`- Invoices: ${metrics.totalInvoices} total, ${metrics.paidInvoices} paid, ${metrics.overdueInvoices} overdue`)
+  lines.push(`- Revenue: ${formatCurrency(metrics.totalRevenue)} collected, ${formatCurrency(metrics.pendingRevenue)} pending`)
+
+  lines.push('')
+  lines.push('## User Activity')
+  if (activity.totalActions === 0) {
+    lines.push('- No audit activity recorded in the last 30 days.')
+  } else {
+    lines.push(`- ${activity.totalActions} actions in the last 30 days.`)
+    for (const user of activity.topUsers.slice(0, 5)) {
+      lines.push(`- ${user.email || user.userId || 'unknown'}: ${user.actions} actions`)
+    }
+  }
+
+  lines.push('')
+  lines.push('## Anomalies & Risks')
+  if (anomalies.length === 0) {
+    lines.push('- No anomalies detected.')
+  } else {
+    for (const anomaly of anomalies) {
+      lines.push(`- [${anomaly.severity}] ${anomaly.title}: ${anomaly.detail}`)
+    }
+  }
+
+  lines.push('')
+  lines.push('## Recommendations')
+  const recs = [
+    ...recommendations.featureRecommendations,
+    ...recommendations.invoiceOptimizationTips,
+    ...recommendations.roleSuggestions.map((s) => `${s.email || s.userId}: ${s.reason}`),
+  ]
+  if (recs.length === 0) {
+    lines.push('- No recommendations at this time.')
+  } else {
+    for (const rec of recs) lines.push(`- ${rec}`)
+  }
+
+  lines.push('')
+  lines.push(MODEL_UNAVAILABLE_NOTE)
+  return lines.join('\n')
+}
+
+function buildDeterministicTips(ctx: AdminContext): string {
+  const recommendations = buildRecommendations(ctx)
+  const tips = [...recommendations.invoiceOptimizationTips, ...recommendations.featureRecommendations].slice(0, 5)
+  if (tips.length === 0) {
+    tips.push('Platform metrics look healthy — keep monitoring overdue invoices and user activity.')
+  }
+  return [...tips.map((tip) => `- ${tip}`), '', MODEL_UNAVAILABLE_NOTE].join('\n')
+}
+
+function buildDeterministicAnswer(ctx: AdminContext, question: string): string {
+  const metrics = computeMetrics(ctx)
+  const anomalies = detectAnomalies(ctx)
+  const lines: string[] = []
+  lines.push(`Here is what the current platform data shows (re: "${question.slice(0, 200)}"):`)
+  lines.push('')
+  lines.push(`- Users: ${metrics.totalUsers} (${metrics.usersByRole.admin} admin, ${metrics.usersByRole.staff} staff, ${metrics.usersByRole.viewer} viewer)`)
+  lines.push(`- Plans: Free ${metrics.usersByPlan.Free}, Pro ${metrics.usersByPlan.Pro}, Business ${metrics.usersByPlan.Business}, Enterprise ${metrics.usersByPlan.Enterprise}`)
+  lines.push(`- Invoices: ${metrics.totalInvoices} (${metrics.paidInvoices} paid, ${metrics.overdueInvoices} overdue)`)
+  lines.push(`- Revenue: ${formatCurrency(metrics.totalRevenue)} collected, ${formatCurrency(metrics.pendingRevenue)} pending`)
+  lines.push(`- Audit events: ${metrics.auditEvents} total, ${metrics.auditEvents24h} in the last 24h`)
+  if (anomalies.length > 0) {
+    lines.push(`- Open anomalies: ${anomalies.map((a) => a.title).join(', ')}`)
+  }
+  lines.push('')
+  lines.push(MODEL_UNAVAILABLE_NOTE)
+  return lines.join('\n')
+}
+
 export async function askAdminAI(question: string, history: ChatTurn[] = [], ctx?: AdminContext): Promise<string> {
   const context = ctx || (await gatherAdminContext())
   const snapshot = buildDataSnapshot(context)
   const userContent = `Current platform data (JSON):\n${JSON.stringify(snapshot)}\n\nAdministrator question: ${question}`
-  return runModel({ system: ADMIN_SYSTEM_PROMPT, userContent, history })
+  const answer = await runModel({ system: ADMIN_SYSTEM_PROMPT, userContent, history })
+  return answer ?? buildDeterministicAnswer(context, question)
 }
 
 export async function generateAdminReport(ctx?: AdminContext): Promise<string> {
   const context = ctx || (await gatherAdminContext())
   const snapshot = buildDataSnapshot(context)
   const userContent = `Metrics JSON:\n${JSON.stringify(snapshot)}\n\nWrite the administrator report now.`
-  return runModel({ system: REPORT_SYSTEM_PROMPT, userContent, maxTokens: 1536 })
+  const report = await runModel({ system: REPORT_SYSTEM_PROMPT, userContent, maxTokens: 1536 })
+  return report ?? buildDeterministicReport(context)
 }
 
 export async function generateAiTips(ctx?: AdminContext): Promise<string> {
   const context = ctx || (await gatherAdminContext())
   const snapshot = buildDataSnapshot(context)
   const userContent = `Metrics JSON:\n${JSON.stringify(snapshot)}\n\nReturn the optimisation tips now.`
-  return runModel({ system: TIPS_SYSTEM_PROMPT, userContent, maxTokens: 512 })
+  const tips = await runModel({ system: TIPS_SYSTEM_PROMPT, userContent, maxTokens: 512 })
+  return tips ?? buildDeterministicTips(context)
+}
+
+// ---------------------------------------------------------------------------
+// Health check
+// ---------------------------------------------------------------------------
+
+export interface AdminAiHealth {
+  ok: boolean
+  status: 'ok' | 'degraded' | 'error'
+  supabase: {
+    url: boolean
+    serviceRoleKey: boolean
+    reachable: boolean | null
+    error: string | null
+  }
+  ai: {
+    anthropic: boolean
+    openai: boolean
+    available: boolean
+  }
+  missing: string[]
+  checkedAt: string
+}
+
+// Diagnoses the Admin-AI runtime without ever returning secret values — only
+// booleans about whether each credential is present and (optionally) whether the
+// service-role key actually authenticates against Supabase. This powers
+// /api/health so an operator can tell at a glance which Vercel env var is
+// missing or invalid (the usual cause of the 500 / "Invalid API key").
+export async function getAdminAiHealth(options: { probe?: boolean } = {}): Promise<AdminAiHealth> {
+  const url = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL)
+  const serviceRoleKey = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY)
+  const anthropic = Boolean(process.env.ANTHROPIC_API_KEY)
+  const openai = Boolean(process.env.OPENAI_API_KEY)
+
+  const missing: string[] = []
+  if (!url) missing.push('NEXT_PUBLIC_SUPABASE_URL')
+  if (!serviceRoleKey) missing.push('SUPABASE_SERVICE_ROLE_KEY')
+  if (!anthropic && !openai) missing.push('ANTHROPIC_API_KEY|OPENAI_API_KEY')
+
+  let reachable: boolean | null = null
+  let probeError: string | null = null
+
+  // Optional live probe: a tiny head-count read confirms the service-role key is
+  // not just present but valid. Skipped by default to keep the endpoint cheap.
+  if (options.probe && url && serviceRoleKey) {
+    try {
+      const supabase = createAdminClient()
+      const { error } = await supabase.from('users').select('id', { count: 'exact', head: true })
+      if (error) {
+        reachable = false
+        probeError = error.message
+      } else {
+        reachable = true
+      }
+    } catch (error) {
+      reachable = false
+      probeError = error instanceof Error ? error.message : 'Supabase probe failed'
+    }
+  }
+
+  const configMissing = !url || !serviceRoleKey
+  const probeFailed = reachable === false
+  const ok = !configMissing && !probeFailed
+  const aiAvailable = anthropic || openai
+
+  return {
+    ok,
+    // "degraded" = the platform can still serve deterministic analytics (no AI
+    // key) but is otherwise healthy; "error" = a hard mis-configuration.
+    status: !ok ? 'error' : aiAvailable ? 'ok' : 'degraded',
+    supabase: { url, serviceRoleKey, reachable, error: probeError },
+    ai: { anthropic, openai, available: aiAvailable },
+    missing,
+    checkedAt: new Date().toISOString(),
+  }
 }

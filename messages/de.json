@@ -1,4 +1,96 @@
 {
+  "subscriptionPlans": {
+    "heading": "Wählen Sie Ihren Tarif",
+    "subheading": "Einfache Preise, die mit Ihrem Unternehmen wachsen",
+    "perMonth": "/Mon.",
+    "customPricing": "Individuell",
+    "currentPlan": "Aktueller Tarif",
+    "mostPopular": "Beliebteste",
+    "actions": {
+      "choose": "{plan} wählen",
+      "upgrade": "Auf {plan} upgraden",
+      "downgrade": "Zu {plan} wechseln",
+      "contactSales": "Vertrieb kontaktieren",
+      "current": "Aktueller Tarif",
+      "manage": "Abrechnung verwalten"
+    },
+    "proration": {
+      "note": "Tarifänderungen werden sofort anteilig berechnet.",
+      "upgraded": "Auf {plan} hochgestuft. Für den Rest dieses Zeitraums fällt eine anteilige Gebühr an.",
+      "downgraded": "Zu {plan} gewechselt. Nicht genutzte Zeit wird Ihrer nächsten Rechnung gutgeschrieben."
+    },
+    "tiers": {
+      "free": {
+        "name": "Free",
+        "tagline": "Für den Einstieg"
+      },
+      "pro": {
+        "name": "Pro",
+        "tagline": "Für wachsende Freelancer"
+      },
+      "business": {
+        "name": "Business",
+        "tagline": "Für Teams"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "tagline": "Für Organisationen"
+      }
+    },
+    "features": {
+      "invoicesLimited": "Bis zu {count} Rechnungen",
+      "clientsLimited": "Bis zu {count} Kunden",
+      "expensesLimited": "Bis zu {count} Ausgaben",
+      "unlimitedInvoices": "Unbegrenzte Rechnungen",
+      "unlimitedClients": "Unbegrenzte Kunden",
+      "unlimitedExpenses": "Unbegrenzte Ausgaben",
+      "basicReports": "Basis-Berichte",
+      "aiAssistant": "KI-Assistent",
+      "multiLanguage": "Mehrsprachig",
+      "multiCurrency": "Mehrere Währungen",
+      "teamMembers": "{count} Teammitglieder",
+      "unlimitedTeam": "Unbegrenzte Teammitglieder",
+      "userRoles": "Benutzerrollen",
+      "adminAi": "Admin-KI",
+      "auditLog": "Audit-Protokoll",
+      "bankSync": "Bankabgleich",
+      "prioritySupport": "Priorisierter Support",
+      "sso": "SSO",
+      "customBranding": "Individuelles Branding",
+      "dedicatedSupport": "Dedizierter Support",
+      "customIntegrations": "Individuelle Integrationen"
+    },
+    "gate": {
+      "limitReached": "Sie haben Ihr Tariflimit erreicht. Upgraden Sie, um mehr hinzuzufügen.",
+      "featureLocked": "Diese Funktion ist in Ihrem aktuellen Tarif nicht enthalten.",
+      "upgradeCta": "Upgraden",
+      "learnMore": "Mehr erfahren"
+    },
+    "team": {
+      "title": "Teammitglieder",
+      "description": "Laden Sie Kollegen zur Zusammenarbeit ein.",
+      "inviteEmail": "E-Mail des Kollegen",
+      "invite": "Einladen",
+      "seatsUsed": "{used} von {total} Plätzen belegt",
+      "seatsUnlimited": "Unbegrenzte Plätze",
+      "seatLimitReached": "Sie haben alle Plätze Ihres Tarifs belegt. Upgraden Sie für mehr.",
+      "pending": "Ausstehend",
+      "active": "Aktiv",
+      "remove": "Entfernen",
+      "empty": "Noch keine Teammitglieder."
+    },
+    "sso": {
+      "title": "Single Sign-on (SSO)",
+      "description": "Lassen Sie Ihr Team über Ihren Identitätsanbieter anmelden.",
+      "domain": "Unternehmensdomäne",
+      "register": "Domäne registrieren",
+      "signInWithSso": "Mit SSO anmelden",
+      "status": "Status",
+      "pending": "Einrichtung ausstehend",
+      "active": "Aktiv",
+      "locked": "SSO ist in den Tarifen Business und Enterprise verfügbar."
+    }
+  },
   "subscription": {
     "title": "Abonnement",
     "subtitle": "Verwalten Sie Ihren Tarif und Ihre Abrechnung",
@@ -45,32 +137,257 @@
     "search": "Suchen"
   },
   "invoices": {
+    "editor": {
+      "createTitle": "Rechnung erstellen",
+      "editTitle": "Rechnung {number} bearbeiten",
+      "createCta": "Rechnung erstellen",
+      "saveCta": "Änderungen speichern",
+      "creating": "Wird erstellt...",
+      "saving": "Wird gespeichert...",
+      "moneyHeading": "Steuer & Rabatt",
+      "taxMode": "Steuermodus",
+      "taxModeExclusive": "Steuer aufschlagen (netto)",
+      "taxModeInclusive": "Preise inkl. Steuer (brutto)",
+      "lineTaxRate": "Steuer %",
+      "lineTaxRateHint": "Leer lassen, um den Steuersatz der Rechnung zu verwenden.",
+      "discountType": "Rabattart",
+      "discountPercent": "Prozentsatz (%)",
+      "discountFixed": "Fester Betrag",
+      "discountValue": "Rabattwert",
+      "rounding": "Summe runden",
+      "roundingNone": "Keine Rundung",
+      "roundingHint": "Rundet die Gesamtsumme auf den nächsten Schritt.",
+      "subtotalLabel": "Zwischensumme:",
+      "discountLabel": "Rabatt:",
+      "taxLabel": "Steuer:",
+      "roundingLabel": "Rundung:",
+      "totalLabel": "Gesamt:",
+      "effectiveTax": "Effektiver Steuersatz {rate}%",
+      "updatedToast": "Rechnung erfolgreich aktualisiert.",
+      "autosave": {
+        "saving": "Entwurf wird gespeichert...",
+        "saved": "Entwurf gespeichert",
+        "savedAt": "Entwurf gespeichert um {time}",
+        "error": "Entwurf konnte nicht gespeichert werden",
+        "idle": "Änderungen werden automatisch gespeichert"
+      },
+      "draft": {
+        "restoreTitle": "Nicht gespeicherten Entwurf wiederherstellen?",
+        "restoreBody": "Wir haben einen automatisch gespeicherten Entwurf von {time} gefunden.",
+        "restoreAction": "Entwurf wiederherstellen",
+        "discardAction": "Verwerfen",
+        "restored": "Entwurf wiederhergestellt.",
+        "discarded": "Entwurf verworfen."
+      },
+      "errors": {
+        "projectInvalid": "Das ausgewählte Projekt ist ungültig.",
+        "loadFailed": "Rechnung konnte nicht geladen werden.",
+        "notFound": "Rechnung nicht gefunden.",
+        "updateFailed": "Rechnung konnte nicht aktualisiert werden."
+      },
+      "template": {
+        "heading": "Vorlage",
+        "style": "Stil",
+        "classic": "Klassisch",
+        "modern": "Modern",
+        "minimal": "Minimalistisch",
+        "accent": "Akzentfarbe",
+        "sections": "Sichtbare Abschnitte",
+        "showBusinessDetails": "Unternehmensdaten",
+        "showClientDetails": "Kundendaten",
+        "showDueDate": "Fälligkeitsdatum",
+        "showNotes": "Notizen",
+        "showStatusBadge": "Status-Badge",
+        "usingGlobal": "Ausgehend von Ihrer Standardvorlage"
+      },
+      "preview": {
+        "heading": "Live-Vorschau",
+        "title": "Rechnung",
+        "from": "Von",
+        "businessPlaceholder": "Ihr Unternehmen",
+        "billTo": "Rechnung an",
+        "noClient": "Kein Kunde ausgewählt",
+        "due": "Fällig",
+        "description": "Beschreibung",
+        "qty": "Menge",
+        "price": "Preis",
+        "amount": "Betrag",
+        "subtotal": "Zwischensumme",
+        "discount": "Rabatt",
+        "tax": "Steuer",
+        "total": "Gesamt",
+        "notes": "Notizen",
+        "draft": "Entwurf",
+        "empty": "Fügen Sie Positionen hinzu, um diese Rechnung in der Vorschau anzuzeigen."
+      },
+      "ai": {
+        "heading": "KI-Positionen",
+        "description": "Beschreiben Sie die Leistung und lassen Sie die KI professionelle Positionen und eine Notiz entwerfen.",
+        "briefLabel": "Leistung beschreiben",
+        "briefPlaceholder": "z. B. Gestaltung einer 5-seitigen Marketing-Website mit Logo und 2 Korrekturschleifen",
+        "generate": "Generieren",
+        "generating": "Wird generiert…",
+        "resultHeading": "{count} vorgeschlagene Positionen",
+        "notesLabel": "Vorgeschlagene Notiz",
+        "apply": "Zur Rechnung hinzufügen",
+        "dismiss": "Verwerfen",
+        "errors": {
+          "briefRequired": "Beschreiben Sie zuerst die Leistung.",
+          "locked": "Die KI-Generierung ist ab dem Pro-Tarif verfügbar.",
+          "login": "Sie müssen angemeldet sein.",
+          "unavailable": "Die KI-Generierung ist nicht konfiguriert.",
+          "generic": "Inhalt konnte nicht generiert werden. Bitte erneut versuchen oder Positionen manuell hinzufügen."
+        }
+      },
+      "branding": {
+        "heading": "Branding",
+        "locked": "Individuelles Branding ist im Enterprise-Tarif verfügbar.",
+        "logo": "Logo",
+        "logoPreviewAlt": "Rechnungslogo",
+        "noLogo": "Kein Logo",
+        "uploadLogo": "Logo hochladen",
+        "removeLogo": "Logo entfernen",
+        "logoTypeError": "Bitte wählen Sie eine Bilddatei.",
+        "logoSizeError": "Das Logo muss kleiner als 512 KB sein.",
+        "logoReadError": "Datei konnte nicht gelesen werden.",
+        "secondaryColor": "Sekundärfarbe",
+        "typography": "Typografie",
+        "fonts": {
+          "sans": "Serifenlos",
+          "serif": "Serif",
+          "mono": "Monospace"
+        },
+        "watermark": "Wasserzeichen",
+        "watermarkPlaceholder": "z. B. BEZAHLT, ENTWURF, VERTRAULICH",
+        "watermarkHint": "Wird dezent hinter der Rechnung angezeigt."
+      },
+      "signature": {
+        "heading": "Signatur & Siegel",
+        "showSignature": "Signatur hinzufügen",
+        "signatureName": "Unterzeichnet von",
+        "signatureNamePlaceholder": "Vollständiger Name",
+        "signatureImage": "Signaturbild",
+        "signatureImageAlt": "Signatur",
+        "noSignatureImage": "Kein Bild",
+        "uploadSignature": "Hochladen",
+        "removeSignature": "Signaturbild entfernen",
+        "imageTypeError": "Bitte wählen Sie eine Bilddatei.",
+        "imageSizeError": "Das Signaturbild muss kleiner als 256 KB sein.",
+        "imageReadError": "Datei konnte nicht gelesen werden.",
+        "showSeal": "Prüfsiegel hinzufügen",
+        "sealHint": "Ein manipulationssicherer Code aus Rechnungsnummer, Gesamtbetrag, Währung und Datum.",
+        "sealCodeLabel": "Code",
+        "previewSignedBy": "Autorisierte Signatur",
+        "previewNameFallback": "Signatur",
+        "previewVerification": "Verifizierung"
+      }
+    },
+    "list": {
+      "export": {
+        "csv": "CSV exportieren",
+        "pdf": "PDF exportieren",
+        "title": "Rechnungen",
+        "success": "Export bereit",
+        "failed": "Export fehlgeschlagen",
+        "tooMany": "Der Export überschreitet das Maximum von {max} Zeilen. Grenzen Sie Ihre Filter ein und versuchen Sie es erneut.",
+        "columns": {
+          "invoiceNumber": "Rechnungsnummer",
+          "client": "Kunde",
+          "project": "Projekt",
+          "status": "Status",
+          "subtotal": "Zwischensumme",
+          "tax": "Steuer",
+          "total": "Gesamt",
+          "currency": "Währung",
+          "dueDate": "Fällig",
+          "createdAt": "Erstellt"
+        },
+        "meta": {
+          "generatedAt": "Erstellt am",
+          "filters": "Filter",
+          "locale": "Sprache"
+        }
+      },
+      "bulk": {
+        "regionLabel": "Massenaktionen",
+        "selected": "{count} ausgewählt",
+        "noSelection": "Wählen Sie Rechnungen aus, um sie zu bearbeiten",
+        "markPaid": "Als bezahlt markieren",
+        "send": "Senden",
+        "applyTax": "Steuersatz anwenden",
+        "delete": "Löschen",
+        "clear": "Auswahl aufheben",
+        "taxRateLabel": "Steuersatz (%)",
+        "taxRatePlaceholder": "0–100",
+        "apply": "Anwenden",
+        "cancel": "Abbrechen",
+        "confirmTitle": "{count} Rechnungen löschen?",
+        "confirmBody": "Diese Aktion kann nicht rückgängig gemacht werden.",
+        "confirmDelete": "Löschen bestätigen",
+        "progress": "Verarbeitung {completed}/{total}…",
+        "resultsTitle": "Ergebnisse",
+        "resultSuccess": "Fertig",
+        "resultFailed": "Fehlgeschlagen",
+        "toastSuccess": "{count} Rechnungen aktualisiert",
+        "toastPartial": "{failed} von {total} fehlgeschlagen",
+        "errorSupabaseInit": "Supabase-Client konnte nicht initialisiert werden",
+        "errorLoginRequired": "Sie müssen angemeldet sein.",
+        "errorSendFailed": "Rechnung konnte nicht gesendet werden",
+        "errorTaxRate": "Der Steuersatz muss zwischen 0 und 100 liegen.",
+        "errorSubtotalMissing": "Zwischensumme dieser Rechnung konnte nicht geladen werden.",
+        "errorGeneric": "Aktion fehlgeschlagen"
+      },
+      "search": {
+        "label": "Rechnungen suchen",
+        "placeholder": "Rechnungen suchen..."
+      },
+      "filters": {
+        "status": "Nach Status filtern"
+      },
+      "status": {
+        "draft": "Entwurf",
+        "sent": "Gesendet",
+        "viewed": "Angesehen",
+        "paid": "Bezahlt",
+        "overdue": "Überfällig",
+        "disputed": "Beanstandet",
+        "cancelled": "Storniert"
+      },
+      "results": {
+        "total": "{total} Rechnungen",
+        "empty": "Noch keine Rechnungen",
+        "emptyHint": "Erstellen Sie Ihre erste Rechnung, um zu beginnen.",
+        "noMatches": "Keine Rechnungen entsprechen Ihrer Suche",
+        "noMatchesHint": "Passen Sie Ihre Filter oder Suchbegriffe an."
+      },
+      "row": {
+        "selectOne": "Rechnung {number} auswählen",
+        "unknownClient": "Unbekannter Kunde",
+        "noProject": "Kein Projekt",
+        "dueLabel": "Fällig:"
+      },
+      "errors": {
+        "retry": "Erneut versuchen",
+        "supabaseInit": "Supabase-Client konnte nicht initialisiert werden",
+        "loginRequired": "Sie müssen angemeldet sein, um Rechnungen anzuzeigen.",
+        "query": "Rechnungen konnten nicht geladen werden."
+      }
+    },
     "title": "Rechnungen",
     "create_new": "Neue Rechnung erstellen",
     "invoice_number": "Rechnungsnummer",
     "status": {
-      "0": "S",
-      "1": "t",
-      "2": "a",
-      "3": "t",
-      "4": "u",
-      "5": "s",
       "draft": "Entwurf",
       "sent": "Gesendet",
       "paid": "Bezahlt",
-      "overdue": "Überfällig"
+      "overdue": "Überfällig",
+      "viewed": "Angesehen",
+      "disputed": "Beanstandet",
+      "cancelled": "Storniert"
     },
     "amount": "Betrag",
     "due_date": "Fälligkeitsdatum",
     "actions": {
-      "0": "A",
-      "1": "k",
-      "2": "t",
-      "3": "i",
-      "4": "o",
-      "5": "n",
-      "6": "e",
-      "7": "n",
       "tryAgain": "Erneut versuchen",
       "newInvoice": "Neue Rechnung",
       "selectPage": "Seite auswählen",
@@ -192,7 +509,122 @@
       "csvUploadLabel": "Elemente aus CSV importieren (optional)",
       "successAnimation": "Rechnung erstellt!"
     },
+    "public": {
+      "invoiceLabel": "Rechnung",
+      "loading": "Rechnung wird geladen…",
+      "notFoundTitle": "Link nicht gefunden",
+      "notFoundHint": "Dieser Link ist falsch oder existiert nicht mehr.",
+      "expiredTitle": "Link abgelaufen",
+      "expiredHint": "Bitten Sie den Absender um einen aktuellen Link.",
+      "revokedTitle": "Link widerrufen",
+      "revokedHint": "Bitten Sie den Absender um einen aktuellen Link.",
+      "errorTitle": "Etwas ist schiefgelaufen",
+      "errorHint": "Diese Rechnung konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
+      "billedTo": "Rechnung an",
+      "statusLabel": "Status",
+      "issuedLabel": "Ausgestellt",
+      "dueLabel": "Fällig",
+      "description": "Beschreibung",
+      "quantity": "Menge",
+      "price": "Preis",
+      "amount": "Betrag",
+      "subtotal": "Zwischensumme",
+      "tax": "Steuer",
+      "total": "Gesamt",
+      "print": "Drucken",
+      "poweredBy": "Bereitgestellt von SheetInvoicer"
+    },
     "detail": {
+      "comments": {
+        "heading": "Kommentare",
+        "subtitle": "Interne Notizen für Ihr Team",
+        "placeholder": "Interne Notiz hinzufügen…",
+        "audienceLabel": "Sichtbarkeit",
+        "audienceTeam": "Team (intern)",
+        "audienceClient": "Kunde",
+        "add": "Kommentar hinzufügen",
+        "adding": "Wird hinzugefügt…",
+        "reply": "Antworten",
+        "replyPlaceholder": "Antwort schreiben…",
+        "cancel": "Abbrechen",
+        "delete": "Löschen",
+        "deleting": "Wird gelöscht…",
+        "empty": "Noch keine Kommentare.",
+        "added": "Kommentar hinzugefügt",
+        "deleted": "Kommentar gelöscht",
+        "errorAdd": "Kommentar konnte nicht hinzugefügt werden.",
+        "errorDelete": "Kommentar konnte nicht gelöscht werden.",
+        "errorLogin": "Sie müssen angemeldet sein."
+      },
+      "share": {
+        "heading": "Öffentlicher Freigabelink",
+        "description": "Erstellen Sie einen schreibgeschützten öffentlichen Link zu dieser Rechnung.",
+        "none": "Noch kein Freigabelink.",
+        "create": "Link erstellen",
+        "creating": "Wird erstellt…",
+        "regenerate": "Neu generieren",
+        "copy": "Kopieren",
+        "copied": "Link kopiert",
+        "revoke": "Widerrufen",
+        "revoking": "Wird widerrufen…",
+        "linkLabel": "Öffentlicher Link",
+        "expiryLabel": "Läuft ab in (Tagen)",
+        "expiryHint": "Leer lassen, damit der Link nicht abläuft.",
+        "statusActive": "Aktiv",
+        "statusExpired": "Abgelaufen",
+        "statusRevoked": "Widerrufen",
+        "expiresLabel": "Läuft ab",
+        "neverExpires": "Läuft nie ab",
+        "viewsLabel": "Aufrufe",
+        "lastViewedLabel": "Zuletzt angesehen",
+        "neverViewed": "Noch nicht angesehen",
+        "createdToast": "Freigabelink erstellt",
+        "revokedToast": "Freigabelink widerrufen",
+        "errorCreate": "Freigabelink konnte nicht erstellt werden.",
+        "errorRevoke": "Freigabelink konnte nicht widerrufen werden.",
+        "errorLogin": "Sie müssen angemeldet sein."
+      },
+      "print": {
+        "button": "Drucken"
+      },
+      "timeline": {
+        "heading": "Statusverlauf"
+      },
+      "payments": {
+        "heading": "Zahlungen",
+        "total": "Rechnungssumme",
+        "paid": "Bezahlt",
+        "balance": "Offener Betrag",
+        "fullyPaid": "Diese Rechnung ist vollständig bezahlt.",
+        "recordHeading": "Zahlung erfassen",
+        "amountLabel": "Betrag",
+        "amountPlaceholder": "0,00",
+        "kindLabel": "Art",
+        "kindPayment": "Zahlung",
+        "kindCredit": "Gutschrift",
+        "kindAdjustment": "Anpassung",
+        "noteLabel": "Notiz (optional)",
+        "notePlaceholder": "Referenz, Methode…",
+        "submit": "Zahlung erfassen",
+        "submitting": "Wird erfasst…",
+        "listHeading": "Erfasste Zahlungen",
+        "none": "Noch keine Zahlungen erfasst.",
+        "success": "Zahlung erfasst",
+        "autoPaid": "Zahlung erfasst – Rechnung als bezahlt markiert",
+        "errorAmount": "Geben Sie einen Betrag ungleich null ein.",
+        "errorLogin": "Sie müssen angemeldet sein.",
+        "errorGeneric": "Zahlung konnte nicht erfasst werden"
+      },
+      "history": {
+        "heading": "Verlauf",
+        "empty": "Noch kein Verlauf.",
+        "actions": {
+          "paymentRecorded": "Zahlung erfasst",
+          "invoicePaid": "Als bezahlt markiert",
+          "statusChanged": "Status geändert",
+          "unknown": "Aktualisiert"
+        }
+      },
       "createdLabel": "Created:",
       "templateSuffix": "TEMPLATE",
       "sending": "Sending...",
@@ -472,7 +904,15 @@
       "adminAi": "KI-Admin"
     },
     "planLabel": "Plan",
-    "account": "Konto"
+    "account": "Konto",
+    "sections": {
+      "overview": "Übersicht",
+      "sales": "Vertrieb",
+      "finance": "Finanzen",
+      "workspace": "Arbeitsbereich",
+      "administration": "Verwaltung",
+      "account": "Konto"
+    }
   },
   "clientsPage": {
     "clients": "Kunden",
@@ -610,7 +1050,82 @@
       "overdueAmount": "Überfälliger Betrag"
     },
     "vsLastMonth": "ggü. letztem Monat",
-    "loading": "Wird geladen..."
+    "loading": "Wird geladen...",
+    "metrics": {
+      "predicted": "KI-Prognose"
+    },
+    "ai": {
+      "title": "KI-Einblicke",
+      "subtitle": "Intelligente Analyse Ihres Unternehmens",
+      "poweredBy": "KI-gestützt",
+      "forecast": {
+        "title": "Umsatzprognose",
+        "nextMonth": "Prognose für nächsten Monat",
+        "confidence": "{value}% Konfidenz",
+        "trendUp": "Steigend",
+        "trendDown": "Fallend",
+        "trendFlat": "Stabil",
+        "insufficient": "Noch nicht genügend Daten für eine Umsatzprognose."
+      },
+      "anomaly": {
+        "title": "Anomalieerkennung",
+        "none": "Keine Anomalien erkannt",
+        "spike": "Ungewöhnlicher Anstieg",
+        "drop": "Ungewöhnlicher Rückgang"
+      },
+      "recommendations": {
+        "title": "Intelligente Empfehlungen",
+        "overdue": "Mahnen Sie {count} überfällige Rechnung(en) über {amount} an.",
+        "pending": "Verfolgen Sie {count} offene Rechnung(en) über {amount}.",
+        "expensesHigh": "Die Ausgaben übersteigen die Einnahmen – prüfen Sie Ihre Kosten.",
+        "revenueDown": "Der Umsatz ist um {pct}% gegenüber dem Vormonat gesunken – prüfen Sie Ihre Pipeline.",
+        "revenueUp": "Der Umsatz ist um {pct}% gegenüber dem Vormonat gestiegen – starke Dynamik!",
+        "forecastUp": "Der Umsatz soll nächsten Monat {amount} erreichen.",
+        "createInvoice": "Erstellen Sie Ihre erste Rechnung, um Umsätze zu verfolgen.",
+        "addClient": "Fügen Sie Ihren ersten Kunden hinzu, um zu starten.",
+        "allCaught": "Alles erledigt – keine dringenden Aktionen.",
+        "actions": {
+          "review": "Prüfen",
+          "remind": "Erinnerung senden",
+          "analyze": "Analysieren",
+          "create": "Loslegen"
+        }
+      }
+    },
+    "quickActions": {
+      "title": "Schnellaktionen",
+      "newInvoice": "Neue Rechnung",
+      "newClient": "Neuer Kunde",
+      "newExpense": "Neue Ausgabe",
+      "newEstimate": "Neues Angebot",
+      "recurring": "Wiederkehrend",
+      "reports": "Berichte"
+    },
+    "activity": {
+      "title": "Live-Aktivität",
+      "subtitle": "Echtzeit-Updates",
+      "live": "Live",
+      "empty": "Noch keine Aktivität",
+      "emptyHint": "Aktionen in Ihrem Arbeitsbereich erscheinen hier in Echtzeit.",
+      "justNow": "gerade eben"
+    },
+    "chat": {
+      "title": "KI-Assistent",
+      "subtitle": "Fragen Sie zu Ihrem Unternehmen",
+      "greeting": "Hallo! Ich bin Ihr KI-Assistent. Fragen Sie mich zu Umsatz, Rechnungen, Kunden oder Ihren nächsten Schritten.",
+      "placeholder": "Fragen Sie mich etwas...",
+      "send": "Senden",
+      "open": "KI-Assistenten öffnen",
+      "close": "Schließen",
+      "privacy": "Ihre Daten bleiben privat",
+      "error": "Der Assistent ist nicht erreichbar. Bitte erneut versuchen.",
+      "locked": "Der KI-Assistent ist ab dem Pro-Tarif verfügbar.",
+      "suggestions": {
+        "revenue": "Wie entwickelt sich mein Umsatz?",
+        "overdue": "Welche Rechnungen sind überfällig?",
+        "focus": "Worauf sollte ich mich diese Woche konzentrieren?"
+      }
+    }
   },
   "expensesPage": {
     "title": "Ausgaben",
@@ -806,7 +1321,8 @@
     "actions": {
       "pause": "Pausieren",
       "resume": "Fortsetzen",
-      "delete": "Löschen"
+      "delete": "Löschen",
+      "duplicate": "Duplizieren"
     },
     "unknownClient": "Unbekannter Kunde",
     "errors": {
@@ -825,7 +1341,8 @@
         "frequency": "Häufigkeit",
         "nextDate": "Nächstes Datum",
         "status": "Status",
-        "notes": "Notizen"
+        "notes": "Notizen",
+        "exceptions": "Termine überspringen"
       },
       "status": {
         "active": "Aktiv",
@@ -844,6 +1361,16 @@
       },
       "errors": {
         "loginRequired": "Sie müssen angemeldet sein, um eine wiederkehrende Rechnung zu erstellen"
+      },
+      "duplicateTitle": "Wiederkehrende Rechnung duplizieren",
+      "duplicateNotice": "Überprüfen und passen Sie die kopierten Details an und speichern Sie, um einen neuen Zeitplan zu erstellen.",
+      "duplicateLoadFailed": "Der zu duplizierende Zeitplan konnte nicht geladen werden.",
+      "exceptions": {
+        "hint": "Der Zeitplan erstellt an diesen Terminen keine Rechnung.",
+        "add": "Datum hinzufügen",
+        "remove": "Datum entfernen",
+        "empty": "Noch keine übersprungenen Termine.",
+        "duplicate": "Dieses Datum ist bereits in der Liste."
       }
     }
   },

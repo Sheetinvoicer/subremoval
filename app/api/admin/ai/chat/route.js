@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { requireRole, ROLES } from '@/lib/auth/roles-server'
 import { askAdminAI } from '@/lib/ai/admin'
+import { adminAiErrorResponse } from '@/lib/ai/route-helpers'
 
 // This route reads SUPABASE_SERVICE_ROLE_KEY and calls the Supabase and Anthropic/
 // OpenAI Node SDKs, so pin the Node.js runtime (never Edge) and force dynamic so
@@ -41,7 +42,6 @@ export async function POST(request) {
     const response = await askAdminAI(message, history)
     return NextResponse.json({ response })
   } catch (error) {
-    const messageText = error instanceof Error ? error.message : 'Failed to process admin AI chat'
-    return NextResponse.json({ error: messageText }, { status: 500 })
+    return adminAiErrorResponse(error, 'Failed to process admin AI chat')
   }
 }

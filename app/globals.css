@@ -290,3 +290,41 @@ button:not(:disabled):active {
 .recharts-legend-item-text {
   color: rgb(var(--ds-text-secondary)) !important;
 }
+
+/* ==========================================================================
+   Print — isolate the invoice
+   Used by the invoice detail page (app/dashboard/invoices/[id]/page.tsx, which
+   sits inside the dashboard chrome) and the public share page
+   (app/(public)/invoice/[token]/page.tsx). Any control opted out with
+   `.no-print` is removed, and when an `.invoice-print-area` is on the page,
+   everything else is hidden so only the invoice prints. The `:has()` guard
+   keeps this scoped to invoice pages; on engines without `:has()` it simply
+   degrades to printing the page as-is (never a blank sheet).
+   ========================================================================== */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body:has(.invoice-print-area) * {
+    visibility: hidden;
+  }
+  body:has(.invoice-print-area) .invoice-print-area,
+  body:has(.invoice-print-area) .invoice-print-area * {
+    visibility: visible;
+  }
+  body:has(.invoice-print-area) .invoice-print-area {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    width: 100%;
+    margin: 0;
+    box-shadow: none !important;
+  }
+
+  /* Honor designed backgrounds/colors when printing. */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

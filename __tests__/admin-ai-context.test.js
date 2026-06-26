@@ -116,4 +116,71 @@ describe('admin AI data layer', () => {
     await expect(gatherAdminContext()).rejects.toThrow(/admin environment variables/i)
     expect(mockCreateClient).not.toHaveBeenCalled()
   })
+
+  it('reports plan distribution from the subscriptions.plan column (Free/Pro/Business/Enterprise)', async () => {
+    mockCreateClient.mockReturnValue(
+      makeClient({
+        users: {
+          data: [
+            { id: 'u1', email: 'a@x.com', role: 'admin', created_at: '2026-06-01' },
+            { id: 'u2', email: 'b@x.com', role: 'viewer', created_at: '2026-06-01' },
+            { id: 'u3', email: 'c@x.com', role: 'viewer', created_at: '2026-06-01' },
+          ],
+          error: null,
+        },
+        invoices: { data: [], error: null },
+        // 'business' (lowercase) must normalize to the canonical 'Business' tier;
+        // u3 has no row and must fall back to Free.
+        subscriptions: {
+          data: [
+            { user_id: 'u1', plan: 'Pro', status: 'active' },
+            { user_id: 'u2', plan: 'business', status: 'active' },
+          ],
+          error: null,
+        },
+      })
+    )
+    const { gatherAdminContext, computeMetrics } = loadAdmin()
+
+    const ctx = await gatherAdminContext()
+    const metrics = computeMetrics(ctx)
+
+    expect(metrics.usersByPlan).toEqual({ Free: 1, Pro: 1, Business: 1, Enterprise: 0 })
+    expect(metrics.paidSubscriptions).toBe(2)
+  })
+
+  it('a failed subscriptions query is non-fatal (logged, not thrown)', async () => {
+    mockCreateClient.mockReturnValue(
+      makeClient({
+        users: { data: [{ id: 'u1', role: 'admin', created_at: '2026-06-01' }], error: null },
+        invoices: { data: [], error: null },
+        subscriptions: { data: null, error: { message: 'permission denied for table subscriptions' } },
+      })
+    )
+    const { gatherAdminContext, computeMetrics } = loadAdmin()
+
+    const ctx = await gatherAdminContext()
+    // Missing subscription data must not break metrics; the lone user is Free.
+    expect(computeMetrics(ctx).usersByPlan.Free).toBe(1)
+  })
+
+  it('degrades to a deterministic report/answer (no 500) when no AI key is configured', async () => {
+    delete process.env.ANTHROPIC_API_KEY
+    delete process.env.OPENAI_API_KEY
+    mockCreateClient.mockReturnValue(
+      makeClient({
+        users: { data: [{ id: 'u1', email: 'a@x.com', role: 'admin', created_at: '2026-06-01' }], error: null },
+        invoices: { data: [], error: null },
+        subscriptions: { data: [], error: null },
+      })
+    )
+    const { generateAdminReport, askAdminAI } = loadAdmin()
+
+    const report = await generateAdminReport()
+    expect(report).toContain('## Overview')
+    expect(report).toMatch(/AI model unavailable/i)
+
+    const answer = await askAdminAI('how many users are there?')
+    expect(answer).toMatch(/Users:/)
+  })
 })

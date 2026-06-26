@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { FormPageSkeleton } from '@/components/LoadingSkeleton';
 import toast, { Toaster } from 'react-hot-toast';
+import { isFeatureEnabled } from '@/lib/featureFlags';
+import InvoiceEditor from '@/components/invoices/InvoiceEditor';
 
 interface Invoice {
   id: string
@@ -33,7 +35,8 @@ interface ProjectItem {
   name: string
 }
 
-export default function EditInvoicePage() {
+// Lean, legacy fallback shown only when the `invoiceEditorV2` flag is OFF.
+function LegacyEditInvoicePage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [invoice, setInvoice] = useState<Invoice | null>(null)
@@ -323,4 +326,15 @@ export default function EditInvoicePage() {
       </form>
     </div>
   )
+}
+
+// Renders the unified, localized editor (parity with the create page) by
+// default; falls back to the lean legacy form when `invoiceEditorV2` is OFF.
+export default function EditInvoicePage() {
+  const params = useParams<{ id: string }>()
+  const id = params?.id
+  if (isFeatureEnabled('invoiceEditorV2')) {
+    return <InvoiceEditor mode="edit" invoiceId={id} />
+  }
+  return <LegacyEditInvoicePage />
 }

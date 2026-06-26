@@ -1,4 +1,96 @@
 {
+  "subscriptionPlans": {
+    "heading": "Planınızı seçin",
+    "subheading": "İşletmenizle birlikte büyüyen basit fiyatlandırma",
+    "perMonth": "/ay",
+    "customPricing": "Özel",
+    "currentPlan": "Mevcut plan",
+    "mostPopular": "En popüler",
+    "actions": {
+      "choose": "{plan} seçin",
+      "upgrade": "{plan} planına yükselt",
+      "downgrade": "{plan} planına geç",
+      "contactSales": "Satışla iletişime geçin",
+      "current": "Mevcut plan",
+      "manage": "Faturalandırmayı yönet"
+    },
+    "proration": {
+      "note": "Plan değişiklikleri anında orantılı olarak hesaplanır.",
+      "upgraded": "{plan} planına yükseltildi. Bu dönemin geri kalanı için orantılı bir ücret uygulanır.",
+      "downgraded": "{plan} planına geçildi. Kullanılmayan süre bir sonraki faturanıza alacak olarak yansıtılır."
+    },
+    "tiers": {
+      "free": {
+        "name": "Free",
+        "tagline": "Başlamak için"
+      },
+      "pro": {
+        "name": "Pro",
+        "tagline": "Büyüyen serbest çalışanlar için"
+      },
+      "business": {
+        "name": "Business",
+        "tagline": "Ekipler için"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "tagline": "Kuruluşlar için"
+      }
+    },
+    "features": {
+      "invoicesLimited": "En fazla {count} fatura",
+      "clientsLimited": "En fazla {count} müşteri",
+      "expensesLimited": "En fazla {count} gider",
+      "unlimitedInvoices": "Sınırsız fatura",
+      "unlimitedClients": "Sınırsız müşteri",
+      "unlimitedExpenses": "Sınırsız gider",
+      "basicReports": "Temel raporlar",
+      "aiAssistant": "Yapay Zeka Asistanı",
+      "multiLanguage": "Çoklu dil",
+      "multiCurrency": "Çoklu para birimi",
+      "teamMembers": "{count} ekip üyesi",
+      "unlimitedTeam": "Sınırsız ekip üyesi",
+      "userRoles": "Kullanıcı rolleri",
+      "adminAi": "Yönetici Yapay Zeka",
+      "auditLog": "Denetim günlüğü",
+      "bankSync": "Banka senkronizasyonu",
+      "prioritySupport": "Öncelikli destek",
+      "sso": "SSO",
+      "customBranding": "Özel markalama",
+      "dedicatedSupport": "Özel destek",
+      "customIntegrations": "Özel entegrasyonlar"
+    },
+    "gate": {
+      "limitReached": "Plan sınırınıza ulaştınız. Daha fazlasını eklemek için yükseltin.",
+      "featureLocked": "Bu özellik mevcut planınıza dahil değil.",
+      "upgradeCta": "Yükselt",
+      "learnMore": "Daha fazla bilgi"
+    },
+    "team": {
+      "title": "Ekip üyeleri",
+      "description": "İş birliği yapmak için ekip arkadaşlarınızı davet edin.",
+      "inviteEmail": "Ekip arkadaşının e-postası",
+      "invite": "Davet et",
+      "seatsUsed": "{total} koltuktan {used} tanesi kullanıldı",
+      "seatsUnlimited": "Sınırsız koltuk",
+      "seatLimitReached": "Planınızdaki tüm koltukları kullandınız. Daha fazlası için yükseltin.",
+      "pending": "Beklemede",
+      "active": "Aktif",
+      "remove": "Kaldır",
+      "empty": "Henüz ekip üyesi yok."
+    },
+    "sso": {
+      "title": "Tek oturum açma (SSO)",
+      "description": "Ekibinizin kimlik sağlayıcınızla oturum açmasına izin verin.",
+      "domain": "Şirket alan adı",
+      "register": "Alan adını kaydet",
+      "signInWithSso": "SSO ile oturum aç",
+      "status": "Durum",
+      "pending": "Kurulum beklemede",
+      "active": "Aktif",
+      "locked": "SSO, Business ve Enterprise planlarında kullanılabilir."
+    }
+  },
   "subscription": {
     "title": "Abonelik",
     "subtitle": "Planınızı ve faturalandırmanızı yönetin",
@@ -45,32 +137,257 @@
     "search": "Ara"
   },
   "invoices": {
+    "editor": {
+      "createTitle": "Fatura oluştur",
+      "editTitle": "{number} numaralı faturayı düzenle",
+      "createCta": "Fatura oluştur",
+      "saveCta": "Değişiklikleri kaydet",
+      "creating": "Oluşturuluyor...",
+      "saving": "Kaydediliyor...",
+      "moneyHeading": "Vergi ve indirim",
+      "taxMode": "Vergi modu",
+      "taxModeExclusive": "Vergiyi ekle (hariç)",
+      "taxModeInclusive": "Fiyatlar vergi dahil (dahil)",
+      "lineTaxRate": "Vergi %",
+      "lineTaxRateHint": "Fatura vergi oranını kullanmak için boş bırakın.",
+      "discountType": "İndirim türü",
+      "discountPercent": "Yüzde (%)",
+      "discountFixed": "Sabit tutar",
+      "discountValue": "İndirim değeri",
+      "rounding": "Toplamı yuvarla",
+      "roundingNone": "Yuvarlama yok",
+      "roundingHint": "Genel toplamı en yakın değere yuvarlar.",
+      "subtotalLabel": "Ara toplam:",
+      "discountLabel": "İndirim:",
+      "taxLabel": "Vergi:",
+      "roundingLabel": "Yuvarlama:",
+      "totalLabel": "Toplam:",
+      "effectiveTax": "Efektif vergi oranı %{rate}",
+      "updatedToast": "Fatura başarıyla güncellendi.",
+      "autosave": {
+        "saving": "Taslak kaydediliyor...",
+        "saved": "Taslak kaydedildi",
+        "savedAt": "Taslak {time} kaydedildi",
+        "error": "Taslak kaydedilemedi",
+        "idle": "Değişiklikler otomatik olarak kaydedilir"
+      },
+      "draft": {
+        "restoreTitle": "Kaydedilmemiş taslak geri yüklensin mi?",
+        "restoreBody": "{time} tarihli otomatik kaydedilmiş bir taslak bulduk.",
+        "restoreAction": "Taslağı geri yükle",
+        "discardAction": "Yoksay",
+        "restored": "Taslak geri yüklendi.",
+        "discarded": "Taslak silindi."
+      },
+      "errors": {
+        "projectInvalid": "Seçilen proje geçersiz.",
+        "loadFailed": "Fatura yüklenemedi.",
+        "notFound": "Fatura bulunamadı.",
+        "updateFailed": "Fatura güncellenemedi."
+      },
+      "template": {
+        "heading": "Şablon",
+        "style": "Stil",
+        "classic": "Klasik",
+        "modern": "Modern",
+        "minimal": "Minimal",
+        "accent": "Vurgu rengi",
+        "sections": "Görünür bölümler",
+        "showBusinessDetails": "İşletme bilgileri",
+        "showClientDetails": "Müşteri bilgileri",
+        "showDueDate": "Son ödeme tarihi",
+        "showNotes": "Notlar",
+        "showStatusBadge": "Durum rozeti",
+        "usingGlobal": "Varsayılan şablonunuzdan başlıyor"
+      },
+      "preview": {
+        "heading": "Canlı önizleme",
+        "title": "Fatura",
+        "from": "Gönderen",
+        "businessPlaceholder": "İşletmeniz",
+        "billTo": "Fatura adresi",
+        "noClient": "Müşteri seçilmedi",
+        "due": "Vade",
+        "description": "Açıklama",
+        "qty": "Adet",
+        "price": "Fiyat",
+        "amount": "Tutar",
+        "subtotal": "Ara toplam",
+        "discount": "İndirim",
+        "tax": "Vergi",
+        "total": "Toplam",
+        "notes": "Notlar",
+        "draft": "Taslak",
+        "empty": "Bu faturayı önizlemek için satır ekleyin."
+      },
+      "ai": {
+        "heading": "Yapay zekâ kalemleri",
+        "description": "İşi açıklayın; yapay zekâ profesyonel kalemler ve bir not hazırlasın.",
+        "briefLabel": "İşi açıklayın",
+        "briefPlaceholder": "örn. Logo ve 2 revizyon turuyla 5 sayfalık pazarlama web sitesi tasarımı",
+        "generate": "Oluştur",
+        "generating": "Oluşturuluyor…",
+        "resultHeading": "{count} önerilen kalem",
+        "notesLabel": "Önerilen not",
+        "apply": "Faturaya ekle",
+        "dismiss": "Kapat",
+        "errors": {
+          "briefRequired": "Önce işi açıklayın.",
+          "locked": "Yapay zekâ ile oluşturma Pro ve üzeri planlarda sunulur.",
+          "login": "Giriş yapmalısınız.",
+          "unavailable": "Yapay zekâ ile oluşturma yapılandırılmamış.",
+          "generic": "İçerik oluşturulamadı. Tekrar deneyin veya kalemleri elle ekleyin."
+        }
+      },
+      "branding": {
+        "heading": "Marka",
+        "locked": "Özel marka, Enterprise planında sunulur.",
+        "logo": "Logo",
+        "logoPreviewAlt": "Fatura logosu",
+        "noLogo": "Logo yok",
+        "uploadLogo": "Logo yükle",
+        "removeLogo": "Logoyu kaldır",
+        "logoTypeError": "Lütfen bir görsel dosyası seçin.",
+        "logoSizeError": "Logo 512 KB'tan küçük olmalıdır.",
+        "logoReadError": "Dosya okunamadı.",
+        "secondaryColor": "İkincil renk",
+        "typography": "Tipografi",
+        "fonts": {
+          "sans": "Sans-serif",
+          "serif": "Serif",
+          "mono": "Monospace"
+        },
+        "watermark": "Filigran",
+        "watermarkPlaceholder": "örn. ÖDENDİ, TASLAK, GİZLİ",
+        "watermarkHint": "Faturanın arkasında soluk görünür."
+      },
+      "signature": {
+        "heading": "İmza ve mühür",
+        "showSignature": "İmza ekle",
+        "signatureName": "İmzalayan",
+        "signatureNamePlaceholder": "Ad soyad",
+        "signatureImage": "İmza görseli",
+        "signatureImageAlt": "İmza",
+        "noSignatureImage": "Görsel yok",
+        "uploadSignature": "Yükle",
+        "removeSignature": "İmza görselini kaldır",
+        "imageTypeError": "Lütfen bir görsel dosyası seçin.",
+        "imageSizeError": "İmza görseli 256 KB'tan küçük olmalıdır.",
+        "imageReadError": "Dosya okunamadı.",
+        "showSeal": "Doğrulama mührü ekle",
+        "sealHint": "Fatura numarası, toplam, para birimi ve tarihten türetilen, kurcalamaya dayanıklı bir kod.",
+        "sealCodeLabel": "Kod",
+        "previewSignedBy": "Yetkili imza",
+        "previewNameFallback": "İmza",
+        "previewVerification": "Doğrulama"
+      }
+    },
+    "list": {
+      "export": {
+        "csv": "CSV dışa aktar",
+        "pdf": "PDF dışa aktar",
+        "title": "Faturalar",
+        "success": "Dışa aktarma hazır",
+        "failed": "Dışa aktarma başarısız",
+        "tooMany": "Dışa aktarma en fazla {max} satırı aşıyor. Filtrelerinizi daraltıp tekrar deneyin.",
+        "columns": {
+          "invoiceNumber": "Fatura numarası",
+          "client": "Müşteri",
+          "project": "Proje",
+          "status": "Durum",
+          "subtotal": "Ara toplam",
+          "tax": "Vergi",
+          "total": "Toplam",
+          "currency": "Para birimi",
+          "dueDate": "Son tarih",
+          "createdAt": "Oluşturuldu"
+        },
+        "meta": {
+          "generatedAt": "Oluşturulma",
+          "filters": "Filtreler",
+          "locale": "Dil"
+        }
+      },
+      "bulk": {
+        "regionLabel": "Toplu işlemler",
+        "selected": "{count} seçildi",
+        "noSelection": "İşlem yapmak için fatura seçin",
+        "markPaid": "Ödendi olarak işaretle",
+        "send": "Gönder",
+        "applyTax": "Vergi oranı uygula",
+        "delete": "Sil",
+        "clear": "Seçimi temizle",
+        "taxRateLabel": "Vergi oranı (%)",
+        "taxRatePlaceholder": "0–100",
+        "apply": "Uygula",
+        "cancel": "İptal",
+        "confirmTitle": "{count} fatura silinsin mi?",
+        "confirmBody": "Bu işlem geri alınamaz.",
+        "confirmDelete": "Silmeyi onayla",
+        "progress": "İşleniyor {completed}/{total}…",
+        "resultsTitle": "Sonuçlar",
+        "resultSuccess": "Tamam",
+        "resultFailed": "Başarısız",
+        "toastSuccess": "{count} fatura güncellendi",
+        "toastPartial": "{total} işlemden {failed} tanesi başarısız",
+        "errorSupabaseInit": "Supabase istemcisi başlatılamadı",
+        "errorLoginRequired": "Giriş yapmalısınız.",
+        "errorSendFailed": "Fatura gönderilemedi",
+        "errorTaxRate": "Vergi oranı 0 ile 100 arasında olmalıdır.",
+        "errorSubtotalMissing": "Bu faturanın ara toplamı yüklenemedi.",
+        "errorGeneric": "İşlem başarısız"
+      },
+      "search": {
+        "label": "Faturalarda ara",
+        "placeholder": "Faturalarda ara..."
+      },
+      "filters": {
+        "status": "Duruma göre filtrele"
+      },
+      "status": {
+        "draft": "Taslak",
+        "sent": "Gönderildi",
+        "viewed": "Görüntülendi",
+        "paid": "Ödendi",
+        "overdue": "Gecikmiş",
+        "disputed": "İtiraz edildi",
+        "cancelled": "İptal edildi"
+      },
+      "results": {
+        "total": "{total} fatura",
+        "empty": "Henüz fatura yok",
+        "emptyHint": "Başlamak için ilk faturanızı oluşturun.",
+        "noMatches": "Aramanızla eşleşen fatura yok",
+        "noMatchesHint": "Filtrelerinizi veya arama terimlerinizi ayarlamayı deneyin."
+      },
+      "row": {
+        "selectOne": "{number} numaralı faturayı seç",
+        "unknownClient": "Bilinmeyen müşteri",
+        "noProject": "Proje yok",
+        "dueLabel": "Son tarih:"
+      },
+      "errors": {
+        "retry": "Tekrar dene",
+        "supabaseInit": "Supabase istemcisi başlatılamadı",
+        "loginRequired": "Faturaları görüntülemek için giriş yapmalısınız.",
+        "query": "Faturalar yüklenemedi."
+      }
+    },
     "title": "Faturalar",
     "create_new": "Yeni fatura oluştur",
     "invoice_number": "Fatura numarası",
     "status": {
-      "0": "D",
-      "1": "u",
-      "2": "r",
-      "3": "u",
-      "4": "m",
-      "5": "",
       "draft": "Taslak",
       "sent": "Gönderildi",
       "paid": "Ödendi",
-      "overdue": "Gecikmiş"
+      "overdue": "Gecikmiş",
+      "viewed": "Görüntülendi",
+      "disputed": "İtiraz edildi",
+      "cancelled": "İptal edildi"
     },
     "amount": "Tutar",
     "due_date": "Son ödeme tarihi",
     "actions": {
-      "0": "İ",
-      "1": "ş",
-      "2": "l",
-      "3": "e",
-      "4": "m",
-      "5": "l",
-      "6": "e",
-      "7": "r",
       "tryAgain": "Tekrar dene",
       "newInvoice": "Yeni fatura",
       "selectPage": "Sayfayı seç",
@@ -192,7 +509,122 @@
       "csvUploadLabel": "CSV'den öğeleri içe aktar (isteğe bağlı)",
       "successAnimation": "Fatura oluşturuldu!"
     },
+    "public": {
+      "invoiceLabel": "Fatura",
+      "loading": "Fatura yükleniyor…",
+      "notFoundTitle": "Bağlantı bulunamadı",
+      "notFoundHint": "Bu bağlantı hatalı veya artık mevcut değil.",
+      "expiredTitle": "Bağlantının süresi doldu",
+      "expiredHint": "Gönderenden güncel bir bağlantı isteyin.",
+      "revokedTitle": "Bağlantı iptal edildi",
+      "revokedHint": "Gönderenden güncel bir bağlantı isteyin.",
+      "errorTitle": "Bir şeyler ters gitti",
+      "errorHint": "Bu fatura yüklenemedi. Lütfen tekrar deneyin.",
+      "billedTo": "Fatura edilen",
+      "statusLabel": "Durum",
+      "issuedLabel": "Düzenlenme",
+      "dueLabel": "Vade",
+      "description": "Açıklama",
+      "quantity": "Adet",
+      "price": "Fiyat",
+      "amount": "Tutar",
+      "subtotal": "Ara toplam",
+      "tax": "Vergi",
+      "total": "Toplam",
+      "print": "Yazdır",
+      "poweredBy": "SheetInvoicer tarafından desteklenir"
+    },
     "detail": {
+      "comments": {
+        "heading": "Yorumlar",
+        "subtitle": "Ekibiniz için dahili notlar",
+        "placeholder": "Dahili bir not ekleyin…",
+        "audienceLabel": "Görünürlük",
+        "audienceTeam": "Ekip (dahili)",
+        "audienceClient": "Müşteri",
+        "add": "Yorum ekle",
+        "adding": "Ekleniyor…",
+        "reply": "Yanıtla",
+        "replyPlaceholder": "Bir yanıt yazın…",
+        "cancel": "İptal",
+        "delete": "Sil",
+        "deleting": "Siliniyor…",
+        "empty": "Henüz yorum yok.",
+        "added": "Yorum eklendi",
+        "deleted": "Yorum silindi",
+        "errorAdd": "Yorum eklenemedi.",
+        "errorDelete": "Yorum silinemedi.",
+        "errorLogin": "Giriş yapmış olmalısınız."
+      },
+      "share": {
+        "heading": "Herkese açık paylaşım bağlantısı",
+        "description": "Bu fatura için salt okunur herkese açık bir bağlantı oluşturun.",
+        "none": "Henüz paylaşım bağlantısı yok.",
+        "create": "Bağlantı oluştur",
+        "creating": "Oluşturuluyor…",
+        "regenerate": "Yeniden oluştur",
+        "copy": "Kopyala",
+        "copied": "Bağlantı kopyalandı",
+        "revoke": "İptal et",
+        "revoking": "İptal ediliyor…",
+        "linkLabel": "Herkese açık bağlantı",
+        "expiryLabel": "Süre (gün)",
+        "expiryHint": "Süresiz olması için boş bırakın.",
+        "statusActive": "Etkin",
+        "statusExpired": "Süresi doldu",
+        "statusRevoked": "İptal edildi",
+        "expiresLabel": "Bitiş",
+        "neverExpires": "Süresiz",
+        "viewsLabel": "Görüntülenme",
+        "lastViewedLabel": "Son görüntülenme",
+        "neverViewed": "Henüz görüntülenmedi",
+        "createdToast": "Paylaşım bağlantısı oluşturuldu",
+        "revokedToast": "Paylaşım bağlantısı iptal edildi",
+        "errorCreate": "Paylaşım bağlantısı oluşturulamadı.",
+        "errorRevoke": "Paylaşım bağlantısı iptal edilemedi.",
+        "errorLogin": "Giriş yapmış olmalısınız."
+      },
+      "print": {
+        "button": "Yazdır"
+      },
+      "timeline": {
+        "heading": "Durum zaman çizelgesi"
+      },
+      "payments": {
+        "heading": "Ödemeler",
+        "total": "Fatura toplamı",
+        "paid": "Ödenen",
+        "balance": "Kalan bakiye",
+        "fullyPaid": "Bu fatura tamamen ödendi.",
+        "recordHeading": "Ödeme kaydet",
+        "amountLabel": "Tutar",
+        "amountPlaceholder": "0,00",
+        "kindLabel": "Tür",
+        "kindPayment": "Ödeme",
+        "kindCredit": "Alacak",
+        "kindAdjustment": "Düzeltme",
+        "noteLabel": "Not (isteğe bağlı)",
+        "notePlaceholder": "Referans, yöntem…",
+        "submit": "Ödemeyi kaydet",
+        "submitting": "Kaydediliyor…",
+        "listHeading": "Kaydedilen ödemeler",
+        "none": "Henüz kaydedilmiş ödeme yok.",
+        "success": "Ödeme kaydedildi",
+        "autoPaid": "Ödeme kaydedildi — fatura ödendi olarak işaretlendi",
+        "errorAmount": "Sıfırdan farklı bir tutar girin.",
+        "errorLogin": "Giriş yapmış olmalısınız.",
+        "errorGeneric": "Ödeme kaydedilemedi"
+      },
+      "history": {
+        "heading": "Geçmiş",
+        "empty": "Henüz geçmiş yok.",
+        "actions": {
+          "paymentRecorded": "Ödeme kaydedildi",
+          "invoicePaid": "Ödendi olarak işaretlendi",
+          "statusChanged": "Durum değiştirildi",
+          "unknown": "Güncellendi"
+        }
+      },
       "createdLabel": "Created:",
       "templateSuffix": "TEMPLATE",
       "sending": "Sending...",
@@ -472,7 +904,15 @@
       "adminAi": "AI Yönetici"
     },
     "planLabel": "Plan",
-    "account": "Hesap"
+    "account": "Hesap",
+    "sections": {
+      "overview": "Genel bakış",
+      "sales": "Satış",
+      "finance": "Finans",
+      "workspace": "Çalışma alanı",
+      "administration": "Yönetim",
+      "account": "Hesap"
+    }
   },
   "clientsPage": {
     "clients": "Müşteriler",
@@ -610,7 +1050,82 @@
       "overdueAmount": "Geciken Tutar"
     },
     "vsLastMonth": "geçen aya göre",
-    "loading": "Yükleniyor..."
+    "loading": "Yükleniyor...",
+    "metrics": {
+      "predicted": "Yapay zekâ tahmini"
+    },
+    "ai": {
+      "title": "Yapay Zekâ Analizleri",
+      "subtitle": "İşletmenizin akıllı analizi",
+      "poweredBy": "Yapay zekâ destekli",
+      "forecast": {
+        "title": "Gelir tahmini",
+        "nextMonth": "Gelecek ay projeksiyonu",
+        "confidence": "%{value} güven",
+        "trendUp": "Yükselişte",
+        "trendDown": "Düşüşte",
+        "trendFlat": "Sabit",
+        "insufficient": "Gelir tahmini için henüz yeterli veri yok."
+      },
+      "anomaly": {
+        "title": "Anomali tespiti",
+        "none": "Anomali tespit edilmedi",
+        "spike": "Olağan dışı artış",
+        "drop": "Olağan dışı düşüş"
+      },
+      "recommendations": {
+        "title": "Akıllı öneriler",
+        "overdue": "{amount} değerinde {count} gecikmiş faturayı takip edin.",
+        "pending": "{amount} değerinde {count} bekleyen faturayı takip edin.",
+        "expensesHigh": "Giderler gelirden yüksek — maliyetlerinizi gözden geçirin.",
+        "revenueDown": "Gelir geçen aya göre %{pct} düştü — hattınızı gözden geçirin.",
+        "revenueUp": "Gelir geçen aya göre %{pct} arttı — harika bir ivme!",
+        "forecastUp": "Gelirin gelecek ay {amount} değerine ulaşması bekleniyor.",
+        "createInvoice": "Geliri izlemeye başlamak için ilk faturanızı oluşturun.",
+        "addClient": "Başlamak için ilk müşterinizi ekleyin.",
+        "allCaught": "Her şey güncel — acil işlem yok.",
+        "actions": {
+          "review": "İncele",
+          "remind": "Hatırlatma gönder",
+          "analyze": "Analiz et",
+          "create": "Başla"
+        }
+      }
+    },
+    "quickActions": {
+      "title": "Hızlı işlemler",
+      "newInvoice": "Yeni fatura",
+      "newClient": "Yeni müşteri",
+      "newExpense": "Yeni gider",
+      "newEstimate": "Yeni teklif",
+      "recurring": "Yinelenen",
+      "reports": "Raporlar"
+    },
+    "activity": {
+      "title": "Canlı etkinlik",
+      "subtitle": "Gerçek zamanlı güncellemeler",
+      "live": "Canlı",
+      "empty": "Henüz etkinlik yok",
+      "emptyHint": "Çalışma alanınızdaki işlemler burada gerçek zamanlı görünür.",
+      "justNow": "az önce"
+    },
+    "chat": {
+      "title": "Yapay Zekâ Asistanı",
+      "subtitle": "İşletmeniz hakkında sorun",
+      "greeting": "Merhaba! Ben yapay zekâ asistanınızım. Geliriniz, faturalarınız, müşterileriniz veya odaklanmanız gerekenler hakkında sorabilirsiniz.",
+      "placeholder": "Bana her şeyi sorun...",
+      "send": "Gönder",
+      "open": "Yapay zekâ asistanını aç",
+      "close": "Kapat",
+      "privacy": "Verileriniz gizli kalır",
+      "error": "Asistana ulaşamadım. Lütfen tekrar deneyin.",
+      "locked": "Yapay zekâ asistanı Pro ve üzeri planlarda kullanılabilir.",
+      "suggestions": {
+        "revenue": "Gelirim nasıl bir eğilimde?",
+        "overdue": "Hangi faturalar gecikmiş?",
+        "focus": "Bu hafta neye odaklanmalıyım?"
+      }
+    }
   },
   "expensesPage": {
     "title": "Giderler",
@@ -806,7 +1321,8 @@
     "actions": {
       "pause": "Duraklat",
       "resume": "Devam et",
-      "delete": "Sil"
+      "delete": "Sil",
+      "duplicate": "Çoğalt"
     },
     "unknownClient": "Bilinmeyen Müşteri",
     "errors": {
@@ -825,7 +1341,8 @@
         "frequency": "Sıklık",
         "nextDate": "Sonraki Tarih",
         "status": "Durum",
-        "notes": "Notlar"
+        "notes": "Notlar",
+        "exceptions": "Atlanacak tarihler"
       },
       "status": {
         "active": "Aktif",
@@ -844,6 +1361,16 @@
       },
       "errors": {
         "loginRequired": "Yinelenen fatura oluşturmak için giriş yapmalısınız"
+      },
+      "duplicateTitle": "Yinelenen faturayı çoğalt",
+      "duplicateNotice": "Kopyalanan ayrıntıları gözden geçirip düzenleyin, ardından yeni bir program oluşturmak için kaydedin.",
+      "duplicateLoadFailed": "Çoğaltılacak program yüklenemedi.",
+      "exceptions": {
+        "hint": "Program bu tarihlerde fatura oluşturmaz.",
+        "add": "Tarih ekle",
+        "remove": "Tarihi kaldır",
+        "empty": "Henüz atlanan tarih yok.",
+        "duplicate": "Bu tarih zaten listede."
       }
     }
   },
