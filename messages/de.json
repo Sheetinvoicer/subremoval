@@ -901,7 +901,8 @@
       "admin": "Admin",
       "auditLogs": "Audit-Protokoll",
       "settings": "Einstellungen",
-      "adminAi": "KI-Admin"
+      "adminAi": "KI-Admin",
+      "entity": "KI-Entität"
     },
     "planLabel": "Plan",
     "account": "Konto",
@@ -1661,6 +1662,158 @@
         "anomalies": "Gibt es verdächtige Aktivitäten?",
         "roles": "Welche Benutzer sollten die Rolle wechseln?",
         "revenue": "Umsatz und überfällige Rechnungen zusammenfassen"
+      }
+    }
+  },
+  "entity": {
+    "title": "KI-Entität",
+    "subtitle": "Eine KI-Betriebsebene mit menschlicher Kontrolle. Jede Aktion erfordert deine Freigabe.",
+    "safety": {
+      "body": "Die Entität entwirft, analysiert und schlägt nur vor. Nichts wird veröffentlicht, abgerechnet, bereitgestellt oder geändert, bevor du es freigibst – und jede Aktion wird protokolliert und ist umkehrbar."
+    },
+    "status": {
+      "refresh": "Aktualisieren",
+      "pending": "Offene Freigaben",
+      "totalActions": "Aktionen gesamt",
+      "commands": "Befehle",
+      "state": "Status",
+      "stopped": "Gestoppt",
+      "running": "Aktiv"
+    },
+    "emergencyStop": {
+      "engage": "Not-Stopp",
+      "release": "Fortsetzen",
+      "engagedNotice": "Der Not-Stopp ist aktiv. Die Entität kann keine Aktion erstellen, freigeben oder ausführen, bis du fortsetzt."
+    },
+    "command": {
+      "title": "Befehl ausführen",
+      "placeholder": "Beschreibe ein Ziel, z. B. „Plane eine Launch-Kampagne für die neue Angebotsfunktion“.",
+      "run": "Planen",
+      "running": "Plane…",
+      "empty": "Für dieses Ziel wurden keine Aufgaben erstellt."
+    },
+    "marketing": {
+      "title": "Marketing-Entwurf",
+      "topic": "Thema",
+      "generate": "Entwerfen",
+      "generating": "Entwerfe…",
+      "channels": {
+        "blog": "Blog",
+        "twitter": "Twitter / X",
+        "linkedin": "LinkedIn",
+        "instagram": "Instagram",
+        "email": "E-Mail"
+      }
+    },
+    "revenue": {
+      "title": "Umsatz",
+      "description": "Erzeuge KI-Umsatzempfehlungen zur Prüfung. Nichts wird automatisch bepreist oder abgerechnet.",
+      "recommend": "Empfehlen",
+      "generating": "Analysiere…"
+    },
+    "healing": {
+      "title": "Selbstheilung",
+      "errorTitle": "Fehlertitel",
+      "message": "Fehlermeldung (optional)",
+      "analyze": "Diagnostizieren",
+      "analyzing": "Diagnostiziere…"
+    },
+    "approvals": {
+      "title": "Offene Freigaben",
+      "none": "Nichts wartet auf Freigabe.",
+      "approve": "Freigeben",
+      "reject": "Ablehnen",
+      "rollback": "Zurücksetzen",
+      "apply": "Anwenden",
+      "applying": "Wird angewendet…",
+      "viewPr": "PR ansehen"
+    },
+    "alerts": {
+      "title": "Warnungen",
+      "none": "Keine Warnungen. Die Entität meldet automatisch eine, wenn sie ein Problem erkennt.",
+      "scan": "Jetzt scannen",
+      "scanning": "Scannen…",
+      "acknowledge": "Bestätigen",
+      "dismiss": "Verwerfen",
+      "linkedFix": "Fix vorgeschlagen – siehe Freigaben unten",
+      "scanned": "Scan abgeschlossen.",
+      "acknowledged": "Warnung bestätigt.",
+      "dismissed": "Warnung verworfen.",
+      "severity": { "low": "Niedrig", "medium": "Mittel", "high": "Hoch", "critical": "Kritisch" },
+      "source": { "sentry": "Sentry", "vercel": "Vercel", "performance": "Leistung" },
+      "status": { "open": "Offen", "acknowledged": "Bestätigt", "resolved": "Behoben", "dismissed": "Verworfen" }
+    },
+    "activity": {
+      "title": "Letzte Aktivität",
+      "none": "Noch keine Aktivität."
+    },
+    "permissions": {
+      "safe": "Sicher",
+      "medium": "Mittel",
+      "high": "Hoch"
+    },
+    "statuses": {
+      "pending": "Ausstehend",
+      "approved": "Freigegeben",
+      "rejected": "Abgelehnt",
+      "executed": "Ausgeführt",
+      "failed": "Fehlgeschlagen",
+      "rolled_back": "Zurückgesetzt"
+    },
+    "toasts": {
+      "commandCreated": "Plan erstellt.",
+      "draftCreated": "Entwurf erstellt und zur Freigabe eingereiht.",
+      "healAnalyzed": "Diagnose erstellt und zur Freigabe eingereiht.",
+      "recommendCreated": "Empfehlung erstellt und zur Freigabe eingereiht.",
+      "stopEngaged": "Not-Stopp aktiviert.",
+      "stopReleased": "Entität fortgesetzt.",
+      "approve": "Aktion freigegeben.",
+      "reject": "Aktion abgelehnt.",
+      "rollback": "Aktion zurückgesetzt.",
+      "apply": "Fix angewendet – Pull Request geöffnet."
+    },
+    "errors": {
+      "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    },
+    "progress": {
+      "title": "Live-Fortschritt",
+      "idle": "Inaktiv – es läuft kein Vorgang.",
+      "phases": {
+        "idle": "Inaktiv",
+        "analyzing": "Analysiere…",
+        "planning": "Plane…",
+        "executing": "Führe aus…",
+        "complete": "✅ Fertig!",
+        "error": "Fehlgeschlagen"
+      },
+      "steps": {
+        "analyzing": "Analyse",
+        "planning": "Planung",
+        "executing": "Ausführung",
+        "complete": "Fertig"
+      },
+      "log": {
+        "title": "Live-Protokoll",
+        "empty": "Noch keine Aktivität.",
+        "clear": "Leeren"
+      },
+      "labels": {
+        "command": "Befehl",
+        "marketing": "Marketing-Entwurf",
+        "revenue": "Umsatzanalyse",
+        "healing": "Selbstheilung",
+        "scan": "Problem-Scan",
+        "decision": "Aktionsentscheidung"
+      },
+      "logs": {
+        "analyzingGoal": "Ziel wird analysiert…",
+        "planning": "Plan wird erstellt…",
+        "planReady": "Plan bereit – {count} Aufgabe(n) warten auf deine Freigabe.",
+        "drafting": "Inhalt wird entworfen…",
+        "diagnosing": "Fehler wird diagnostiziert…",
+        "analyzingRevenue": "Umsatzsignale werden analysiert…",
+        "scanning": "Suche nach Problemen…",
+        "deciding": "Deine Entscheidung wird angewendet…"
       }
     }
   }

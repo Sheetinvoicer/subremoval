@@ -975,7 +975,8 @@
       "admin": "Admin",
       "auditLogs": "Audit Log",
       "settings": "Settings",
-      "adminAi": "AI Admin"
+      "adminAi": "AI Admin",
+      "entity": "AI Entity"
     },
     "planLabel": "Plan",
     "account": "Account",
@@ -1661,6 +1662,158 @@
         "anomalies": "Are there any suspicious activities?",
         "roles": "Which users should change roles?",
         "revenue": "Summarize revenue and overdue invoices"
+      }
+    }
+  },
+  "entity": {
+    "title": "AI Entity",
+    "subtitle": "A human-in-the-loop AI operations layer. Every action needs your approval.",
+    "safety": {
+      "body": "The entity only drafts, analyzes, and proposes. Nothing is published, billed, deployed, or changed until you approve it — and every action is logged and reversible."
+    },
+    "status": {
+      "refresh": "Refresh",
+      "pending": "Pending approvals",
+      "totalActions": "Total actions",
+      "commands": "Commands",
+      "state": "State",
+      "stopped": "Stopped",
+      "running": "Running"
+    },
+    "emergencyStop": {
+      "engage": "Emergency stop",
+      "release": "Resume",
+      "engagedNotice": "Emergency stop is engaged. The entity cannot create, approve, or run any action until you resume."
+    },
+    "command": {
+      "title": "Run a command",
+      "placeholder": "Describe a goal, e.g. “Plan a launch campaign for the new estimates feature”.",
+      "run": "Plan",
+      "running": "Planning…",
+      "empty": "No tasks were produced for this goal."
+    },
+    "marketing": {
+      "title": "Marketing draft",
+      "topic": "Topic",
+      "generate": "Draft",
+      "generating": "Drafting…",
+      "channels": {
+        "blog": "Blog",
+        "twitter": "Twitter / X",
+        "linkedin": "LinkedIn",
+        "instagram": "Instagram",
+        "email": "Email"
+      }
+    },
+    "revenue": {
+      "title": "Revenue",
+      "description": "Generate AI revenue recommendations for your review. Nothing is priced or billed automatically.",
+      "recommend": "Recommend",
+      "generating": "Analyzing…"
+    },
+    "healing": {
+      "title": "Self-healing",
+      "errorTitle": "Error title",
+      "message": "Error message (optional)",
+      "analyze": "Diagnose",
+      "analyzing": "Diagnosing…"
+    },
+    "approvals": {
+      "title": "Pending approvals",
+      "none": "Nothing is waiting for approval.",
+      "approve": "Approve",
+      "reject": "Reject",
+      "rollback": "Roll back",
+      "apply": "Apply",
+      "applying": "Applying…",
+      "viewPr": "View PR"
+    },
+    "alerts": {
+      "title": "Alerts",
+      "none": "No alerts. The Entity raises one automatically when it detects an issue.",
+      "scan": "Scan now",
+      "scanning": "Scanning…",
+      "acknowledge": "Acknowledge",
+      "dismiss": "Dismiss",
+      "linkedFix": "Fix proposed — see approvals below",
+      "scanned": "Scan complete.",
+      "acknowledged": "Alert acknowledged.",
+      "dismissed": "Alert dismissed.",
+      "severity": { "low": "Low", "medium": "Medium", "high": "High", "critical": "Critical" },
+      "source": { "sentry": "Sentry", "vercel": "Vercel", "performance": "Performance" },
+      "status": { "open": "Open", "acknowledged": "Acknowledged", "resolved": "Resolved", "dismissed": "Dismissed" }
+    },
+    "activity": {
+      "title": "Recent activity",
+      "none": "No activity yet."
+    },
+    "permissions": {
+      "safe": "Safe",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "statuses": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "executed": "Executed",
+      "failed": "Failed",
+      "rolled_back": "Rolled back"
+    },
+    "toasts": {
+      "commandCreated": "Plan created.",
+      "draftCreated": "Draft created and queued for approval.",
+      "healAnalyzed": "Diagnosis created and queued for approval.",
+      "recommendCreated": "Recommendation created and queued for approval.",
+      "stopEngaged": "Emergency stop engaged.",
+      "stopReleased": "Entity resumed.",
+      "approve": "Action approved.",
+      "reject": "Action rejected.",
+      "rollback": "Action rolled back.",
+      "apply": "Fix applied — pull request opened."
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again."
+    },
+    "progress": {
+      "title": "Live progress",
+      "idle": "Idle — no operation is running.",
+      "phases": {
+        "idle": "Idle",
+        "analyzing": "Analyzing…",
+        "planning": "Planning…",
+        "executing": "Executing…",
+        "complete": "✅ Complete!",
+        "error": "Failed"
+      },
+      "steps": {
+        "analyzing": "Analyzing",
+        "planning": "Planning",
+        "executing": "Executing",
+        "complete": "Complete"
+      },
+      "log": {
+        "title": "Live log",
+        "empty": "No activity yet.",
+        "clear": "Clear"
+      },
+      "labels": {
+        "command": "Command",
+        "marketing": "Marketing draft",
+        "revenue": "Revenue analysis",
+        "healing": "Self-healing",
+        "scan": "Issue scan",
+        "decision": "Action decision"
+      },
+      "logs": {
+        "analyzingGoal": "Analyzing the goal…",
+        "planning": "Building a plan…",
+        "planReady": "Plan ready — {count} task(s) awaiting your approval.",
+        "drafting": "Drafting content…",
+        "diagnosing": "Diagnosing the error…",
+        "analyzingRevenue": "Analyzing revenue signals…",
+        "scanning": "Scanning for issues…",
+        "deciding": "Applying your decision…"
       }
     }
   }

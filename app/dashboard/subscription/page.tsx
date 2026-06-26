@@ -62,6 +62,20 @@ export default function SubscriptionPage() {
     loadSubscription();
   }, []);
 
+  // Upgrade CTAs elsewhere in the app link to /dashboard/subscription#plans.
+  // While the subscription data is loading we only render a skeleton, so the
+  // plans grid (#plans) is not in the DOM yet and the browser's native hash
+  // scroll is a no-op. Once loading finishes, honor the hash ourselves and
+  // smooth-scroll to the plans section so those buttons land on the plans.
+  useEffect(() => {
+    if (loading) return;
+    if (typeof window === 'undefined' || window.location.hash !== '#plans') return;
+    const target = document.getElementById('plans');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [loading]);
+
   async function handleCancel() {
     if (!window.confirm(t('cancelConfirm'))) return;
     setCancelMessage(null);
@@ -217,7 +231,7 @@ export default function SubscriptionPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div id="plans" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 scroll-mt-24">
         {PLAN_ORDER.map((name) => {
           const def = getPlan(name);
           const popular = name === 'Pro';

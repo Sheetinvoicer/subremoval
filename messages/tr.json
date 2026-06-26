@@ -901,7 +901,8 @@
       "admin": "Admin",
       "auditLogs": "Denetim Kaydı",
       "settings": "Ayarlar",
-      "adminAi": "AI Yönetici"
+      "adminAi": "AI Yönetici",
+      "entity": "YZ Varlığı"
     },
     "planLabel": "Plan",
     "account": "Hesap",
@@ -1661,6 +1662,158 @@
         "anomalies": "Şüpheli etkinlik var mı?",
         "roles": "Hangi kullanıcılar rol değiştirmeli?",
         "revenue": "Geliri ve vadesi geçmiş faturaları özetle"
+      }
+    }
+  },
+  "entity": {
+    "title": "Yapay Zekâ Varlığı",
+    "subtitle": "İnsan onaylı bir yapay zekâ operasyon katmanı. Her eylem onayını gerektirir.",
+    "safety": {
+      "body": "Varlık yalnızca taslak hazırlar, analiz eder ve önerir. Siz onaylayana kadar hiçbir şey yayınlanmaz, ücretlendirilmez, dağıtılmaz veya değiştirilmez — ve her eylem kaydedilir ve geri alınabilir."
+    },
+    "status": {
+      "refresh": "Yenile",
+      "pending": "Bekleyen onaylar",
+      "totalActions": "Toplam eylem",
+      "commands": "Komutlar",
+      "state": "Durum",
+      "stopped": "Durduruldu",
+      "running": "Çalışıyor"
+    },
+    "emergencyStop": {
+      "engage": "Acil durdurma",
+      "release": "Devam et",
+      "engagedNotice": "Acil durdurma etkin. Siz devam ettirene kadar varlık hiçbir eylem oluşturamaz, onaylayamaz veya çalıştıramaz."
+    },
+    "command": {
+      "title": "Komut çalıştır",
+      "placeholder": "Bir hedef tanımlayın, örn. “Yeni teklif özelliği için bir lansman kampanyası planla”.",
+      "run": "Planla",
+      "running": "Planlanıyor…",
+      "empty": "Bu hedef için görev oluşturulmadı."
+    },
+    "marketing": {
+      "title": "Pazarlama taslağı",
+      "topic": "Konu",
+      "generate": "Taslak oluştur",
+      "generating": "Oluşturuluyor…",
+      "channels": {
+        "blog": "Blog",
+        "twitter": "Twitter / X",
+        "linkedin": "LinkedIn",
+        "instagram": "Instagram",
+        "email": "E-posta"
+      }
+    },
+    "revenue": {
+      "title": "Gelir",
+      "description": "İncelemeniz için yapay zekâ gelir önerileri oluşturun. Hiçbir şey otomatik fiyatlandırılmaz veya tahsil edilmez.",
+      "recommend": "Öner",
+      "generating": "Analiz ediliyor…"
+    },
+    "healing": {
+      "title": "Kendi kendini onarma",
+      "errorTitle": "Hata başlığı",
+      "message": "Hata mesajı (isteğe bağlı)",
+      "analyze": "Teşhis et",
+      "analyzing": "Teşhis ediliyor…"
+    },
+    "approvals": {
+      "title": "Bekleyen onaylar",
+      "none": "Onay bekleyen bir şey yok.",
+      "approve": "Onayla",
+      "reject": "Reddet",
+      "rollback": "Geri al",
+      "apply": "Uygula",
+      "applying": "Uygulanıyor…",
+      "viewPr": "PR’yi görüntüle"
+    },
+    "alerts": {
+      "title": "Uyarılar",
+      "none": "Uyarı yok. Varlık bir sorun tespit ettiğinde otomatik olarak bir uyarı oluşturur.",
+      "scan": "Şimdi tara",
+      "scanning": "Taranıyor…",
+      "acknowledge": "Onayla",
+      "dismiss": "Yoksay",
+      "linkedFix": "Düzeltme önerildi — aşağıdaki onaylara bakın",
+      "scanned": "Tarama tamamlandı.",
+      "acknowledged": "Uyarı onaylandı.",
+      "dismissed": "Uyarı yoksayıldı.",
+      "severity": { "low": "Düşük", "medium": "Orta", "high": "Yüksek", "critical": "Kritik" },
+      "source": { "sentry": "Sentry", "vercel": "Vercel", "performance": "Performans" },
+      "status": { "open": "Açık", "acknowledged": "Onaylandı", "resolved": "Çözüldü", "dismissed": "Yoksayıldı" }
+    },
+    "activity": {
+      "title": "Son etkinlik",
+      "none": "Henüz etkinlik yok."
+    },
+    "permissions": {
+      "safe": "Güvenli",
+      "medium": "Orta",
+      "high": "Yüksek"
+    },
+    "statuses": {
+      "pending": "Bekliyor",
+      "approved": "Onaylandı",
+      "rejected": "Reddedildi",
+      "executed": "Yürütüldü",
+      "failed": "Başarısız",
+      "rolled_back": "Geri alındı"
+    },
+    "toasts": {
+      "commandCreated": "Plan oluşturuldu.",
+      "draftCreated": "Taslak oluşturuldu ve onay için sıraya alındı.",
+      "healAnalyzed": "Teşhis oluşturuldu ve onay için sıraya alındı.",
+      "recommendCreated": "Öneri oluşturuldu ve onay için sıraya alındı.",
+      "stopEngaged": "Acil durdurma etkinleştirildi.",
+      "stopReleased": "Varlık devam ettirildi.",
+      "approve": "Eylem onaylandı.",
+      "reject": "Eylem reddedildi.",
+      "rollback": "Eylem geri alındı.",
+      "apply": "Düzeltme uygulandı — pull request açıldı."
+    },
+    "errors": {
+      "generic": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
+    },
+    "progress": {
+      "title": "Canlı ilerleme",
+      "idle": "Boşta — çalışan bir işlem yok.",
+      "phases": {
+        "idle": "Boşta",
+        "analyzing": "Analiz ediliyor…",
+        "planning": "Planlanıyor…",
+        "executing": "Yürütülüyor…",
+        "complete": "✅ Tamamlandı!",
+        "error": "Başarısız"
+      },
+      "steps": {
+        "analyzing": "Analiz",
+        "planning": "Planlama",
+        "executing": "Yürütme",
+        "complete": "Tamamlandı"
+      },
+      "log": {
+        "title": "Canlı günlük",
+        "empty": "Henüz etkinlik yok.",
+        "clear": "Temizle"
+      },
+      "labels": {
+        "command": "Komut",
+        "marketing": "Pazarlama taslağı",
+        "revenue": "Gelir analizi",
+        "healing": "Kendi kendini onarma",
+        "scan": "Sorun taraması",
+        "decision": "Eylem kararı"
+      },
+      "logs": {
+        "analyzingGoal": "Hedef analiz ediliyor…",
+        "planning": "Plan oluşturuluyor…",
+        "planReady": "Plan hazır — {count} görev onayınızı bekliyor.",
+        "drafting": "İçerik hazırlanıyor…",
+        "diagnosing": "Hata teşhis ediliyor…",
+        "analyzingRevenue": "Gelir sinyalleri analiz ediliyor…",
+        "scanning": "Sorunlar taranıyor…",
+        "deciding": "Kararınız uygulanıyor…"
       }
     }
   }

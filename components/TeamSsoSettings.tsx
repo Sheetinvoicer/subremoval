@@ -97,7 +97,7 @@ function TeamSection() {
     return (
       <section className={cardClass}>
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{tt('title')}</h2>
-        <UpgradePrompt message={tt('seatLimitReached')} />
+        <UpgradePrompt message={tt('seatLimitReached')} scrollToId="plans" />
       </section>
     )
   }
@@ -267,7 +267,7 @@ function SsoInner() {
 function SsoSection() {
   const ts = useTranslations('subscriptionPlans.sso')
   return (
-    <FeatureGate feature={FEATURES.SSO} fallback={<section className={cardClass}><h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{ts('title')}</h2><UpgradePrompt message={ts('locked')} /></section>}>
+    <FeatureGate feature={FEATURES.SSO} fallback={<section className={cardClass}><h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{ts('title')}</h2><UpgradePrompt message={ts('locked')} scrollToId="plans" /></section>}>
       <SsoInner />
     </FeatureGate>
   )

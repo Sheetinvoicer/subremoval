@@ -901,7 +901,8 @@
       "admin": "Admin",
       "auditLogs": "Registro de auditoria",
       "settings": "Configurações",
-      "adminAi": "IA Admin"
+      "adminAi": "IA Admin",
+      "entity": "Entidade IA"
     },
     "planLabel": "Plano",
     "account": "Conta",
@@ -1661,6 +1662,158 @@
         "anomalies": "Há atividades suspeitas?",
         "roles": "Quais usuários devem mudar de função?",
         "revenue": "Resuma a receita e as faturas vencidas"
+      }
+    }
+  },
+  "entity": {
+    "title": "Entidade IA",
+    "subtitle": "Uma camada de operações de IA com supervisão humana. Cada ação precisa da sua aprovação.",
+    "safety": {
+      "body": "A entidade apenas redige, analisa e propõe. Nada é publicado, cobrado, implantado ou alterado até você aprovar — e cada ação é registrada e reversível."
+    },
+    "status": {
+      "refresh": "Atualizar",
+      "pending": "Aprovações pendentes",
+      "totalActions": "Ações totais",
+      "commands": "Comandos",
+      "state": "Estado",
+      "stopped": "Parada",
+      "running": "Ativa"
+    },
+    "emergencyStop": {
+      "engage": "Parada de emergência",
+      "release": "Retomar",
+      "engagedNotice": "A parada de emergência está ativa. A entidade não pode criar, aprovar ou executar nenhuma ação até você retomar."
+    },
+    "command": {
+      "title": "Executar um comando",
+      "placeholder": "Descreva um objetivo, ex.: “Planeje uma campanha de lançamento para o novo recurso de orçamentos”.",
+      "run": "Planejar",
+      "running": "Planejando…",
+      "empty": "Nenhuma tarefa gerada para este objetivo."
+    },
+    "marketing": {
+      "title": "Rascunho de marketing",
+      "topic": "Tema",
+      "generate": "Rascunhar",
+      "generating": "Rascunhando…",
+      "channels": {
+        "blog": "Blog",
+        "twitter": "Twitter / X",
+        "linkedin": "LinkedIn",
+        "instagram": "Instagram",
+        "email": "E-mail"
+      }
+    },
+    "revenue": {
+      "title": "Receita",
+      "description": "Gere recomendações de receita com IA para sua revisão. Nada é precificado ou cobrado automaticamente.",
+      "recommend": "Recomendar",
+      "generating": "Analisando…"
+    },
+    "healing": {
+      "title": "Autocorreção",
+      "errorTitle": "Título do erro",
+      "message": "Mensagem de erro (opcional)",
+      "analyze": "Diagnosticar",
+      "analyzing": "Diagnosticando…"
+    },
+    "approvals": {
+      "title": "Aprovações pendentes",
+      "none": "Nada aguardando aprovação.",
+      "approve": "Aprovar",
+      "reject": "Rejeitar",
+      "rollback": "Reverter",
+      "apply": "Aplicar",
+      "applying": "Aplicando…",
+      "viewPr": "Ver PR"
+    },
+    "alerts": {
+      "title": "Alertas",
+      "none": "Sem alertas. A Entidade cria um automaticamente quando detecta um problema.",
+      "scan": "Verificar agora",
+      "scanning": "Verificando…",
+      "acknowledge": "Reconhecer",
+      "dismiss": "Descartar",
+      "linkedFix": "Correção proposta — veja as aprovações abaixo",
+      "scanned": "Verificação concluída.",
+      "acknowledged": "Alerta reconhecido.",
+      "dismissed": "Alerta descartado.",
+      "severity": { "low": "Baixa", "medium": "Média", "high": "Alta", "critical": "Crítica" },
+      "source": { "sentry": "Sentry", "vercel": "Vercel", "performance": "Desempenho" },
+      "status": { "open": "Aberto", "acknowledged": "Reconhecido", "resolved": "Resolvido", "dismissed": "Descartado" }
+    },
+    "activity": {
+      "title": "Atividade recente",
+      "none": "Ainda sem atividade."
+    },
+    "permissions": {
+      "safe": "Segura",
+      "medium": "Média",
+      "high": "Alta"
+    },
+    "statuses": {
+      "pending": "Pendente",
+      "approved": "Aprovada",
+      "rejected": "Rejeitada",
+      "executed": "Executada",
+      "failed": "Falhou",
+      "rolled_back": "Revertida"
+    },
+    "toasts": {
+      "commandCreated": "Plano criado.",
+      "draftCreated": "Rascunho criado e na fila para aprovação.",
+      "healAnalyzed": "Diagnóstico criado e na fila para aprovação.",
+      "recommendCreated": "Recomendação criada e na fila para aprovação.",
+      "stopEngaged": "Parada de emergência ativada.",
+      "stopReleased": "Entidade retomada.",
+      "approve": "Ação aprovada.",
+      "reject": "Ação rejeitada.",
+      "rollback": "Ação revertida.",
+      "apply": "Correção aplicada — pull request aberta."
+    },
+    "errors": {
+      "generic": "Algo deu errado. Tente novamente."
+    },
+    "progress": {
+      "title": "Progresso ao vivo",
+      "idle": "Inativo — nenhuma operação em execução.",
+      "phases": {
+        "idle": "Inativo",
+        "analyzing": "Analisando…",
+        "planning": "Planejando…",
+        "executing": "Executando…",
+        "complete": "✅ Concluído!",
+        "error": "Falhou"
+      },
+      "steps": {
+        "analyzing": "Análise",
+        "planning": "Planejamento",
+        "executing": "Execução",
+        "complete": "Concluído"
+      },
+      "log": {
+        "title": "Registro ao vivo",
+        "empty": "Ainda sem atividade.",
+        "clear": "Limpar"
+      },
+      "labels": {
+        "command": "Comando",
+        "marketing": "Rascunho de marketing",
+        "revenue": "Análise de receita",
+        "healing": "Autocorreção",
+        "scan": "Verificação de problemas",
+        "decision": "Decisão de ação"
+      },
+      "logs": {
+        "analyzingGoal": "Analisando o objetivo…",
+        "planning": "Criando um plano…",
+        "planReady": "Plano pronto — {count} tarefa(s) aguardando sua aprovação.",
+        "drafting": "Redigindo conteúdo…",
+        "diagnosing": "Diagnosticando o erro…",
+        "analyzingRevenue": "Analisando sinais de receita…",
+        "scanning": "Procurando problemas…",
+        "deciding": "Aplicando sua decisão…"
       }
     }
   }
