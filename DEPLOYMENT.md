@@ -92,6 +92,7 @@ Protected endpoints:
 
 - `/api/cron/generate-recurring`
 - `/api/cron/send-reminders`
+- `/api/cron/entity-detect` (Entity auto-detection; runs every 6 hours per `vercel.json`)
 
 Requirements:
 
@@ -100,7 +101,48 @@ Requirements:
 
 Vercel Cron example targets these routes on configured schedule.
 
-## 8. Post-Deployment Validation Checklist
+## 8. Entity Operations Layer (Apply + Auto-Detect)
+
+The admin-only **Entity** dashboard (`/dashboard/entity`) can open pull requests
+for approved AI fix proposals and auto-detect issues. It is human-in-the-loop:
+it never merges or deploys — CI runs the tests on the PR, a human merges, and
+Vercel deploys on merge.
+
+### Database migrations
+
+Apply both Entity migrations in the Supabase SQL editor (or via the CLI):
+
+- `supabase/migrations/202606260500_add_entity_system.sql` — `entity_commands`,
+  `entity_actions`, `entity_settings` (admin-only RLS via `public.is_admin()`).
+- `supabase/migrations/202606260600_add_entity_alerts.sql` — `entity_alerts`
+  (auto-detected issues; same admin-only RLS).
+
+### Apply (GitHub) — required for the Apply button
+
+Create a fine-grained GitHub token with `contents:write` and
+`pull_requests:write` on the app repo, then set:
+
+- `GITHUB_TOKEN`
+- `GITHUB_REPO` (`owner/name`)
+- `GITHUB_BASE_BRANCH` (optional; defaults to `main`)
+
+The CI gate workflow `.github/workflows/entity-pr-checks.yml` (already in the
+repo) runs `lint` + `test` on every Entity PR before a human merges. If GitHub is
+not configured, Apply fails with a clear message and the rest of the Entity still
+works.
+
+### Auto-detection providers (all optional; missing ones are skipped)
+
+- Sentry: `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`
+- Vercel: `VERCEL_API_TOKEN`, `VERCEL_PROJECT_ID`, `VERCEL_TEAM_ID` (optional)
+- Performance: `PERF_METRICS_URL` (optional JSON endpoint of slow routes)
+- Critical-alert email (optional): `ENTITY_ALERT_EMAIL` (reuses the existing
+  `RESEND_API_KEY`)
+
+Detection runs on the `/api/cron/entity-detect` cron (protected by `CRON_SECRET`)
+and can also be triggered from the dashboard via **Scan now**.
+
+## 9. Post-Deployment Validation Checklist
 
 - App loads and authentication works.
 - Invoice create/send flow works.
@@ -108,3 +150,5 @@ Vercel Cron example targets these routes on configured schedule.
 - Email sending works (welcome + invoice + reminders).
 - AI routes return non-empty responses.
 - Cron endpoints run with valid secret.
+- Entity migrations applied; `/dashboard/entity` loads, **Scan now** works, and an
+  approved fix with a patch can be applied (opens a PR).

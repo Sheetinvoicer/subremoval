@@ -7,7 +7,7 @@
     "prebuild": "node scripts/generate-standalone.js",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint app components hooks i18n lib instrumentation.ts instrumentation-client.js i18n.js proxy.ts next.config.js next.config.ts",
+    "lint": "eslint app components hooks i18n lib instrumentation.ts instrumentation-client.js i18n.js proxy.ts next.config.js",
     "test": "jest"
   },
   "dependencies": {

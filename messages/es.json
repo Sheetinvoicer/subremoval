@@ -909,7 +909,8 @@
       "admin": "Admin",
       "auditLogs": "Registro de auditoría",
       "settings": "Configuración",
-      "adminAi": "IA de Admin"
+      "adminAi": "IA de Admin",
+      "entity": "Entidad IA"
     },
     "planLabel": "Plan",
     "account": "Cuenta",
@@ -1661,6 +1662,158 @@
         "anomalies": "¿Hay actividades sospechosas?",
         "roles": "¿Qué usuarios deberían cambiar de rol?",
         "revenue": "Resume los ingresos y las facturas vencidas"
+      }
+    }
+  },
+  "entity": {
+    "title": "Entidad IA",
+    "subtitle": "Una capa de operaciones de IA con supervisión humana. Cada acción necesita tu aprobación.",
+    "safety": {
+      "body": "La entidad solo redacta, analiza y propone. Nada se publica, se cobra, se despliega ni se cambia hasta que lo apruebes, y cada acción queda registrada y es reversible."
+    },
+    "status": {
+      "refresh": "Actualizar",
+      "pending": "Aprobaciones pendientes",
+      "totalActions": "Acciones totales",
+      "commands": "Comandos",
+      "state": "Estado",
+      "stopped": "Detenida",
+      "running": "Activa"
+    },
+    "emergencyStop": {
+      "engage": "Parada de emergencia",
+      "release": "Reanudar",
+      "engagedNotice": "La parada de emergencia está activada. La entidad no puede crear, aprobar ni ejecutar ninguna acción hasta que la reanudes."
+    },
+    "command": {
+      "title": "Ejecutar un comando",
+      "placeholder": "Describe un objetivo, p. ej. «Planifica una campaña de lanzamiento para la nueva función de presupuestos».",
+      "run": "Planificar",
+      "running": "Planificando…",
+      "empty": "No se generaron tareas para este objetivo."
+    },
+    "marketing": {
+      "title": "Borrador de marketing",
+      "topic": "Tema",
+      "generate": "Redactar",
+      "generating": "Redactando…",
+      "channels": {
+        "blog": "Blog",
+        "twitter": "Twitter / X",
+        "linkedin": "LinkedIn",
+        "instagram": "Instagram",
+        "email": "Correo"
+      }
+    },
+    "revenue": {
+      "title": "Ingresos",
+      "description": "Genera recomendaciones de ingresos con IA para tu revisión. Nada se tarifica ni se cobra automáticamente.",
+      "recommend": "Recomendar",
+      "generating": "Analizando…"
+    },
+    "healing": {
+      "title": "Autorreparación",
+      "errorTitle": "Título del error",
+      "message": "Mensaje de error (opcional)",
+      "analyze": "Diagnosticar",
+      "analyzing": "Diagnosticando…"
+    },
+    "approvals": {
+      "title": "Aprobaciones pendientes",
+      "none": "No hay nada pendiente de aprobación.",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "rollback": "Revertir",
+      "apply": "Aplicar",
+      "applying": "Aplicando…",
+      "viewPr": "Ver PR"
+    },
+    "alerts": {
+      "title": "Alertas",
+      "none": "Sin alertas. La Entidad crea una automáticamente cuando detecta un problema.",
+      "scan": "Escanear ahora",
+      "scanning": "Escaneando…",
+      "acknowledge": "Reconocer",
+      "dismiss": "Descartar",
+      "linkedFix": "Corrección propuesta: ver aprobaciones abajo",
+      "scanned": "Escaneo completado.",
+      "acknowledged": "Alerta reconocida.",
+      "dismissed": "Alerta descartada.",
+      "severity": { "low": "Baja", "medium": "Media", "high": "Alta", "critical": "Crítica" },
+      "source": { "sentry": "Sentry", "vercel": "Vercel", "performance": "Rendimiento" },
+      "status": { "open": "Abierta", "acknowledged": "Reconocida", "resolved": "Resuelta", "dismissed": "Descartada" }
+    },
+    "activity": {
+      "title": "Actividad reciente",
+      "none": "Aún no hay actividad."
+    },
+    "permissions": {
+      "safe": "Segura",
+      "medium": "Media",
+      "high": "Alta"
+    },
+    "statuses": {
+      "pending": "Pendiente",
+      "approved": "Aprobada",
+      "rejected": "Rechazada",
+      "executed": "Ejecutada",
+      "failed": "Fallida",
+      "rolled_back": "Revertida"
+    },
+    "toasts": {
+      "commandCreated": "Plan creado.",
+      "draftCreated": "Borrador creado y en cola para aprobación.",
+      "healAnalyzed": "Diagnóstico creado y en cola para aprobación.",
+      "recommendCreated": "Recomendación creada y en cola para aprobación.",
+      "stopEngaged": "Parada de emergencia activada.",
+      "stopReleased": "Entidad reanudada.",
+      "approve": "Acción aprobada.",
+      "reject": "Acción rechazada.",
+      "rollback": "Acción revertida.",
+      "apply": "Corrección aplicada: se abrió una pull request."
+    },
+    "errors": {
+      "generic": "Algo salió mal. Inténtalo de nuevo."
+    },
+    "progress": {
+      "title": "Progreso en vivo",
+      "idle": "Inactivo: no hay ninguna operación en curso.",
+      "phases": {
+        "idle": "Inactivo",
+        "analyzing": "Analizando…",
+        "planning": "Planificando…",
+        "executing": "Ejecutando…",
+        "complete": "✅ ¡Completado!",
+        "error": "Error"
+      },
+      "steps": {
+        "analyzing": "Análisis",
+        "planning": "Planificación",
+        "executing": "Ejecución",
+        "complete": "Completado"
+      },
+      "log": {
+        "title": "Registro en vivo",
+        "empty": "Aún no hay actividad.",
+        "clear": "Borrar"
+      },
+      "labels": {
+        "command": "Comando",
+        "marketing": "Borrador de marketing",
+        "revenue": "Análisis de ingresos",
+        "healing": "Autorreparación",
+        "scan": "Escaneo de problemas",
+        "decision": "Decisión de acción"
+      },
+      "logs": {
+        "analyzingGoal": "Analizando el objetivo…",
+        "planning": "Creando un plan…",
+        "planReady": "Plan listo: {count} tarea(s) esperando tu aprobación.",
+        "drafting": "Redactando contenido…",
+        "diagnosing": "Diagnosticando el error…",
+        "analyzingRevenue": "Analizando señales de ingresos…",
+        "scanning": "Buscando problemas…",
+        "deciding": "Aplicando tu decisión…"
       }
     }
   }

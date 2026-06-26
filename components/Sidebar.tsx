@@ -23,6 +23,7 @@ import {
   ScrollText,
   CreditCard,
   Sparkles,
+  Bot,
   type LucideIcon,
 } from 'lucide-react';
 import { hasRequiredRole, normalizeRole, ROLES } from '@/lib/auth/roles';
@@ -71,6 +72,7 @@ const navSections: NavSection[] = [
     items: [
       { key: 'admin', href: '/dashboard/admin', Icon: Shield },
       { key: 'adminAi', href: '/dashboard/admin/ai', Icon: Sparkles, badge: 'AI' },
+      { key: 'entity', href: '/dashboard/entity', Icon: Bot, badge: 'AI' },
       { key: 'auditLogs', href: '/dashboard/admin/audit-logs', Icon: ScrollText },
     ],
   },
@@ -156,7 +158,9 @@ function Sidebar() {
   }, [supabase]);
 
   const isItemVisible = (href: string) =>
-    href.startsWith('/dashboard/admin') ? hasRequiredRole(role, ROLES.ADMIN) : true;
+    href.startsWith('/dashboard/admin') || href.startsWith('/dashboard/entity')
+      ? hasRequiredRole(role, ROLES.ADMIN)
+      : true;
 
   const visibleSections = navSections
     .map((section) => ({ ...section, items: section.items.filter((item) => isItemVisible(item.href)) }))

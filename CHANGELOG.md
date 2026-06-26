@@ -6,6 +6,24 @@ All notable changes to this project are documented in this file.
 
 ### Added
 
+- AI "Entity" — a human-in-the-loop AI operations layer (admin only):
+  - Core modules in `lib/entity/`: `commander` (goal → plan via Claude),
+    `orchestrator` (bounded-concurrency task runner with dependency handling and
+    failure isolation), `self-healing`, `marketing`, and `revenue` — all of which
+    only draft/analyze/propose.
+  - `safety.ts` enforces the model: three permission levels (safe/medium/high),
+    explicit human approval for anything with an external effect, a global
+    emergency stop, rollback, and a full audit trail (reusing `audit_logs`).
+  - Admin-only API under `app/api/entity/*` (`command`, `status`, `heal`,
+    `market`, `revenue`, `emergency-stop`, `action`) and a control dashboard at
+    `app/dashboard/entity/page.tsx` (+ sidebar entry).
+  - Migration `202606260500_add_entity_system.sql` adds `entity_commands`,
+    `entity_actions`, and `entity_settings` (RLS admin-read via `public.is_admin()`,
+    service-role writes).
+  - Claude calls use the Anthropic SDK with prompt caching and a GPT-4o fallback.
+  - `entity` translations across all 8 locales; unit tests for every module.
+  - Safety boundary: nothing is published, billed, deployed, or applied to
+    production code automatically — those remain manual, human-approved steps.
 - Subscription plan overhaul — four tiers (Free, Pro, Business, Enterprise):
   - Central tier configuration (`lib/subscriptions/plans.js`) as the single
     source of truth for prices, limits, feature flags, and Stripe price mapping.
