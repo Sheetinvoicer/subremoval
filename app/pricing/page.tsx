@@ -1,10 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { Check, Sparkles, Shield, Zap, CreditCard } from 'lucide-react'
 
 export default function PricingPage() {
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -12,6 +15,15 @@ export default function PricingPage() {
     setLoading(true)
     setError(null)
     try {
+      // Check login FIRST
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        // Send them to signup, then back here
+        router.push('/login?next=/pricing')
+        return
+      }
+
       const res = await fetch('/api/stripe/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

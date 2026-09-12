@@ -68,7 +68,11 @@ export default function SignupPage() {
         body: JSON.stringify({ email, name }),
       }).catch(() => {})
       toast.success(t('messages.checkEmail'))
-      setTimeout(() => router.push('/login'), 3000)
+      const next = typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('next')
+        : null
+      const target = next && next.startsWith('/') ? `/login?next=${encodeURIComponent(next)}` : '/login'
+      setTimeout(() => router.push(target), 3000)
     }
   }
 

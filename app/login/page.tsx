@@ -24,6 +24,13 @@ export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
 
+  // If we arrived via ?next=/pricing, go back there after login. Fallback to /dashboard.
+  const getNextPath = () => {
+    if (typeof window === 'undefined') return '/dashboard'
+    const next = new URLSearchParams(window.location.search).get('next')
+    return next && next.startsWith('/') ? next : '/dashboard'
+  }
+
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!supabase) {
@@ -43,7 +50,7 @@ export default function LoginPage() {
 
         if (statusData.rememberTrusted) {
           toast.success(t('messages.welcomeBack'))
-          router.push('/dashboard')
+          router.push(getNextPath())
           router.refresh()
           return
         }
@@ -54,7 +61,7 @@ export default function LoginPage() {
       }
 
       toast.success(t('messages.welcomeBack'))
-      router.push('/dashboard')
+      router.push(getNextPath())
       router.refresh()
     }
   }
