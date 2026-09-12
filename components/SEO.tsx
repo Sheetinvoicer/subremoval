@@ -2,11 +2,11 @@ import React from 'react';
 import Head from 'next/head';
 
 export default function SEO({ 
-  title = 'SheetInvoicer - AI-Powered Invoicing Platform',
+  title = 'SubRemoval - Find and cancel forgotten subscriptions',
   description = 'Global invoicing platform with AI automation, 10+ currencies, and client portal',
   keywords = 'invoicing, AI, payments, global business, automation',
   image = '/og-image.png',
-  url = 'https://www.sheetinvoicer.com',
+  url = 'https://www.subremoval.com',
   type = 'website'
 }) {
   return (
@@ -14,7 +14,7 @@ export default function SEO({
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
-      <meta name="author" content="SheetInvoicer" />
+      <meta name="author" content="SubRemoval" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       
       {/* Open Graph */}
@@ -44,7 +44,7 @@ export default function SEO({
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "SoftwareApplication",
-          "name": "SheetInvoicer",
+          "name": "SubRemoval",
           "description": description,
           "applicationCategory": "BusinessApplication",
           "operatingSystem": "Web, iOS, Android",

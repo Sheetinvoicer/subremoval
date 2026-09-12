@@ -9,15 +9,8 @@ import { useLocale, useTranslations } from 'next-intl';
 
 // Maps a dashboard pathname to a `sidebar.items` translation key.
 const TITLE_KEYS: { match: string; key: string }[] = [
-  { match: '/dashboard/invoices', key: 'invoices' },
-  { match: '/dashboard/clients', key: 'clients' },
-  { match: '/dashboard/projects', key: 'projects' },
-  { match: '/dashboard/expenses', key: 'expenses' },
-  { match: '/dashboard/recurring', key: 'recurring' },
-  { match: '/dashboard/estimates', key: 'estimates' },
-  { match: '/dashboard/time', key: 'time' },
-  { match: '/dashboard/reports', key: 'reports' },
-  { match: '/dashboard/admin', key: 'admin' },
+  { match: '/dashboard/subscriptions/scan', key: 'scan' },
+  { match: '/dashboard/subscriptions', key: 'subscriptions' },
   { match: '/dashboard/settings', key: 'settings' },
   { match: '/dashboard', key: 'dashboard' },
 ];

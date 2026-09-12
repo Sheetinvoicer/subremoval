@@ -41,7 +41,7 @@ export function UpgradePrompt({ message, className, scrollToId }: UpgradePromptP
           {t('upgradeCta')}
         </button>
       ) : (
-        <Link href="/dashboard/subscription#plans" className={ctaClass}>
+        <Link href="/pricing" className={ctaClass}>
           {t('upgradeCta')}
         </Link>
       )}

@@ -1,89 +1,64 @@
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { createClient } from '@/lib/supabase/server'
 
-function getStripeClient() {
-  const stripeSecretKey = process.env.STRIPE_SECRET_KEY
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
-  if (!stripeSecretKey) {
-    throw new Error('Missing STRIPE_SECRET_KEY')
-  }
-
-  return new Stripe(stripeSecretKey)
-}
-
-function toStripeAmount(amount) {
-  const numericAmount = Number(amount)
-  if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
-    return null
-  }
-
-  return Math.round(numericAmount * 100)
-}
-
-export async function POST(request) {
+export async function POST() {
   try {
-    const body = await request.json()
-    const {
-      invoiceId,
-      invoiceNumber,
-      amount,
-      clientName,
-      clientEmail,
-      successUrl,
-      cancelUrl,
-      returnUrl,
-      currency = 'usd',
-    } = body || {}
+    const secretKey = process.env.STRIPE_SECRET_KEY
+    const priceId = process.env.STRIPE_LIFETIME_PRICE_ID
 
-    if (!invoiceId || !invoiceNumber) {
-      return NextResponse.json({ error: 'invoiceId and invoiceNumber are required' }, { status: 400 })
+    if (!secretKey || !priceId) {
+      return NextResponse.json(
+        { error: 'Stripe not configured. Missing STRIPE_SECRET_KEY or STRIPE_LIFETIME_PRICE_ID.' },
+        { status: 500 }
+      )
     }
 
-    const stripeAmount = toStripeAmount(amount)
-    if (!stripeAmount) {
-      return NextResponse.json({ error: 'Valid invoice amount is required' }, { status: 400 })
+    const stripe = new Stripe(secretKey)
+
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return NextResponse.json({ error: 'You must be logged in.' }, { status: 401 })
     }
 
-    const stripe = getStripeClient()
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin
-    const normalizedSuccessUrl = successUrl || `${appUrl}/pay/${invoiceId}?status=success`
-    const normalizedCancelUrl = cancelUrl || returnUrl || `${appUrl}/pay/${invoiceId}?status=cancel`
+    // Block duplicate purchases
+    const { data: paid } = await supabase
+      .from('sr_paid_users')
+      .select('user_id')
+      .eq('user_id', user.id)
+      .maybeSingle()
+
+    if (paid) {
+      return NextResponse.json(
+        { error: 'You already have lifetime access.' },
+        { status: 400 }
+      )
+    }
+
+    const origin =
+      process.env.NEXT_PUBLIC_APP_URL ||
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      'http://localhost:3000'
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      customer_email: clientEmail || undefined,
-      success_url: normalizedSuccessUrl,
-      cancel_url: normalizedCancelUrl,
-      line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency: String(currency || 'usd').toLowerCase(),
-            unit_amount: stripeAmount,
-            product_data: {
-              name: `Invoice ${invoiceNumber}`,
-              description: clientName ? `Payment for ${clientName}` : undefined,
-            },
-          },
-        },
-      ],
-      metadata: {
-        invoiceId,
-        invoiceNumber,
-      },
-      payment_intent_data: {
-        metadata: {
-          invoiceId,
-          invoiceNumber,
-        },
-      },
+      payment_method_types: ['card'],
+      line_items: [{ price: priceId, quantity: 1 }],
+      customer_email: user.email ?? undefined,
+      success_url: `${origin}/dashboard/subscriptions/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/pricing?purchase=cancelled`,
+      metadata: { user_id: user.id },
+      client_reference_id: user.id,
     })
 
-    return NextResponse.json({ url: session.url, sessionId: session.id })
-  } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to create checkout session' },
-      { status: 500 },
-    )
+    return NextResponse.json({ url: session.url })
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'Checkout failed'
+    console.error('[CHECKOUT]', msg)
+    return NextResponse.json({ error: msg }, { status: 500 })
   }
 }

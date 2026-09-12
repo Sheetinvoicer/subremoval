@@ -1,734 +1,237 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
-import { useTranslations } from 'next-intl';
-import toast from 'react-hot-toast';
-import { TooltipProvider } from '@/components/Tooltip';
-import { 
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend
-} from 'recharts';
-import { format, subDays, subMonths, startOfMonth, endOfMonth } from 'date-fns';
-import Card from '@/components/ui/Card';
-import Button from '@/components/ui/Button';
-import Badge from '@/components/ui/Badge';
-import { DashboardSkeleton } from '@/components/LoadingSkeleton';
-import {
-  DollarSign,
-  Clock,
-  CheckCircle2,
-  AlertTriangle,
-  TrendingUp,
-  TrendingDown,
-  Download,
-  Plus,
-  ArrowRight,
-  Inbox,
-  FileText,
-  type LucideIcon,
-} from 'lucide-react';
-import { MetricCard, AIInsights, QuickActions, RealtimeActivityFeed } from '@/components/dashboard';
-import { forecastSeries, detectAnomalies, generateRecommendations } from '@/lib/dashboard/insights';
-import { setAssistantContext } from '@/lib/dashboard/assistant-context';
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { ScanSearch, AlertCircle, AlertTriangle, ExternalLink } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
+import OnboardingBanner from '@/components/OnboardingBanner'
 
-// ===== TYPE DEFINITIONS =====
-interface Invoice {
-  id: string;
-  invoice_number?: string;
-  status: string;
-  total: number;
-  currency?: string;
-  due_date?: string;
-  created_at: string;
+interface Sub {
+  id: string
+  service_name: string
+  amount: number | null
+  currency: string | null
+  billing_cycle: string | null
+  status: string
+  cancel_url: string | null
+  confidence: 'high' | 'medium' | 'low' | null
+  last_payment_status: string | null
 }
 
-interface Stats {
-  totalRevenue: number;
-  netProfit: number;
-  pendingAmount: number;
-  totalInvoices: number;
-  paidInvoices: number;
-  overdueInvoices: number;
-  totalClients: number;
-  totalExpenses: number;
-  growth: number;
-  paidThisMonth: number;
-  overdueAmount: number;
-  pendingCount: number;
-  revenueChange: number;
-  pendingChange: number;
-  paidThisMonthChange: number;
-  overdueChange: number;
+const FX: Record<string, number> = { USD: 1, EUR: 1.085, GBP: 1.27, JPY: 0.0067 }
+
+const BRAND_COLORS = [
+  '#E50914','#1DB954','#5865F2','#FF7A00','#6E56CF',
+  '#0EA5E9','#10B981','#F59E0B','#EF4444','#8B5CF6',
+  '#EC4899','#14B8A6','#F97316','#6366F1',
+]
+
+function brandColor(name: string): string {
+  let h = 0
+  for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h)
+  return BRAND_COLORS[Math.abs(h) % BRAND_COLORS.length]
 }
 
-interface RevenueDataPoint {
-  name: string;
-  revenue: number;
+function getInitials(name: string): string {
+  const words = name.replace(/[^a-zA-Z0-9 ]/g, ' ').trim().split(/\s+/).filter(Boolean)
+  if (!words.length) return '??'
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase()
+  return (words[0][0] + words[1][0]).toUpperCase()
 }
 
-interface StatusDataPoint {
-  name: string;
-  value: number;
-  color: string;
-  link: string;
+function toUSD(amount: number | null, currency: string | null) {
+  if (amount == null) return 0
+  return amount * (FX[currency ?? 'USD'] ?? 1)
 }
 
-// ===== COMPONENT =====
+function money(amount: number | null, currency: string | null) {
+  if (amount == null) return null
+  const symbol = currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : '$'
+  return `${symbol}${amount.toFixed(2)}`
+}
+
 export default function DashboardPage() {
-  const t = useTranslations('dashboard');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
-  
-  // State declarations FIRST
-  const [selectedPeriod, setSelectedPeriod] = useState('month');
-  const [stats, setStats] = useState<Stats>({
-    totalRevenue: 0,
-    netProfit: 0,
-    pendingAmount: 0,
-    totalInvoices: 0,
-    paidInvoices: 0,
-    overdueInvoices: 0,
-    totalClients: 0,
-    totalExpenses: 0,
-    growth: 0,
-    paidThisMonth: 0,
-    overdueAmount: 0,
-    pendingCount: 0,
-    revenueChange: 0,
-    pendingChange: 0,
-    paidThisMonthChange: 0,
-    overdueChange: 0
-  });
-  const [userName, setUserName] = useState<string>('');
-  const [recentInvoices, setRecentInvoices] = useState<Invoice[]>([]);
-  const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
-  const [statusData, setStatusData] = useState<StatusDataPoint[]>([]);
-  const [monthlySeries, setMonthlySeries] = useState<{ label: string; value: number }[]>([]);
-  const [currency, setCurrency] = useState('USD');
-  const [downloading, setDownloading] = useState(false);
-  const dashboardRef = useRef<HTMLDivElement>(null);
-
-  const downloadDashboard = useCallback(async () => {
-    const node = dashboardRef.current;
-    if (!node) return;
-    try {
-      setDownloading(true);
-      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-        import('html2canvas'),
-        import('jspdf'),
-      ]);
-      const canvas = await html2canvas(node, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: getComputedStyle(node).backgroundColor || '#ffffff',
-      });
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'px',
-        format: [canvas.width, canvas.height],
-      });
-      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-      pdf.save(`dashboard-report-${format(new Date(), 'yyyy-MM-dd')}.pdf`);
-      toast.success(t('actions.dashboardDownloaded'));
-    } catch (err) {
-      toast.error(t('errors.downloadFailed'));
-      console.error(err);
-    } finally {
-      setDownloading(false);
-    }
-  }, [t]);
-
-  const isUnauthenticatedError = (message?: string | null) => {
-    if (!message) return false;
-    const normalized = message.toLowerCase();
-    return normalized.includes('auth session missing') || normalized.includes('jwt');
-  };
-
-  // Navigation helper
-  const navigateTo = (path: string, filter: string | null = null) => {
-    if (filter) {
-      router.push(`${path}?status=${filter}`);
-    } else {
-      router.push(path);
-    }
-  };
-
-  // Data loading function
-  const loadAllData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const supabase = createClient();
-      if (!supabase) {
-        setError(t('errors.supabaseInit'));
-        return;
-      }
-
-      const { data: authData, error: authError } = await supabase.auth.getUser();
-      if (authError) {
-        if (isUnauthenticatedError(authError.message)) {
-          router.replace('/login');
-          return;
-        }
-
-        setError(authError.message || t('errors.verifySession'));
-        return;
-      }
-
-      const userId = authData.user?.id;
-      if (!userId) {
-        router.replace('/login');
-        return;
-      }
-
-      const meta = authData.user?.user_metadata as Record<string, unknown> | undefined;
-      setUserName(
-        (meta?.full_name as string | undefined) ||
-          (meta?.name as string | undefined) ||
-          (authData.user?.email ? authData.user.email.split('@')[0] : '')
-      );
-
-      const [invoicesRes, clientsRes, expensesRes] = await Promise.all([
-        supabase
-          .from('invoices')
-          .select('id, invoice_number, status, total, currency, due_date, created_at')
-          .eq('user_id', userId)
-          .order('created_at', { ascending: false }),
-        supabase.from('clients').select('id').eq('user_id', userId),
-        supabase.from('expenses').select('amount').eq('user_id', userId)
-      ]);
-
-      if (invoicesRes.error || clientsRes.error || expensesRes.error) {
-        const message = invoicesRes.error?.message || clientsRes.error?.message || expensesRes.error?.message || t('errors.loadDashboardData');
-        setError(message);
-        return;
-      }
-      
-      const invoices = invoicesRes.data || [];
-      const clients = clientsRes.data || [];
-      const expenses = expensesRes.data || [];
-      
-      const paidInvoices = invoices.filter((i: Invoice) => i.status === 'paid');
-      const overdueInvoices = invoices.filter((i: Invoice) => 
-        i.status !== 'paid' && i.due_date && new Date(i.due_date) < new Date()
-      );
-      const pendingInvoices = invoices.filter((i: Invoice) => 
-        i.status !== 'paid' && (!i.due_date || new Date(i.due_date) >= new Date())
-      );
-      
-      const totalRevenue = paidInvoices.reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
-      const pendingAmount = pendingInvoices.reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
-      const totalExpenses = expenses.reduce((s: number, e: any) => s + (e.amount || 0), 0);
-      const overdueAmount = overdueInvoices.reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
-
-      // Month-over-month comparisons.
-      const now2 = new Date();
-      const thisMonthStart = startOfMonth(now2);
-      const thisMonthEnd = endOfMonth(now2);
-      const lastMonthDate = subMonths(now2, 1);
-      const lastMonthStart = startOfMonth(lastMonthDate);
-      const lastMonthEnd = endOfMonth(lastMonthDate);
-      const inRange = (d: string, start: Date, end: Date) => {
-        const dt = new Date(d);
-        return dt >= start && dt <= end;
-      };
-      const pct = (curr: number, prev: number) => {
-        if (prev === 0) return curr > 0 ? 100 : 0;
-        return ((curr - prev) / prev) * 100;
-      };
-
-      const paidThisMonth = paidInvoices
-        .filter((i: Invoice) => inRange(i.created_at, thisMonthStart, thisMonthEnd))
-        .reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
-      const paidLastMonth = paidInvoices
-        .filter((i: Invoice) => inRange(i.created_at, lastMonthStart, lastMonthEnd))
-        .reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
-      const revenueThisMonth = paidThisMonth;
-      const pendingThisMonth = pendingInvoices.filter((i: Invoice) =>
-        inRange(i.created_at, thisMonthStart, thisMonthEnd)
-      ).length;
-      const pendingLastMonth = pendingInvoices.filter((i: Invoice) =>
-        inRange(i.created_at, lastMonthStart, lastMonthEnd)
-      ).length;
-      const overdueThisMonth = overdueInvoices
-        .filter((i: Invoice) => inRange(i.created_at, thisMonthStart, thisMonthEnd))
-        .reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
-      const overdueLastMonth = overdueInvoices
-        .filter((i: Invoice) => inRange(i.created_at, lastMonthStart, lastMonthEnd))
-        .reduce((s: number, i: Invoice) => s + (i.total || 0), 0);
-
-      setStats({
-        totalRevenue,
-        netProfit: totalRevenue - totalExpenses,
-        pendingAmount,
-        totalInvoices: invoices.length,
-        paidInvoices: paidInvoices.length,
-        overdueInvoices: overdueInvoices.length,
-        totalClients: clients.length,
-        totalExpenses,
-        growth: 0,
-        paidThisMonth,
-        overdueAmount,
-        pendingCount: pendingInvoices.length,
-        revenueChange: pct(revenueThisMonth, paidLastMonth),
-        pendingChange: pct(pendingThisMonth, pendingLastMonth),
-        paidThisMonthChange: pct(paidThisMonth, paidLastMonth),
-        overdueChange: pct(overdueThisMonth, overdueLastMonth)
-      });
-      
-      setRecentInvoices(invoices.slice(0, 5));
-      
-      // Build chart data
-      let chartData: RevenueDataPoint[] = [];
-      const now = new Date();
-      
-      if (selectedPeriod === 'week') {
-        for (let i = 6; i >= 0; i--) {
-          const date = subDays(now, i);
-          const dayInvoices = invoices.filter((inv: Invoice) => 
-            format(new Date(inv.created_at), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
-          );
-          chartData.push({
-            name: format(date, 'EEE'),
-            revenue: dayInvoices.filter((i: Invoice) => i.status === 'paid').reduce((s: number, i: Invoice) => s + (i.total || 0), 0)
-          });
-        }
-      } else if (selectedPeriod === 'month') {
-        for (let i = 29; i >= 0; i -= 3) {
-          const date = subDays(now, i);
-          const dayInvoices = invoices.filter((inv: Invoice) => 
-            format(new Date(inv.created_at), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
-          );
-          chartData.push({
-            name: format(date, 'MMM dd'),
-            revenue: dayInvoices.filter((i: Invoice) => i.status === 'paid').reduce((s: number, i: Invoice) => s + (i.total || 0), 0)
-          });
-        }
-      } else {
-        for (let i = 11; i >= 0; i--) {
-          const date = subMonths(now, i);
-          const monthInvoices = invoices.filter((inv: Invoice) => 
-            new Date(inv.created_at) >= startOfMonth(date) && 
-            new Date(inv.created_at) <= endOfMonth(date)
-          );
-          chartData.push({
-            name: format(date, 'MMM'),
-            revenue: monthInvoices.filter((i: Invoice) => i.status === 'paid').reduce((s: number, i: Invoice) => s + (i.total || 0), 0)
-          });
-        }
-      }
-      setRevenueData(chartData);
-
-      // Stable 6-month paid-revenue series for the AI insights, independent of
-      // the selected chart period.
-      const monthly: { label: string; value: number }[] = [];
-      for (let i = 5; i >= 0; i--) {
-        const date = subMonths(now, i);
-        const ms = startOfMonth(date);
-        const me = endOfMonth(date);
-        const paid = paidInvoices
-          .filter((inv: Invoice) => {
-            const d = new Date(inv.created_at);
-            return d >= ms && d <= me;
-          })
-          .reduce((s: number, inv: Invoice) => s + (inv.total || 0), 0);
-        monthly.push({ label: format(date, 'MMM'), value: paid });
-      }
-      setMonthlySeries(monthly);
-      setCurrency(invoices.find((i: Invoice) => i.currency)?.currency || 'USD');
-
-      setStatusData([
-        { name: t('paid'), value: paidInvoices.length, color: '#10b981', link: '/dashboard/invoices?status=paid' },
-        { name: t('pending'), value: pendingInvoices.length, color: '#f59e0b', link: '/dashboard/invoices?status=pending' },
-        { name: t('overdue'), value: overdueInvoices.length, color: '#ef4444', link: '/dashboard/invoices?status=overdue' }
-      ]);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : t('errors.loadingData');
-      setError(errorMessage);
-      console.error(t('errors.loadingData'), err);
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedPeriod]);
+  const [subs, setSubs] = useState<Sub[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    loadAllData();
-  }, [loadAllData]);
+    (async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setError('You must be logged in.'); setLoading(false); return }
+      const { data, error } = await supabase
+        .from('sr_detected_subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('last_seen_at', { ascending: false })
+      if (error) setError(error.message)
+      else setSubs((data ?? []) as Sub[])
+      setLoading(false)
+    })()
+  }, [])
 
-  // ===== AI INSIGHTS (computed from loaded data) =====
-  const revenueValues = useMemo(() => monthlySeries.map((m) => m.value), [monthlySeries]);
-  const revenueForecast = useMemo(() => forecastSeries(revenueValues), [revenueValues]);
-  const anomalies = useMemo(() => detectAnomalies(monthlySeries), [monthlySeries]);
-  const recommendations = useMemo(
-    () =>
-      generateRecommendations({
-        overdueAmount: stats.overdueAmount,
-        overdueCount: stats.overdueInvoices,
-        pendingAmount: stats.pendingAmount,
-        pendingCount: stats.pendingCount,
-        totalClients: stats.totalClients,
-        totalInvoices: stats.totalInvoices,
-        totalRevenue: stats.totalRevenue,
-        totalExpenses: stats.totalExpenses,
-        netProfit: stats.netProfit,
-        revenueChange: stats.revenueChange,
-        forecast: revenueForecast,
-      }),
-    [stats, revenueForecast],
-  );
-
-  // Publish a compact metrics snapshot for the layout's AI chat widget.
-  useEffect(() => {
-    setAssistantContext({
-      currency,
-      totalRevenue: stats.totalRevenue,
-      netProfit: stats.netProfit,
-      totalExpenses: stats.totalExpenses,
-      pendingAmount: stats.pendingAmount,
-      pendingCount: stats.pendingCount,
-      overdueAmount: stats.overdueAmount,
-      overdueCount: stats.overdueInvoices,
-      paidThisMonth: stats.paidThisMonth,
-      totalInvoices: stats.totalInvoices,
-      totalClients: stats.totalClients,
-      revenueChangePct: stats.revenueChange,
-      forecastNextMonth: revenueForecast.forecast,
-    });
-    return () => setAssistantContext(null);
-  }, [stats, currency, revenueForecast.forecast]);
-
-  // Loading state
-  if (loading) {
-    return <DashboardSkeleton />;
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <TooltipProvider>
-        <div className="flex justify-center items-center min-h-[60vh]">
-          <Card hoverGlow={false} className="text-center max-w-md">
-            <div className="flex justify-center mb-4">
-              <AlertTriangle size={44} className="text-red-400" />
-            </div>
-            <h2 className="text-xl font-bold text-text-primary mb-2">{t('errors.loadingTitle')}</h2>
-            <p className="text-text-secondary mb-4">{error}</p>
-            <Button onClick={() => window.location.reload()}>{t('actions.tryAgain')}</Button>
-          </Card>
-        </div>
-      </TooltipProvider>
-    );
-  }
-
-  const hasData = stats.totalInvoices > 0 || stats.totalRevenue > 0;
-
-  const hour = new Date().getHours();
-  const greetingKey =
-    hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';
-  const todayLabel = new Date().toLocaleDateString(undefined, {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-
-  const predictedNext = revenueForecast.sufficient ? revenueForecast.forecast : undefined;
-
-  const kpiCards: {
-    label: string;
-    value: number;
-    prefix: string;
-    change: number;
-    Icon: LucideIcon;
-    iconClass: string;
-    link: string;
-    filter: string;
-    predicted?: number;
-    spark?: number[];
-  }[] = [
-    {
-      label: t('kpi.totalRevenue'),
-      value: stats.totalRevenue,
-      prefix: '$',
-      change: stats.revenueChange,
-      Icon: DollarSign,
-      iconClass: 'text-success bg-success/10',
-      link: '/dashboard/invoices',
-      filter: 'paid',
-      predicted: predictedNext,
-      spark: revenueValues,
-    },
-    {
-      label: t('kpi.pendingInvoices'),
-      value: stats.pendingAmount,
-      prefix: '$',
-      change: stats.pendingChange,
-      Icon: Clock,
-      iconClass: 'text-yellow-400 bg-yellow-400/10',
-      link: '/dashboard/invoices',
-      filter: 'pending',
-    },
-    {
-      label: t('kpi.paidThisMonth'),
-      value: stats.paidThisMonth,
-      prefix: '$',
-      change: stats.paidThisMonthChange,
-      Icon: CheckCircle2,
-      iconClass: 'text-accent bg-accent/10',
-      link: '/dashboard/invoices',
-      filter: 'paid',
-      predicted: predictedNext,
-      spark: revenueValues,
-    },
-    {
-      label: t('kpi.overdueAmount'),
-      value: stats.overdueAmount,
-      prefix: '$',
-      change: stats.overdueChange,
-      Icon: AlertTriangle,
-      iconClass: 'text-red-400 bg-red-400/10',
-      link: '/dashboard/invoices',
-      filter: 'overdue',
-    },
-  ];
-
-  const statusBadgeVariant = (status?: string): 'success' | 'accent' | 'default' => {
-    if (status === 'paid') return 'success';
-    if (status === 'overdue') return 'default';
-    return 'accent';
-  };
+  const active = subs.filter((s) => s.status !== 'cancelled' && s.status !== 'dismissed')
+  const monthlyUSD = active.reduce((sum, s) => {
+    const usd = toUSD(s.amount, s.currency)
+    return sum + (s.billing_cycle === 'yearly' ? usd / 12 : usd)
+  }, 0)
+  const annualUSD = monthlyUSD * 12
+  const needsReview = active.filter((s) => s.confidence && s.confidence !== 'high').length
+  const failures = active.filter((s) => s.last_payment_status === 'failed')
+  const topSpenders = [...active]
+    .filter((s) => s.amount != null)
+    .sort((a, b) => toUSD(b.amount, b.currency) - toUSD(a.amount, a.currency))
+    .slice(0, 3)
 
   return (
-    <TooltipProvider>
-      <div ref={dashboardRef} className="min-h-screen bg-background text-text-primary">
-        {/* Header hero (glass-morphism) */}
-        <div className="relative mb-8 overflow-hidden rounded-card border border-border bg-gradient-to-br from-accent/10 via-card/40 to-transparent p-5 backdrop-blur-md sm:p-6">
-          <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-accent/15 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-16 left-1/3 h-40 w-40 rounded-full bg-accent-secondary/10 blur-3xl" />
-          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-text-primary">
-                {t(`greeting.${greetingKey}`)}
-                {userName ? `, ${userName}` : ''} <span className="inline-block">👋</span>
-              </h1>
-              <p className="mt-1 text-sm text-text-secondary">{todayLabel}</p>
-            </div>
-            <div className="flex items-center gap-2" data-html2canvas-ignore="true">
-              <Button variant="secondary" loading={downloading} onClick={downloadDashboard}>
-                {!downloading && <Download size={16} />}
-                {downloading ? t('actions.downloadingDashboard') : t('actions.downloadDashboard')}
-              </Button>
-              <Button onClick={() => navigateTo('/dashboard/invoices/new')}>
-                <Plus size={16} />
-                {t('actions.createInvoice')}
-              </Button>
-            </div>
+    <div className="p-6 md:p-8">
+      <div className="mx-auto max-w-3xl">
+        {/* HEADER */}
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Dashboard
+            </h1>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Your subscription overview
+            </p>
           </div>
+          <Link
+            href="/dashboard/subscriptions/scan"
+            className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-purple-700"
+          >
+            <ScanSearch className="h-4 w-4" />
+            Rescan inbox
+          </Link>
         </div>
 
-        {/* Period Selector */}
-        <div className="mb-6 inline-flex gap-1 rounded-button border border-border bg-surface p-1">
-          {['week', 'month', 'year'].map((period) => (
-            <button
-              key={period}
-              onClick={() => setSelectedPeriod(period)}
-              className={`rounded-button px-4 py-1.5 text-sm font-medium transition-all duration-250 ${
-                selectedPeriod === period
-                  ? 'bg-accent text-white shadow-glow-sm'
-                  : 'text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              {t(`period.${period}`)}
-            </button>
-          ))}
-        </div>
-
-        {/* KPI Cards with AI predictions */}
-        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {kpiCards.map((kpi) => (
-            <MetricCard
-              key={kpi.label}
-              label={kpi.label}
-              value={kpi.value}
-              prefix={kpi.prefix}
-              change={kpi.change}
-              icon={kpi.Icon}
-              iconClass={kpi.iconClass}
-              predicted={kpi.predicted}
-              predictionLabel={kpi.predicted !== undefined ? t('metrics.predicted') : undefined}
-              spark={kpi.spark}
-              vsLabel={t('vsLastMonth')}
-              onClick={() => navigateTo(kpi.link, kpi.filter)}
-            />
-          ))}
-        </div>
-
-        {/* AI insights + quick actions + live activity */}
-        <div className="mb-8 grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <AIInsights
-              forecast={revenueForecast}
-              anomalies={anomalies}
-              recommendations={recommendations}
-              currency={currency}
-              monthlySeries={monthlySeries}
-            />
-          </div>
-          <div className="space-y-6">
-            <QuickActions />
-            <RealtimeActivityFeed />
-          </div>
-        </div>
-
-        {/* Quick Stats Chart */}
-        {hasData && (
-          <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <Card hoverGlow={false}>
-              <h2 className="mb-3 font-semibold text-text-primary">{t('revenueTrend')}</h2>
-              <ResponsiveContainer width="100%" height={250}>
-                <AreaChart data={revenueData}>
-                  <defs>
-                    <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#9333EA" stopOpacity={0.5} />
-                      <stop offset="100%" stopColor="#9333EA" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" />
-                  <XAxis dataKey="name" stroke="#A1A1AA" fontSize={12} tickLine={false} />
-                  <YAxis stroke="#A1A1AA" fontSize={12} tickLine={false} axisLine={false} />
-                  <RechartsTooltip
-                    contentStyle={{
-                      backgroundColor: '#1A1A1A',
-                      border: '1px solid #2A2A2A',
-                      borderRadius: 12,
-                      color: '#FFFFFF',
-                    }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="#9333EA"
-                    strokeWidth={2}
-                    fill="url(#revGradient)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </Card>
-
-            <Card hoverGlow={false}>
-              <h2 className="mb-3 font-semibold text-text-primary">{t('invoiceStatus')}</h2>
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie
-                    data={statusData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={80}
-                    dataKey="value"
-                    label
-                  >
-                    {statusData.map((entry, index) => (
-                      <Cell
-                        key={index}
-                        fill={entry.color}
-                        stroke="#1A1A1A"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => navigateTo(entry.link)}
-                      />
-                    ))}
-                  </Pie>
-                  <RechartsTooltip
-                    contentStyle={{
-                      backgroundColor: '#1A1A1A',
-                      border: '1px solid #2A2A2A',
-                      borderRadius: 12,
-                      color: '#FFFFFF',
-                    }}
-                  />
-                  <Legend
-                    wrapperStyle={{ color: '#A1A1AA' }}
-                    onClick={(e) => {
-                      const item = statusData.find((d) => d.name === e.value);
-                      if (item) navigateTo(item.link);
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </Card>
+        {error && (
+          <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-300 bg-red-50 p-4 text-red-800 dark:border-red-700 dark:bg-red-900/20 dark:text-red-300">
+            <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+            <p className="text-sm">{error}</p>
           </div>
         )}
 
-        {/* Recent Invoices Table */}
-        <Card hoverGlow={false} className="p-0 overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-            <h2 className="font-semibold text-text-primary">{t('recentInvoices')}</h2>
-            <button
-              onClick={() => navigateTo('/dashboard/invoices')}
-              className="inline-flex items-center gap-1 text-sm text-accent transition-colors hover:text-accent-secondary"
-            >
-              {t('actions.viewAll')} <ArrowRight size={14} />
-            </button>
-          </div>
+        {!loading && <OnboardingBanner hasSubscriptions={active.length > 0} />}
 
-          {recentInvoices.length === 0 ? (
-            <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
-                <Inbox size={28} className="text-accent" />
+        {/* EMPTY STATE */}
+        {!loading && active.length === 0 && (
+          <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-800">
+            <ScanSearch className="mx-auto mb-3 h-10 w-10 text-gray-400" />
+            <p className="font-medium text-gray-900 dark:text-white">No subscriptions found yet</p>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Connect your Gmail and run your first scan.
+            </p>
+            <Link
+              href="/dashboard/subscriptions/scan"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-purple-700"
+            >
+              Start scanning
+            </Link>
+          </div>
+        )}
+
+        {/* HERO */}
+        {!loading && active.length > 0 && (
+          <>
+            <div className="mb-6 rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-900 to-gray-800 p-8 dark:border-gray-700">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                You&apos;re paying
+              </p>
+              <p className="mt-3 text-5xl font-bold text-white" style={{ fontFamily: "'JetBrains Mono', monospace", letterSpacing: -2 }}>
+                ${monthlyUSD.toFixed(2)}
+                <span className="ml-2 text-lg font-medium text-gray-400">/mo</span>
+              </p>
+              <p className="mt-2 text-lg text-gray-300">
+                That&apos;s <strong className="text-white">${annualUSD.toFixed(0)}</strong> per year — across {active.length} subscriptions
+              </p>
+
+              {failures.length > 0 && (
+                <div className="mt-5 flex items-start gap-3 rounded-xl bg-red-500/10 border border-red-500/30 p-4">
+                  <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />
+                  <div>
+                    <p className="font-semibold text-red-300">
+                      {failures.length} payment {failures.length === 1 ? 'issue' : 'issues'} detected
+                    </p>
+                    <p className="mt-0.5 text-sm text-red-200/80">
+                      {failures.map((f) => f.service_name).join(' · ')} — check your card
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {needsReview > 0 && failures.length === 0 && (
+                <div className="mt-5 flex items-start gap-3 rounded-xl bg-amber-500/10 border border-amber-500/30 p-4">
+                  <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-400" />
+                  <p className="text-sm text-amber-200/90">
+                    <strong>{needsReview}</strong> {needsReview === 1 ? 'subscription needs' : 'subscriptions need'} review
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* TOP SPENDERS */}
+            {topSpenders.length > 0 && (
+              <div className="mb-6">
+                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  Top spenders
+                </h2>
+                <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 overflow-hidden">
+                  {topSpenders.map((s, idx) => {
+                    const usd = toUSD(s.amount, s.currency)
+                    return (
+                      <div
+                        key={s.id}
+                        className={`flex items-center gap-4 px-5 py-4 ${idx > 0 ? 'border-t border-gray-100 dark:border-gray-700' : ''}`}
+                      >
+                        <div
+                          className="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold text-white"
+                          style={{ background: brandColor(s.service_name) }}
+                        >
+                          {getInitials(s.service_name)}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-semibold text-gray-900 dark:text-white truncate">{s.service_name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">{s.billing_cycle ?? 'monthly'}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-mono font-semibold text-gray-900 dark:text-white">
+                            {money(s.amount, s.currency)}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            ${usd.toFixed(2)}/mo
+                          </p>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
-              <p className="mb-1 font-medium text-text-primary">{t('noInvoicesYet')}</p>
-              <p className="mb-4 max-w-xs text-sm text-text-secondary">{t('createFirstInvoice')}</p>
-              <Button onClick={() => navigateTo('/dashboard/invoices/new')}>
-                <Plus size={16} />
-                {t('actions.createInvoice')}
-              </Button>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-text-secondary">
-                    <th className="px-6 py-3 font-medium">{t('invoice')}</th>
-                    <th className="px-6 py-3 font-medium">{t('due')}</th>
-                    <th className="px-6 py-3 font-medium text-right">{t('revenue')}</th>
-                    <th className="px-6 py-3 font-medium text-right">{t('invoiceStatus')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentInvoices.map((inv, idx) => (
-                    <tr
-                      key={idx}
-                      onClick={() => navigateTo(`/dashboard/invoices/${inv.id}`)}
-                      className="cursor-pointer border-b border-border/60 transition-colors hover:bg-black/5 dark:hover:bg-white/5"
-                    >
-                      <td className="px-6 py-4 font-medium text-text-primary">
-                        {inv.invoice_number || t('invoice')}
-                      </td>
-                      <td className="px-6 py-4 text-text-secondary">
-                        {inv.due_date ? new Date(inv.due_date).toLocaleDateString() : t('notAvailable')}
-                      </td>
-                      <td className="px-6 py-4 text-right font-semibold text-text-primary">
-                        {inv.currency || 'USD'} {inv.total?.toFixed(2) || '0.00'}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <Badge variant={statusBadgeVariant(inv.status)}>
-                          {t(`status.${inv.status || 'draft'}`)}
-                        </Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </Card>
+            )}
+
+            {/* ALL SUBSCRIPTIONS LINK */}
+            <Link
+              href="/dashboard/subscriptions"
+              className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white p-5 hover:border-purple-400 transition-colors dark:border-gray-700 dark:bg-gray-800 dark:hover:border-purple-500"
+            >
+              <div>
+                <p className="font-semibold text-gray-900 dark:text-white">All subscriptions</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {active.length} tracked · {needsReview} need review
+                </p>
+              </div>
+              <ExternalLink className="h-5 w-5 text-gray-400" />
+            </Link>
+          </>
+        )}
+
+        {loading && (
+          <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-800">
+            <p className="text-gray-500 dark:text-gray-400">Loading…</p>
+          </div>
+        )}
       </div>
-    </TooltipProvider>
-  );
+    </div>
+  )
 }

@@ -481,7 +481,7 @@
       "tax": "Tax",
       "total": "Total",
       "print": "Print",
-      "poweredBy": "Powered by SheetInvoicer"
+      "poweredBy": "Powered by SubRemoval"
     },
     "detail": {
       "comments": {
@@ -962,30 +962,19 @@
     "logout": "Logout",
     "items": {
       "dashboard": "Dashboard",
-      "invoices": "Invoices",
-      "clients": "Clients",
-      "projects": "Projects",
-      "expenses": "Expenses",
-      "bank": "Bank",
-      "recurring": "Recurring",
-      "estimates": "Estimates",
-      "time": "Time Tracking",
-      "reports": "Reports",
-      "subscription": "Subscription",
-      "admin": "Admin",
-      "auditLogs": "Audit Log",
+      "subscriptions": "Subscriptions",
+      "scan": "Scan inbox",
       "settings": "Settings",
-      "adminAi": "AI Admin",
-      "entity": "AI Entity"
+      "admin": "Admin",
+      "auditLogs": "Audit Logs",
+      "entity": "AI Entity",
+      "subscription": "Subscription"
     },
     "planLabel": "Plan",
     "account": "Account",
     "sections": {
       "overview": "Overview",
-      "sales": "Sales",
-      "finance": "Finance",
-      "workspace": "Workspace",
-      "administration": "Administration",
+      "subscriptions": "Subscriptions",
       "account": "Account"
     }
   },
@@ -1739,9 +1728,23 @@
       "scanned": "Scan complete.",
       "acknowledged": "Alert acknowledged.",
       "dismissed": "Alert dismissed.",
-      "severity": { "low": "Low", "medium": "Medium", "high": "High", "critical": "Critical" },
-      "source": { "sentry": "Sentry", "vercel": "Vercel", "performance": "Performance" },
-      "status": { "open": "Open", "acknowledged": "Acknowledged", "resolved": "Resolved", "dismissed": "Dismissed" }
+      "severity": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "critical": "Critical"
+      },
+      "source": {
+        "sentry": "Sentry",
+        "vercel": "Vercel",
+        "performance": "Performance"
+      },
+      "status": {
+        "open": "Open",
+        "acknowledged": "Acknowledged",
+        "resolved": "Resolved",
+        "dismissed": "Dismissed"
+      }
     },
     "activity": {
       "title": "Recent activity",

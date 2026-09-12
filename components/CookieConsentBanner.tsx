@@ -60,7 +60,7 @@ export default function CookieConsentBanner() {
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Cookie Preferences</h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
           We use essential cookies to keep your account secure and optional analytics cookies to improve
-          SheetInvoicer. You can accept or reject optional cookies at any time in settings.
+          SubRemoval. You can accept or reject optional cookies at any time in settings.
         </p>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
           Read more in our <Link href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link> and{' '}

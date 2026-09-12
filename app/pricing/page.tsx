@@ -1,72 +1,146 @@
-"use client";
-
+'use client'
 
 import { useState } from 'react'
-
-interface Plan {
-  name: string
-  price: number
-  popular?: boolean
-  priceId?: string
-  features: string[]
-}
+import Link from 'next/link'
+import { Check, Sparkles, Shield, Zap, CreditCard } from 'lucide-react'
 
 export default function PricingPage() {
-  const [billing, setBilling] = useState('monthly')
-  const [loading, setLoading] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubscribe = async (planName: string, priceId?: string) => {
-    if (planName === 'Free') {
-      window.location.href = '/signup'
-      return
-    }
-    setLoading(planName)
+  async function buyLifetime() {
+    setLoading(true)
+    setError(null)
     try {
-      const res = await fetch('/api/stripe/create-subscription', {
+      const res = await fetch('/api/stripe/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId, successUrl: window.location.origin + '/dashboard', cancelUrl: window.location.origin + '/pricing' })
       })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
-      else alert('Error: ' + data.error)
-    } catch (err) { alert('Error: ' + (err instanceof Error ? err.message : 'Unknown error')) }
-    finally { setLoading(null) }
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        setError(data.error || 'Failed to start checkout')
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Something went wrong')
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const plans: Plan[] = [
-    { name: 'Free', price: 0, features: ['3 invoices/month', 'CSV upload', 'Single PDF'] },
-    { name: 'Pro', price: 9, popular: true, priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID, features: ['Unlimited invoices', 'CSV bulk import', 'Multi-PDF', 'Recurring', 'Stripe payments'] },
-    { name: 'Business', price: 29, priceId: process.env.NEXT_PUBLIC_STRIPE_BUSINESS_PRICE_ID, features: ['Everything in Pro', 'Team members', 'API access', 'Priority support'] }
-  ]
-
-  const getPrice = (plan: Plan) => billing === 'monthly' ? plan.price : plan.price * 10
-
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-20 px-4">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Simple Pricing</h1>
-        <p className="text-gray-600 dark:text-gray-400">Start free, upgrade when you need more</p>
-        <div className="inline-flex gap-2 mt-4">
-          <button onClick={() => setBilling('monthly')} className={`px-4 py-1 rounded ${billing === 'monthly' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Monthly</button>
-          <button onClick={() => setBilling('yearly')} className={`px-4 py-1 rounded ${billing === 'yearly' ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}>Yearly <span className="text-xs text-green-600">Save 17%</span></button>
-        </div>
-      </div>
-      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
-        {plans.map((plan) => (
-          <div key={plan.name} className={`bg-white dark:bg-gray-800 rounded-xl p-6 text-center shadow relative ${plan.popular ? 'border-2 border-blue-500' : ''}`}>
-            {plan.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs px-3 py-1 rounded-full">MOST POPULAR</div>}
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{plan.name}</h2>
-            <div className="text-3xl font-bold mt-2">{plan.price === 0 ? 'Free' : `$${getPrice(plan)}`}</div>
-            {plan.price > 0 && <div className="text-sm text-gray-500">/{billing === 'monthly' ? 'month' : 'year'}</div>}
-            <ul className="mt-4 space-y-2 text-sm text-left">
-              {plan.features.map((f, i) => <li key={i}>✓ {f}</li>)}
-            </ul>
-            <button onClick={() => plan.price === 0 ? window.location.href = '/signup' : handleSubscribe(plan.name, plan.priceId)} disabled={loading === plan.name} className="mt-6 w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50">
-              {loading === plan.name ? 'Processing...' : plan.price === 0 ? 'Get Started' : 'Subscribe Now'}
-            </button>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 py-20 px-4">
+      <div className="max-w-4xl mx-auto">
+        {/* HEADER */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 rounded-full bg-purple-100 dark:bg-purple-900/30 px-4 py-1.5 text-sm font-medium text-purple-700 dark:text-purple-300 mb-6">
+            <Sparkles className="h-4 w-4" />
+            Pay once. Use forever.
           </div>
-        ))}
+          <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            Stop bleeding money in silence
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            SubRemoval scans your Gmail, finds every forgotten subscription, and gives you cancel links in one shot.
+          </p>
+        </div>
+
+        {/* PRICE CARD */}
+        <div className="max-w-lg mx-auto">
+          <div className="relative rounded-3xl border-2 border-purple-500 bg-white dark:bg-gray-900 p-8 shadow-2xl">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-purple-600 px-4 py-1 text-xs font-bold uppercase tracking-wide text-white">
+              Launch price
+            </div>
+
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-4">
+                <CreditCard className="h-4 w-4" />
+                <span className="text-sm font-medium uppercase tracking-wide">SubRemoval Lifetime</span>
+              </div>
+
+              <div className="flex items-baseline justify-center gap-2">
+                <span className="text-6xl font-bold text-gray-900 dark:text-white">$4.99</span>
+                <span className="text-lg text-gray-500 dark:text-gray-400 line-through">$39</span>
+              </div>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                One payment. No subscription. Ever.
+              </p>
+            </div>
+
+            <ul className="mt-8 space-y-3">
+              {[
+                'Scans your Gmail for subscriptions',
+                'Finds every forgotten charge',
+                '3 scans per month, forever',
+                'Direct cancel links for each service',
+                'Payment failure warnings',
+                'No monthly fee, no auto-renew',
+              ].map((feature) => (
+                <li key={feature} className="flex items-start gap-3">
+                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                    <Check className="h-3 w-3 text-green-600 dark:text-green-400" />
+                  </div>
+                  <span className="text-gray-700 dark:text-gray-300">{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            <button
+              onClick={buyLifetime}
+              disabled={loading}
+              className="mt-8 w-full rounded-xl bg-purple-600 px-6 py-4 font-semibold text-white transition-colors hover:bg-purple-700 disabled:opacity-60"
+            >
+              {loading ? 'Redirecting to checkout…' : 'Get lifetime access — $4.99'}
+            </button>
+
+            {error && (
+              <p className="mt-4 text-center text-sm text-red-600 dark:text-red-400">{error}</p>
+            )}
+
+            <p className="mt-4 text-center text-xs text-gray-400">
+              Secure checkout via Stripe · 30-day money-back guarantee
+            </p>
+          </div>
+        </div>
+
+        {/* TRUST BLOCK */}
+        <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-3 text-center">
+          <div>
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
+              <Shield className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            </div>
+            <h3 className="mt-3 font-semibold text-gray-900 dark:text-white">Read-only Gmail</h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              We can scan receipts. We can never send, delete, or read anything else.
+            </p>
+          </div>
+          <div>
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
+              <Zap className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            </div>
+            <h3 className="mt-3 font-semibold text-gray-900 dark:text-white">Results in 30 seconds</h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Connect Gmail, click scan, watch your subscriptions appear.
+            </p>
+          </div>
+          <div>
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
+              <CreditCard className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            </div>
+            <h3 className="mt-3 font-semibold text-gray-900 dark:text-white">Pay once</h3>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              No recurring charges. No auto-renew. You hate subscriptions — so do we.
+            </p>
+          </div>
+        </div>
+
+        {/* BACK LINK */}
+        <div className="mt-12 text-center">
+          <Link href="/" className="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+            ← Back to home
+          </Link>
+        </div>
       </div>
     </div>
   )

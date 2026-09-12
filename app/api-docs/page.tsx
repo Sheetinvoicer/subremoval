@@ -14,7 +14,7 @@ export default function ApiDocsPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="bg-blue-600 text-white p-4 rounded-lg mb-6">
-        <h1 className="text-2xl font-bold">SheetInvoicer API Documentation</h1>
+        <h1 className="text-2xl font-bold">SubRemoval API Documentation</h1>
         <p className="text-sm opacity-90">REST API for developers</p>
       </div>
       

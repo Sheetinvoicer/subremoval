@@ -10,16 +10,16 @@ import { getLocale, getMessages } from 'next-intl/server'
 import { rtlLocales } from '@/i18n/routing'
 
 export const metadata = {
-  title: 'SheetInvoicer - AI-Powered Invoicing Platform',
+  title: 'SubRemoval - AI-Powered Invoicing Platform',
   description: 'Professional invoicing made simple with AI automation, 10+ currencies',
   keywords: 'invoicing, AI, payments, global business, automation, SaaS',
-  authors: [{ name: 'SheetInvoicer' }],
+  authors: [{ name: 'SubRemoval' }],
   manifest: '/manifest.json',
   openGraph: {
-    title: 'SheetInvoicer - AI-Powered Invoicing',
+    title: 'SubRemoval - AI-Powered Invoicing',
     description: 'Professional invoicing made simple',
-    url: 'https://www.sheetinvoicer.com',
-    siteName: 'SheetInvoicer',
+    url: 'https://www.subremoval.com',
+    siteName: 'SubRemoval',
     images: [{ url: '/og-image.png', width: 1200, height: 630 }],
     type: 'website',
   },

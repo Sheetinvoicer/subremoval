@@ -82,7 +82,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(payload, {
       headers: {
-        'Content-Disposition': `attachment; filename="sheetinvoicer-export-${user.id}.json"`,
+        'Content-Disposition': `attachment; filename="subremoval-export-${user.id}.json"`,
       },
     })
   } catch (error) {

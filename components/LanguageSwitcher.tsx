@@ -5,7 +5,7 @@ import {useLocale, useTranslations} from 'next-intl'
 import {usePathname, useRouter} from 'next/navigation'
 import {routing, rtlLocales} from '@/i18n/routing'
 
-const LOCALE_STORAGE_KEY = 'sheetinvoicer_locale'
+const LOCALE_STORAGE_KEY = 'subremoval_locale'
 const LEGACY_LOCALE_STORAGE_KEY = 'app-language'
 
 const languageLabels: Record<(typeof routing.locales)[number], string> = {

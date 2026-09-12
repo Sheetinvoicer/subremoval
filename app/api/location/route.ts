@@ -93,7 +93,7 @@ export async function GET(request: Request) {
       : `${IPAPI_BASE}/${encodeURIComponent(clientIp as string)}/json/`
 
     const response = await fetch(url, {
-      headers: { 'User-Agent': 'SheetInvoicer/1.0 (+https://www.sheetinvoicer.com)' },
+      headers: { 'User-Agent': 'SubRemoval/1.0 (+https://www.subremoval.com)' },
       cache: 'no-store',
     })
 
