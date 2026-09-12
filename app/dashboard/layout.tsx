@@ -11,7 +11,6 @@ import { useLocale } from 'next-intl'
 import { DashboardChromeSkeleton } from '@/components/LoadingSkeleton'
 
 // Lazy-load non-critical widgets so they don't block dashboard page transitions
-const AIChatWidget = dynamic(() => import('@/components/dashboard/AIChatWidget'), { ssr: false })
 const OnboardingTour = dynamic(() => import('@/components/OnboardingTour'), { ssr: false })
 
 export default function DashboardLayout({
@@ -65,7 +64,6 @@ export default function DashboardLayout({
               />
               {children}
             </div>
-            <AIChatWidget />
             <OnboardingTour />
           </main>
         </div>
