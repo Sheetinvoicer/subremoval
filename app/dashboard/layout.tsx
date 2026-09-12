@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import Sidebar from '@/components/Sidebar'
 import DashboardHeader from '@/components/DashboardHeader'
-import Footer from '@/components/Footer'
 import SearchBar from '@/components/SearchBar'
 import { Toaster } from 'react-hot-toast'
 import { useLocale } from 'next-intl'
@@ -68,7 +67,6 @@ export default function DashboardLayout({
           </main>
         </div>
       </div>
-      <Footer />
     </div>
   )
 }
