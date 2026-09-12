@@ -10,7 +10,8 @@ export async function GET(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    const base = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin
+    return NextResponse.redirect(new URL('/login', base))
   }
 
   // State = user id so we can verify on callback
