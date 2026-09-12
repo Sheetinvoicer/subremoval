@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-export async function POST() {
+export async function POST(request) {
   try {
     const secretKey = process.env.STRIPE_SECRET_KEY
     const priceId = process.env.STRIPE_LIFETIME_PRICE_ID
@@ -39,10 +39,12 @@ export async function POST() {
       )
     }
 
+    // Determine origin from the incoming request (works on localhost + Render + Vercel)
+    const url = new URL(request.url)
     const origin =
       process.env.NEXT_PUBLIC_APP_URL ||
       process.env.NEXT_PUBLIC_SITE_URL ||
-      'http://localhost:3000'
+      `${url.protocol}//${url.host}`
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
