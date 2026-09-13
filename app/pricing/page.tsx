@@ -113,6 +113,9 @@ export default function PricingPage() {
             <p className="mt-4 text-center text-xs text-gray-400">
               Secure checkout via Stripe · 30-day money-back guarantee
             </p>
+            <p className="mt-2 text-center text-xs text-gray-500">
+              Full refund if you haven&apos;t scanned or if we find nothing — no questions asked.
+            </p>
           </div>
         </div>
 

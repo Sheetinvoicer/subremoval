@@ -20,11 +20,20 @@ export async function POST(request) {
 
   let event
   try {
-    if (webhookSecret && signature) {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
-    } else {
-      // No webhook secret configured — parse directly (dev fallback)
+    if (!webhookSecret) {
+      // In production this should never happen. Refuse rather than trust unverified events.
+      if (process.env.NODE_ENV === 'production') {
+        console.error('[WEBHOOK] STRIPE_WEBHOOK_SECRET not configured in production — refusing to process')
+        return NextResponse.json({ error: 'Webhook not configured' }, { status: 500 })
+      }
+      // Dev fallback only — parse directly
       event = JSON.parse(body)
+    } else {
+      if (!signature) {
+        console.error('[WEBHOOK] Missing stripe-signature header')
+        return NextResponse.json({ error: 'Missing signature' }, { status: 400 })
+      }
+      event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
     }
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Invalid signature'

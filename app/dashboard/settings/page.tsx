@@ -144,6 +144,24 @@ export default function SettingsPage() {
           </div>
         </section>
 
+        {/* REFUND REQUEST */}
+        {plan !== 'Free' && (
+          <section className="mb-6 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Refund</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Within 30 days of purchase, we offer a full refund if you haven&apos;t run a scan or if your scan found nothing.
+              After a successful scan, refunds are reviewed case-by-case.
+            </p>
+            <a
+              href={`mailto:support@subremoval.com?subject=Refund%20request&body=Hi%20SubRemoval%20team%2C%0A%0AI%27d%20like%20to%20request%20a%20refund%20for%20my%20%244.99%20lifetime%20purchase.%0A%0AAccount%20email%3A%20${encodeURIComponent(gmail.email || '')}%0A%0AReason%3A%20`}
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-transparent dark:text-gray-200 dark:hover:bg-gray-700"
+            >
+              <Trash2 className="h-4 w-4" />
+              Request a refund
+            </a>
+          </section>
+        )}
+
         <section className="rounded-2xl border border-red-300 bg-red-50 p-6 dark:border-red-800 dark:bg-red-900/10">
           <h2 className="text-lg font-semibold text-red-800 dark:text-red-300 mb-2">Danger zone</h2>
           <p className="text-sm text-red-700 dark:text-red-400 mb-4">

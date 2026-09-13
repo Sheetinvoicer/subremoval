@@ -92,12 +92,30 @@ function SuccessInner() {
             <AlertCircle className="mx-auto h-12 w-12 text-red-500" />
             <h1 className="mt-4 text-xl font-bold text-gray-900 dark:text-white">Something went wrong</h1>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{error}</p>
-            <Link
-              href="/dashboard/subscriptions"
-              className="mt-6 inline-flex items-center gap-2 rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
-            >
-              Back to dashboard
-            </Link>
+            <p className="mt-3 text-xs text-gray-400">
+              If you were charged but don&apos;t see access, email support@subremoval.com with your receipt.
+              We&apos;ll fix it within 2 business days.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <button
+                onClick={() => window.location.reload()}
+                className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-purple-700"
+              >
+                Try again
+              </button>
+              <Link
+                href="/dashboard/subscriptions"
+                className="inline-flex items-center gap-2 rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+              >
+                Back to dashboard
+              </Link>
+              <a
+                href="mailto:support@subremoval.com"
+                className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white underline"
+              >
+                Email support
+              </a>
+            </div>
           </>
         )}
       </div>

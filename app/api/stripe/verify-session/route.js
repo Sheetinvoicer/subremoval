@@ -29,6 +29,12 @@ export async function POST(request) {
 
     const userId = session.metadata?.user_id || session.client_reference_id
     if (!userId) {
+      console.error('[VERIFY] Session missing user_id', {
+        sessionId: session.id,
+        customerEmail: session.customer_details?.email || session.customer_email,
+        amount: session.amount_total,
+        metadata: session.metadata,
+      })
       return NextResponse.json({ error: 'Missing user_id in session' }, { status: 400 })
     }
 
@@ -52,6 +58,11 @@ export async function POST(request) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
+    console.log('[VERIFY] User marked as paid:', {
+      userId,
+      sessionId: session.id,
+      email: session.customer_details?.email || session.customer_email,
+    })
     return NextResponse.json({ ok: true })
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Verification failed'

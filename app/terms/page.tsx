@@ -65,8 +65,25 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-3">6. Refund Policy</h2>
-            <p>We offer a <strong>30-day money-back guarantee</strong>. If SubRemoval does not detect any subscriptions you were paying for, or if you are otherwise unsatisfied within 30 days of purchase, email <a href="mailto:support@subremoval.com" className="text-purple-600 hover:underline">support@subremoval.com</a> for a full refund. No questions asked.</p>
-            <p className="mt-3">After 30 days, refunds are at our discretion. Duplicate purchases will always be refunded.</p>
+            <p>We offer a <strong>30-day money-back guarantee</strong> on every purchase. Our goal is that every customer gets real value or gets their money back.</p>
+
+            <p className="mt-4"><strong>Automatic approval in these cases:</strong></p>
+            <ul className="list-disc pl-6 mt-2 space-y-1">
+              <li><strong>You have not run a scan yet</strong> — full refund, no questions asked.</li>
+              <li><strong>Your scan found zero subscriptions</strong> — full refund, no questions asked. If we can&apos;t find value, you shouldn&apos;t pay.</li>
+              <li><strong>Duplicate purchase</strong> — if you were charged twice by mistake, the duplicate is refunded immediately.</li>
+            </ul>
+
+            <p className="mt-4"><strong>Case-by-case review:</strong></p>
+            <ul className="list-disc pl-6 mt-2 space-y-1">
+              <li><strong>You ran a scan that found subscriptions, but are unsatisfied</strong> — we review these individually. In most cases we can offer a partial refund, a credit toward future features, or assistance with the specific issue you encountered. Email us and we&apos;ll make it right.</li>
+            </ul>
+
+            <p className="mt-4"><strong>How to request a refund:</strong> Email <a href="mailto:support@subremoval.com" className="text-purple-600 hover:underline">support@subremoval.com</a> with the email you signed up with. We respond within 2 business days. Refunds are processed through Stripe and typically appear on your statement within 5-10 business days.</p>
+
+            <p className="mt-4"><strong>Effect of refund on access:</strong> If a refund is issued, we reserve the right to revoke account access and delete associated subscription data.</p>
+
+            <p className="mt-4">After 30 days from purchase, refunds are at our discretion. We will always refund duplicate charges regardless of timing.</p>
           </section>
 
           <section>
