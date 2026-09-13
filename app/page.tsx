@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Mail, ScanSearch, ShieldCheck, CreditCard, Sparkles, ArrowRight } from 'lucide-react'
+import { Mail, ScanSearch, ShieldCheck, CreditCard, Sparkles, ArrowRight, Upload, Building2 } from 'lucide-react'
 
 export default function HomePage() {
   return (
@@ -28,7 +28,7 @@ export default function HomePage() {
       </nav>
 
       {/* HERO */}
-      <section className="max-w-6xl mx-auto px-6 pt-20 pb-24 text-center">
+      <section className="max-w-6xl mx-auto px-6 pt-20 pb-16 text-center">
         <div className="inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-4 py-1.5 text-sm font-medium text-purple-300 mb-8">
           <Sparkles size={14} />
           Pay once. Use forever.
@@ -43,8 +43,7 @@ export default function HomePage() {
         </h1>
 
         <p className="mt-8 text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-          SubRemoval scans your Gmail and finds every forgotten subscription draining your account.
-          Cancel them in 2 clicks. Pay once, use forever.
+          Find every forgotten subscription draining your account. Two ways to scan — pick what you prefer.
         </p>
 
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -58,8 +57,80 @@ export default function HomePage() {
         </div>
 
         <p className="mt-6 text-sm text-gray-500">
-          No monthly fee · 30-day money-back guarantee · Read-only Gmail
+          No monthly fee · 30-day money-back guarantee · Files never stored
         </p>
+      </section>
+
+      {/* TWO WAYS TO SCAN */}
+      <section className="border-t border-white/5 bg-white/[0.02]">
+        <div className="max-w-5xl mx-auto px-6 py-20">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Two ways to find your subscriptions</h2>
+          <p className="text-center text-gray-400 mb-12 max-w-2xl mx-auto">
+            Choose the option that feels right for you. Both find the same forgotten charges.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* GMAIL OPTION */}
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 hover:border-purple-500/50 transition-colors">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/15 text-purple-300">
+                  <Mail size={22} />
+                </span>
+                <span className="rounded-full bg-purple-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-purple-300">
+                  Automatic
+                </span>
+              </div>
+              <h3 className="text-2xl font-semibold mb-3">Connect Gmail</h3>
+              <p className="text-gray-400 leading-relaxed mb-4">
+                We scan your inbox for subscription receipts. Auto-detect everything. Read-only access — we never send or delete emails.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li className="flex items-start gap-2">
+                  <span className="text-purple-400 mt-0.5">✓</span>
+                  Detects subscriptions automatically
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-purple-400 mt-0.5">✓</span>
+                  Scans 12 months of history
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-purple-400 mt-0.5">✓</span>
+                  Works for any service that emails receipts
+                </li>
+              </ul>
+            </div>
+
+            {/* BANK STATEMENT OPTION */}
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 hover:border-purple-500/50 transition-colors">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/15 text-purple-300">
+                  <Building2 size={22} />
+                </span>
+                <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-300">
+                  No Gmail
+                </span>
+              </div>
+              <h3 className="text-2xl font-semibold mb-3">Upload bank statement</h3>
+              <p className="text-gray-400 leading-relaxed mb-4">
+                Download 2–3 months of transactions from your bank. Upload the PDF or CSV. We detect recurring charges in 30 seconds.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-400 mt-0.5">✓</span>
+                  No Gmail access required
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-400 mt-0.5">✓</span>
+                  Files are analyzed and never stored
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-400 mt-0.5">✓</span>
+                  Works with any bank or credit card
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* PROOF / STATS */}
@@ -71,7 +142,7 @@ export default function HomePage() {
           </div>
           <div>
             <p className="text-4xl font-bold text-purple-400">30 sec</p>
-            <p className="mt-2 text-sm text-gray-400">From Gmail connect to seeing results</p>
+            <p className="mt-2 text-sm text-gray-400">From upload to seeing your subscriptions</p>
           </div>
           <div>
             <p className="text-4xl font-bold text-purple-400">7+</p>
@@ -86,22 +157,22 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             {
-              icon: Mail,
-              step: '01',
-              title: 'Connect Gmail',
-              body: 'Read-only access. We can scan receipts. We can never send, delete, or read anything else.',
-            },
-            {
               icon: ScanSearch,
-              step: '02',
-              title: 'Click scan',
-              body: 'Our AI reads through 12 months of email in 30 seconds and finds every subscription you pay for.',
+              step: '01',
+              title: 'Scan',
+              body: 'Connect Gmail or upload a bank statement — whichever you prefer.',
             },
             {
               icon: ShieldCheck,
+              step: '02',
+              title: 'See everything',
+              body: 'Every subscription in one list with amounts, renewal dates, and cancel links.',
+            },
+            {
+              icon: CreditCard,
               step: '03',
-              title: 'Cancel everything',
-              body: 'See every subscription in one list, with direct cancel links. Kill the ones you forgot about.',
+              title: 'Cancel what you don\'t need',
+              body: 'One-click links go straight to each service\'s cancel page.',
             },
           ].map((item) => (
             <div key={item.step} className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 hover:border-purple-500/50 transition-colors">
