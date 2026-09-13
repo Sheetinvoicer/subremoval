@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ScanSearch, AlertCircle, AlertTriangle, ExternalLink } from 'lucide-react'
+import { ScanSearch, AlertCircle, AlertTriangle, ExternalLink, Mail, Upload, ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import OnboardingBanner from '@/components/OnboardingBanner'
 
@@ -117,18 +117,48 @@ export default function DashboardPage() {
 
         {/* EMPTY STATE */}
         {!loading && active.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-800">
-            <ScanSearch className="mx-auto mb-3 h-10 w-10 text-gray-400" />
-            <p className="font-medium text-gray-900 dark:text-white">No subscriptions found yet</p>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Connect your Gmail and run your first scan.
+          <div className="mb-6">
+            <h2 className="mb-1 text-xl font-bold text-gray-900 dark:text-white">
+              Find your forgotten subscriptions
+            </h2>
+            <p className="mb-5 text-sm text-gray-500 dark:text-gray-400">
+              Pick how you want us to scan. Both methods find the same forgotten charges.
             </p>
-            <Link
-              href="/dashboard/subscriptions/scan"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-purple-700"
-            >
-              Start scanning
-            </Link>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <Link
+                href="/dashboard/subscriptions/scan"
+                className="group rounded-2xl border-2 border-purple-200 bg-white p-6 transition-all hover:border-purple-500 hover:shadow-lg dark:border-purple-800 dark:bg-gray-800 dark:hover:border-purple-500"
+              >
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300">
+                  <Mail size={26} />
+                </div>
+                <p className="mt-4 text-lg font-bold text-gray-900 dark:text-white">Connect Gmail</p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Read-only access. We scan your inbox for subscription receipts.
+                </p>
+                <div className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-purple-600 dark:text-purple-400">
+                  Connect Gmail
+                  <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                </div>
+              </Link>
+
+              <Link
+                href="/dashboard/subscriptions/upload"
+                className="group rounded-2xl border-2 border-emerald-200 bg-white p-6 transition-all hover:border-emerald-500 hover:shadow-lg dark:border-emerald-800 dark:bg-gray-800 dark:hover:border-emerald-500"
+              >
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300">
+                  <Upload size={26} />
+                </div>
+                <p className="mt-4 text-lg font-bold text-gray-900 dark:text-white">Upload bank statement</p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  No Gmail access. Upload a PDF or CSV from any bank.
+                </p>
+                <div className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                  Upload statement
+                  <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                </div>
+              </Link>
+            </div>
           </div>
         )}
 
@@ -169,6 +199,56 @@ export default function DashboardPage() {
                   </p>
                 </div>
               )}
+            </div>
+
+            {/* TWO WAYS TO SCAN */}
+            <div className="mb-6">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                Find more subscriptions
+              </h2>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <Link
+                  href="/dashboard/subscriptions/scan"
+                  className="group rounded-2xl border border-gray-200 bg-white p-5 transition-colors hover:border-purple-400 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-purple-500"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+                      <Mail size={20} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-gray-900 dark:text-white">Connect Gmail</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Automatic detection from receipts
+                      </p>
+                    </div>
+                    <ArrowRight
+                      size={18}
+                      className="shrink-0 text-gray-400 transition-transform group-hover:translate-x-0.5"
+                    />
+                  </div>
+                </Link>
+
+                <Link
+                  href="/dashboard/subscriptions/upload"
+                  className="group rounded-2xl border border-gray-200 bg-white p-5 transition-colors hover:border-emerald-400 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-emerald-500"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
+                      <Upload size={20} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-gray-900 dark:text-white">Upload bank statement</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        No Gmail access needed
+                      </p>
+                    </div>
+                    <ArrowRight
+                      size={18}
+                      className="shrink-0 text-gray-400 transition-transform group-hover:translate-x-0.5"
+                    />
+                  </div>
+                </Link>
+              </div>
             </div>
 
             {/* TOP SPENDERS */}

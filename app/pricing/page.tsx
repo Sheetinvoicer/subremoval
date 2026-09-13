@@ -29,6 +29,13 @@ export default function PricingPage() {
         headers: { 'Content-Type': 'application/json' },
       })
       const data = await res.json()
+
+      // Already paid — send them to their dashboard
+      if (res.status === 400 && data.error && data.error.includes('already have lifetime access')) {
+        router.push('/dashboard/subscriptions')
+        return
+      }
+
       if (data.url) {
         window.location.href = data.url
       } else {
@@ -54,7 +61,7 @@ export default function PricingPage() {
             Stop bleeding money in silence
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            SubRemoval scans your Gmail, finds every forgotten subscription, and gives you cancel links in one shot.
+            Find every forgotten subscription. Two ways to scan — <strong className="text-gray-900 dark:text-white">connect Gmail</strong> for automatic detection, or <strong className="text-gray-900 dark:text-white">upload a bank statement</strong> with no Gmail access.
           </p>
         </div>
 
@@ -82,7 +89,7 @@ export default function PricingPage() {
 
             <ul className="mt-8 space-y-3">
               {[
-                'Scans your Gmail for subscriptions',
+                'Scans Gmail OR bank statements',
                 'Finds every forgotten charge',
                 '3 scans per month, forever',
                 'Direct cancel links for each service',
@@ -125,9 +132,9 @@ export default function PricingPage() {
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
               <Shield className="h-6 w-6 text-purple-600 dark:text-purple-400" />
             </div>
-            <h3 className="mt-3 font-semibold text-gray-900 dark:text-white">Read-only Gmail</h3>
+            <h3 className="mt-3 font-semibold text-gray-900 dark:text-white">Privacy first</h3>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              We can scan receipts. We can never send, delete, or read anything else.
+              Read-only Gmail or upload a statement. We never send or delete emails.
             </p>
           </div>
           <div>
@@ -136,7 +143,7 @@ export default function PricingPage() {
             </div>
             <h3 className="mt-3 font-semibold text-gray-900 dark:text-white">Results in 30 seconds</h3>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Connect Gmail, click scan, watch your subscriptions appear.
+              Connect Gmail or upload a statement. See results in 30 seconds.
             </p>
           </div>
           <div>
