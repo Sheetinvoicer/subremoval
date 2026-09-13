@@ -32,6 +32,8 @@ const KNOWN_CANCEL_URLS: Record<string, string> = {
   notion: 'https://www.notion.so/my-account',
   figma: 'https://www.figma.com/settings',
   slack: 'https://slack.com/help/articles/218915077',
+  jetbrains: 'https://account.jetbrains.com/licenses',
+  microsoft: 'https://account.microsoft.com/services',
 }
 
 function guessDomain(name: string): string | null {
@@ -49,33 +51,22 @@ function guessCancelUrl(name: string, domain: string | null): string | null {
   return null
 }
 
-export async function extractSubscriptionsFromStatement(
-  text: string
-): Promise<BankSubscription[]> {
-  const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) {
-    console.error('[BANK] Missing GEMINI_API_KEY')
-    return []
-  }
-
-  const ai = new GoogleGenAI({ apiKey })
-
-  const prompt = `You are reading a bank or credit card statement.
+const PROMPT = `You are reading a bank or credit card statement (image or text).
 
 TASK: Find every RECURRING SUBSCRIPTION charge.
 
 RULES:
 - Only include merchants that (a) appear 2+ times with same/similar amounts, OR (b) are well-known subscription services
-- Skip one-time purchases (restaurants, gas, groceries, retail)
-- Skip transfers between accounts, ATM withdrawals, fees
-- Skip refunds, credits, and reversals
+- Skip one-time purchases (restaurants, gas, groceries, retail, ATM, transfers)
+- Skip payments between accounts (credit card payments, transfers)
+- Skip refunds, credits, reversals
 - Clean merchant names:
   "NFLX*SUBSCRIPTION" -> "Netflix"
   "SPOTIFY AB" -> "Spotify"
   "APPLE.COM/BILL" -> "Apple"
   "AMZN PRIME" -> "Amazon Prime"
+  "ADOBE *CREATIVE CLOUD" -> "Adobe Creative Cloud"
 - If multiple charges for same service, return ONE entry with the most recent amount
-- Estimate monthly amount (weekly x 4, annual / 12)
 - Never invent data you can't see
 
 For each subscription, return:
@@ -87,15 +78,41 @@ For each subscription, return:
 - confidence ("high" if 2+ matching charges OR known subscription, "medium" if unsure, "low" if guessing)
 - rationale (1 sentence, max 100 chars)
 
-Return ONLY a JSON array. If no subscriptions found, return [].
+Return ONLY a JSON array. If no subscriptions found, return [].`
 
-STATEMENT TEXT:
-${text}`
+export async function extractSubscriptionsFromStatement(
+  buffer: Buffer,
+  filename: string
+): Promise<BankSubscription[]> {
+  const apiKey = process.env.GEMINI_API_KEY
+  if (!apiKey) {
+    console.error('[BANK] Missing GEMINI_API_KEY')
+    return []
+  }
+
+  const ai = new GoogleGenAI({ apiKey })
+  const lower = filename.toLowerCase()
+
+  // Build the content parts — PDFs as inlineData, CSVs/TXTs as text
+  const parts: any[] = [{ text: PROMPT }]
+
+  if (lower.endsWith('.pdf')) {
+    parts.push({
+      inlineData: {
+        mimeType: 'application/pdf',
+        data: buffer.toString('base64'),
+      },
+    })
+  } else {
+    // CSV / TXT
+    const text = buffer.toString('utf-8').slice(0, 100000)
+    parts.push({ text: `STATEMENT TEXT:\n${text}` })
+  }
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3.5-flash-lite',
-      contents: prompt,
+      model: 'gemini-2.5-flash',
+      contents: [{ role: 'user', parts }],
       config: {
         temperature: 0.1,
         responseMimeType: 'application/json',

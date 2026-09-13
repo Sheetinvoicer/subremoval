@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { extractTextFromFile } from '@/lib/bank/parser'
 import { extractSubscriptionsFromStatement, normalizeName } from '@/lib/bank/scanner'
 
 export const runtime = 'nodejs'
@@ -17,7 +16,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Not logged in' }, { status: 401 })
     }
 
-    // === PAYWALL + SCAN LIMIT (same as Gmail) ===
+    // === PAYWALL + SCAN LIMIT ===
     const { data: paidRow } = await supabase
       .from('sr_paid_users')
       .select('scan_count_this_month, scan_period_start')
@@ -58,39 +57,28 @@ export async function POST(request: Request) {
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: 'File too large. Max 5 MB.' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'File too large. Max 5 MB.' }, { status: 400 })
     }
 
     const lower = file.name.toLowerCase()
-    if (!lower.endsWith('.pdf') && !lower.endsWith('.csv')) {
+    if (!lower.endsWith('.pdf') && !lower.endsWith('.csv') && !lower.endsWith('.txt')) {
       return NextResponse.json(
-        { error: 'Only PDF and CSV files are supported.' },
+        { error: 'Only PDF, CSV, and TXT files are supported.' },
         { status: 400 }
       )
     }
 
-    // Extract text
     const buffer = Buffer.from(await file.arrayBuffer())
-    let text: string
-    try {
-      text = await extractTextFromFile(buffer, file.name)
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Failed to read file'
-      return NextResponse.json({ error: msg }, { status: 400 })
-    }
 
-    if (!text || text.length < 100) {
+    if (buffer.length < 100) {
       return NextResponse.json(
-        { error: 'Could not read any text from this file. Try exporting as CSV.' },
+        { error: 'File appears to be empty or too small.' },
         { status: 400 }
       )
     }
 
-    // Send to AI
-    const detected = await extractSubscriptionsFromStatement(text)
+    // Send to AI (Gemini reads PDFs directly, no text extraction needed)
+    const detected = await extractSubscriptionsFromStatement(buffer, file.name)
     if (detected.length === 0) {
       return NextResponse.json({
         ok: true,
@@ -99,7 +87,7 @@ export async function POST(request: Request) {
       })
     }
 
-    // === INCREMENT COUNTER (only on successful detection) ===
+    // === INCREMENT COUNTER ===
     await supabase
       .from('sr_paid_users')
       .update({
