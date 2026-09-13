@@ -15,6 +15,7 @@ const MAX_EMAILS = 100
 
 interface AggregatedSub extends DetectedSubscription {
   _latestFailure: string | null
+  _failureDatesThisScan: number
 }
 
 function daysSince(iso: string | null): number {
@@ -29,7 +30,6 @@ export async function POST() {
     if (!user) return NextResponse.json({ error: 'Not logged in' }, { status: 401 })
 
     // === PAYWALL + SCAN LIMIT ===
-    // Require a paid row in sr_paid_users (set by Stripe checkout).
     const { data: paidRow } = await supabase
       .from('sr_paid_users')
       .select('scan_count_this_month, scan_period_start, lifetime')
@@ -43,7 +43,6 @@ export async function POST() {
       )
     }
 
-    // Reset monthly counter if we've moved into a new month
     const now = new Date()
     const periodStart = new Date(paidRow.scan_period_start)
     const isNewMonth =
@@ -64,7 +63,6 @@ export async function POST() {
       )
     }
 
-    // Increment counter BEFORE scan (so concurrent requests can't bypass)
     await supabase
       .from('sr_paid_users')
       .update({
@@ -138,7 +136,15 @@ export async function POST() {
       const base = successes.sort((a, b) => (b.event_date ?? '').localeCompare(a.event_date ?? ''))[0] ?? group[0]
 
       const latestSuccess = successes.map((s) => s.event_date).filter(Boolean).sort().at(-1) ?? null
-      const latestFailure = failures.map((f) => f.event_date).filter(Boolean).sort().at(-1) ?? null
+
+      // Count DISTINCT failure dates in this batch, not just the latest.
+      // This seeds the counter correctly when a user scans for the first time
+      // and finds a subscription that has already been failing for months.
+      const failureDates = Array.from(
+        new Set(failures.map((f) => f.event_date).filter(Boolean))
+      ).sort()
+      const latestFailure = failureDates.at(-1) ?? null
+      const failureDatesThisScan = failureDates.length
 
       aggregated.push({
         ...base,
@@ -146,10 +152,10 @@ export async function POST() {
         confidence: successes.length > 0 ? 'high' : base.confidence,
         payment_status: cancelledByProvider ? 'cancelled_by_provider' : 'success',
         _latestFailure: latestFailure,
+        _failureDatesThisScan: failureDatesThisScan,
       })
     }
 
-    // Drop one-time purchases (credit top-ups, single charges) so they don't pollute the subscription list.
     const recurringOnly = aggregated.filter((s) => s.is_recurring !== false)
     console.log('[SCAN] Aggregated to', aggregated.length, 'unique services;', recurringOnly.length, 'recurring')
 
@@ -198,7 +204,6 @@ export async function POST() {
 
       const nextStatus = isCancelledByProvider ? 'cancelled' : isResubscribe ? 'active' : (existing?.status ?? 'active')
 
-      // last_seen_at only ever advances on a real success — never touched by failures
       const newSuccessDate = s.last_charged_date
         ? new Date(`${s.last_charged_date}T12:00:00Z`).toISOString()
         : null
@@ -211,7 +216,6 @@ export async function POST() {
         ? new Date(`${s._latestFailure}T12:00:00Z`).toISOString()
         : null
 
-      // A success always wins and clears the failure streak.
       const successIsNewerThanKnownFailure =
         newSuccessDate && (!existing?.last_failed_at || newSuccessDate > existing.last_failed_at)
 
@@ -224,13 +228,14 @@ export async function POST() {
       } else if (newFailureDate && newFailureDate !== lastFailedAt) {
         const isAfterLastSuccess = !lastSeenAt || newFailureDate > lastSeenAt
         if (isAfterLastSuccess) {
-          failedAttemptCount += 1
+          // Seed from however many distinct failure dates exist in THIS batch.
+          // Covers the "already broken before first scan" case where the inbox
+          // has 3 old failure emails sitting there from day one.
+          failedAttemptCount = Math.max(failedAttemptCount + 1, s._failureDatesThisScan)
           lastFailedAt = newFailureDate
         }
       }
 
-      // The rule: 2+ failed attempts AND no success in 30 days.
-      // A single retry never flips the badge.
       const showFailedWarning = failedAttemptCount >= 2 && daysSince(lastSeenAt) > 30
 
       const row = {

@@ -30,7 +30,7 @@ export interface DetectedSubscription {
   last_charged_date: string | null
   amount_source: AmountSource
   payment_status: PaymentStatus
-  is_recurring?: boolean
+  is_recurring: boolean
 }
 
 export interface EmailDetail {
@@ -281,7 +281,7 @@ Return ONLY emails matching (A). Skip (B), (C), (D) entirely.
 A subscription is a RECURRING charge. Confirming signals:
   YES: "monthly", "annual", "renewal", "recurring", "your plan", "next billing date"
   YES: the service is a known subscription (Netflix, Spotify, SaaS, cloud tools)
-  NO: one-time purchases ("Your order shipped", "Download your purchase")
+  NO: one-time purchases ("Your order shipped", "Download your purchase", "credit purchase", "top-up", "single payment")
 
 === STEP 3 - EXTRACT FIELDS ===
 For each (A) email:
@@ -306,6 +306,7 @@ For each (A) email:
     "medium" = missing amount, missing cycle, or ambiguous sender.
     "low" = probably not a subscription.
 - rationale: 1 sentence, max 120 chars, explaining your choice.
+- is_recurring: true if this is a RECURRING subscription charge (monthly, yearly, etc). false if it is a ONE-TIME purchase (credit top-up, single charge, order confirmation, download purchase). If unsure, default to true.
 - payment_status - EXACT rules (this drives the "last payment failed" badge):
     "success" = money WAS charged. Signals: "receipt", "payment received", "charged $X", "invoice paid", "thanks for your payment".
     "failed" = a charge ATTEMPT failed. Signals: "payment failed", "card declined", "we couldn't process", "action required", "update your payment method".
@@ -320,13 +321,16 @@ we aggregate successes over failures in our own code.
 
 === EXAMPLES ===
 Input: "Your Vercel invoice for September" from billing@vercel.com, body contains "$20.00 total, invoice paid"
-Output: { service_name: "Vercel", domain: "vercel.com", amount: 20, currency: "USD", billing_cycle: "monthly", source: "Direct billing", confidence: "high", payment_status: "success", rationale: "Vercel Pro monthly invoice, $20 charged" }
+Output: { service_name: "Vercel", domain: "vercel.com", amount: 20, currency: "USD", billing_cycle: "monthly", source: "Direct billing", confidence: "high", is_recurring: true, payment_status: "success", rationale: "Vercel Pro monthly invoice, $20 charged" }
 
 Input: "Your card was declined" from billing@vercel.com, "$20.00 payment failed"
-Output: { service_name: "Vercel", domain: "vercel.com", amount: 20, currency: "USD", billing_cycle: "monthly", payment_status: "failed", rationale: "Vercel payment failed, card declined" }
+Output: { service_name: "Vercel", domain: "vercel.com", amount: 20, currency: "USD", billing_cycle: "monthly", is_recurring: true, payment_status: "failed", rationale: "Vercel payment failed, card declined" }
 
 Input: "Your Netflix receipt" from info@netflix.com, "$22.99 charged monthly"
-Output: { service_name: "Netflix", domain: "netflix.com", amount: 22.99, currency: "USD", billing_cycle: "monthly", source: "Direct billing", confidence: "high", payment_status: "success", rationale: "Netflix monthly subscription charge" }
+Output: { service_name: "Netflix", domain: "netflix.com", amount: 22.99, currency: "USD", billing_cycle: "monthly", source: "Direct billing", confidence: "high", is_recurring: true, payment_status: "success", rationale: "Netflix monthly subscription charge" }
+
+Input: "Anthropic credit purchase receipt" from billing@anthropic.com, "$21.78 paid for credits"
+Output: { service_name: "Anthropic", domain: "anthropic.com", amount: 21.78, currency: "USD", is_recurring: false, payment_status: "success", rationale: "One-time credit top-up, not a subscription" }
 
 === EMAILS TO CLASSIFY ===
 ${emailList}`
@@ -353,6 +357,7 @@ ${emailList}`
               source: { type: Type.STRING, nullable: true },
               confidence: { type: Type.STRING, nullable: true },
               rationale: { type: Type.STRING, nullable: true },
+              is_recurring: { type: Type.BOOLEAN, nullable: true },
               payment_status: { type: Type.STRING, nullable: true },
             },
             required: ['email_index', 'service_name'],
@@ -428,6 +433,7 @@ ${emailList}`
           event_date,
           last_charged_date,
           payment_status,
+          is_recurring: typeof p.is_recurring === 'boolean' ? p.is_recurring : true,
         }
       })
   } catch (err) {
