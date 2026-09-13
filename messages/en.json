@@ -968,7 +968,8 @@
       "admin": "Admin",
       "auditLogs": "Audit Logs",
       "entity": "AI Entity",
-      "subscription": "Subscription"
+      "subscription": "Subscription",
+      "upload": "Upload statement"
     },
     "planLabel": "Plan",
     "account": "Account",

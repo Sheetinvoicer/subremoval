@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   CreditCard,
   ScanSearch,
+  Upload,
   type LucideIcon,
 } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
@@ -32,6 +33,7 @@ const navSections: NavSection[] = [
     items: [
       { key: 'subscriptions', href: '/dashboard/subscriptions', Icon: CreditCard },
       { key: 'scan', href: '/dashboard/subscriptions/scan', Icon: ScanSearch },
+      { key: 'upload', href: '/dashboard/subscriptions/upload', Icon: Upload },
     ],
   },
   {
